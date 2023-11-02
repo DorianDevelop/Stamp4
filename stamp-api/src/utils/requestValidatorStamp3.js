@@ -27,7 +27,7 @@ exports.validateTE = (req, res, next) => {
 //#region Error
 const errorSchema = Joi.object({
 	id: Joi.number(),
-	code: Joi.number().required(),
+	code: Joi.number().allow(null),
 	module: Joi.string().max(16).allow(null, ''),
 	function: Joi.string().max(24).allow(null, ''),
 	label: Joi.string().max(32).required(),
@@ -72,11 +72,12 @@ exports.validateValue = (req, res, next) => {
 
 //#region Target
 const targetSchema = Joi.object({
+	id: Joi.number(),
 	label: Joi.string().max(32).required(),
 	label_fr: Joi.string().max(32).allow(null, ''),
 	label_en: Joi.string().max(32).allow(null, ''),
 	label_xx: Joi.string().max(32).allow(null, ''),
-	when: Joi.date().allow(null),
+	when: Joi.date().allow(null, ''),
 	who: Joi.string().max(32).allow(null, ''),
 	comment: Joi.string().max(512).allow(null, ''),
 });
@@ -94,17 +95,19 @@ exports.validateTarget = (req, res, next) => {
 
 //#region Funct
 const functSchema = Joi.object({
+	id: Joi.number(),
 	label: Joi.string().max(32).required(),
 	idTarget: Joi.number().min(0).required(), //TODO : savoir si on aurtorise de créer sans avoir de target
 	label_fr: Joi.string().max(32).allow(null, ''),
 	label_en: Joi.string().max(32).allow(null, ''),
 	label_xx: Joi.string().max(32).allow(null, ''),
-	when: Joi.date().allow(null),
+	when: Joi.date().allow(null, ''),
 	who: Joi.string().max(32).allow(null, ''),
 	comment: Joi.string().max(512).allow(null, ''),
 });
 
 exports.validateFunct = (req, res, next) => {
+	console.log(req.body);
 	const { error } = functSchema.validate(req.body);
 	if (error) {
 		console.error(error);
@@ -123,7 +126,7 @@ const organSchema = Joi.object({
 	label_fr: Joi.string().max(32).allow(null, ''),
 	label_en: Joi.string().max(32).allow(null, ''),
 	label_xx: Joi.string().max(32).allow(null, ''),
-	when: Joi.date().allow(null),
+	when: Joi.date().allow(null, ''),
 	who: Joi.string().max(32).allow(null, ''),
 	comment: Joi.string().max(512).allow(null, ''),
 });
@@ -152,7 +155,7 @@ const actionSchema = Joi.object({
 	label_fr: Joi.string().max(32).allow(null, ''),
 	label_en: Joi.string().max(32).allow(null, ''),
 	label_xx: Joi.string().max(32).allow(null, ''),
-	when: Joi.date().allow(null),
+	when: Joi.date().allow(null, ''),
 	who: Joi.string().max(32).allow(null, ''),
 	comment: Joi.string().max(512).allow(null, ''),
 

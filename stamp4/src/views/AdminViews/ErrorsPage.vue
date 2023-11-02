@@ -1,153 +1,108 @@
 <template>
-	<div class="container">
-		<div class="topOptions">
-			<SearchBar :route="routeAPI + 's'" @update:selected="getValueForOne" />
-			<ButtonBar :status="selectedId !== null" @btn:save="saveSelection" @btn:delete="deleteSelection" @btn:add="addItem" />
-		</div>
-		<div class="infos" v-if="selectedId !== null">
+	<Layout
+		class="layout"
+		routeAPI="/stamp3/error"
+		:formating="createJSONItem"
+		:validation="validationBeforeSave"
+		@update:validators="validateAll"
+	>
+		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-start">
-					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="ApcNo" v-model="datas.apcNo"> </w-input>
-					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="Code" v-model="datas.code"> </w-input>
-					<w-input label-color="red" class="mb1 xs5 pa1" label="Label" :validators="[validators.required]" v-model="datas.label">
+					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="ApcNo" v-model="props.datas.apcNo"> </w-input>
+					<w-input
+						ref="codeInput"
+						type="number"
+						label-color="red"
+						class="mb1 xs2 pa1"
+						label="Code"
+						v-model="props.datas.code"
+						:validators="[validators.required]"
+					>
+					</w-input>
+					<w-input
+						ref="labelInput"
+						label-color="red"
+						class="mb1 xs5 pa1"
+						label="Label"
+						:validators="[validators.required]"
+						v-model="props.datas.label"
+					>
 					</w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-start">
-					<w-input label-color="red" class="mb1 xs3 pa1" label="Function" v-model="datas.function"> </w-input>
-					<w-input label-color="red" class="mb1 xs2 pa1" label="HelpF" v-model="datas.helpF"> </w-input>
-					<w-input label-color="red" class="mb1 xs2 pa1" label="HelpS" v-model="datas.helpS"> </w-input>
-					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="Level" v-model="datas.level"> </w-input>
-					<w-input label-color="red" class="mb1 xs2 pa1" label="Module" v-model="datas.module"> </w-input>
+					<w-input label-color="red" class="mb1 xs3 pa1" label="Function" v-model="props.datas.function"> </w-input>
+					<w-input label-color="red" class="mb1 xs2 pa1" label="HelpF" v-model="props.datas.helpF"> </w-input>
+					<w-input label-color="red" class="mb1 xs2 pa1" label="HelpS" v-model="props.datas.helpS"> </w-input>
+					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="Level" v-model="props.datas.level"> </w-input>
+					<w-input label-color="red" class="mb1 xs2 pa1" label="Module" v-model="props.datas.module"> </w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-start">
 					<w-textarea
-						rows="4"
+						rows="5"
 						:no-autogrow="true"
 						label-color="red"
 						class="pa1 textAreaForm"
 						label="Message Français"
-						v-model="datas.msgFR"
+						v-model="props.datas.msgFR"
 					>
 					</w-textarea>
 					<w-textarea
-						rows="4"
+						rows="5"
 						:no-autogrow="true"
 						label-color="red"
 						class="pa1 textAreaForm"
 						label="Message Anglais"
-						v-model="datas.msgEN"
+						v-model="props.datas.msgEN"
 					>
 					</w-textarea>
 				</w-flex>
 
-				<w-textarea label-color="red" class="pa1 textAreaForm" label="Comment" v-model="datas.comment"> </w-textarea>
+				<w-textarea label-color="red" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
-		</div>
-	</div>
+		</template>
+	</Layout>
 </template>
-
 <script>
-import axios from 'axios';
-import SearchBar from '@/components/SearchBar.vue';
-import ButtonBar from '@/components/ButtonBar.vue';
+import Layout from '@/views/ItemLayout.vue';
 
 export default {
-	name: 'ErrorsPage',
 	components: {
-		SearchBar,
-		ButtonBar,
+		Layout,
 	},
 	data() {
 		return {
-			routeAPI: '/stamp3/error',
-			routePage: '/admin/errors',
-
-			selectedId: null,
-
-			datas: [],
-
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},
 		};
 	},
 	methods: {
-		async getValueForOne(val) {
-			if (val == null) {
-				this.selectedId = null;
-				return;
-			}
-
-			this.selectedId = val.id;
-
-			await axios
-				.get(`http://localhost:3000${this.routeAPI}/${this.selectedId}`)
-				.then((reponse) => reponse.data[0])
-				.then((data) => {
-					this.datas = data;
-				});
+		createJSONItem(datas) {
+			return {
+				label: datas.label,
+				code: datas.code,
+				apcNo: datas.apcNo ? datas.apcNo : 0,
+				function: datas.function ? datas.function : '',
+				helpF: datas.helpF ? datas.helpF : '',
+				helpS: datas.helpS ? datas.helpS : '',
+				level: datas.level ? datas.level : 0,
+				module: datas.module ? datas.module : '',
+				msgEN: datas.msgEN ? datas.msgEN : '',
+				msgFR: datas.msgFR ? datas.msgFR : '',
+				comment: datas.comment ? datas.comment : '',
+			};
 		},
-		saveSelection() {
-			if (this.selectedId === null) return;
-			if (this.selectedId === -1) {
-				this.createItem();
-				return;
-			}
-			console.log('Please no');
-			console.log(this.datas);
-			axios.put(`http://localhost:3000${this.routeAPI}/${this.selectedId}`, this.datas).then((response) => {
-				if (response.status === 200) {
-					this.$waveui.notify({
-						message: 'Sauvegarde reussit',
-						timeout: 3000,
-						bgColor: 'success',
-						color: 'warning',
-						dismiss: false,
-						shadow: true,
-						round: true,
-						sm: true,
-						icon: 'wi-star',
-					});
-				}
-			});
+		validationBeforeSave(datas) {
+			if (!datas.label || datas.label === '' || datas.label === null) return false;
+			if (!datas.code || datas.code === null) return false;
+			return true;
 		},
-		async deleteSelection() {
-			if (this.selectedId == null || this.selectedId === -1) return;
-			await axios.delete(`http://localhost:3000${this.routeAPI}/${this.selectedId}`).then((response) => {
-				console.log(response);
-			});
-			window.location.href = this.routePage;
-		},
-		addItem() {
-			this.selectedId = -1;
-			this.datas = [];
-		},
-		async createItem() {
-			if (!this.datas.label) {
-				return;
-			}
-			console.log(this.datas);
-			await axios
-				.post(`http://localhost:3000${this.routeAPI}`, {
-					label: this.datas.label,
-					code: this.datas.code,
-					apcNo: this.datas.apcNo ? this.datas.apcNo : 0,
-					function: this.datas.function ? this.datas.function : '',
-					helpF: this.datas.helpF ? this.datas.helpF : '',
-					helpS: this.datas.helpS ? this.datas.helpS : '',
-					level: this.datas.level ? this.datas.level : 0,
-					module: this.datas.module ? this.datas.module : '',
-					msgEN: this.datas.msgEN ? this.datas.msgEN : '',
-					msgFR: this.datas.msgFR ? this.datas.msgFR : '',
-					comment: this.datas.comment ? this.datas.comment : '',
-				})
-				.then((response) => {
-					console.log(response);
-				});
-
-			window.location.href = this.routePage;
+		validateAll() {
+			this.$refs.codeInput.validate();
+			this.$refs.labelInput.validate();
 		},
 	},
 };

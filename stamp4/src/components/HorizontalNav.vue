@@ -37,10 +37,10 @@
 				<div class="hoverLink">
 					<router-link to="/admin/te" class="sub-router-link">TE</router-link>
 					<router-link to="/admin/errors" class="sub-router-link">Erreurs</router-link>
-					<p>Valeurs</p>
-					<p>Targets</p>
+					<router-link to="/admin/values" class="sub-router-link">Valeurs</router-link>
+					<router-link to="/admin/targets" class="sub-router-link">Targets</router-link>
+					<router-link to="/admin/functions" class="sub-router-link">Functions</router-link>
 					<p>Organs</p>
-					<p>Functions</p>
 					<p>Actions</p>
 				</div>
 			</router-link>

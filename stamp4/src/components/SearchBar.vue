@@ -11,6 +11,7 @@ import axios from 'axios';
 export default {
 	props: {
 		route: String,
+		refreshSearch: Boolean,
 	},
 	components: {
 		vSelect,
@@ -20,6 +21,8 @@ export default {
 			options: [],
 			selected: null,
 			choice: this.selected,
+
+			refresh: this.refreshSearch,
 		};
 	},
 	created() {
@@ -39,8 +42,13 @@ export default {
 		choice(newVal) {
 			this.$emit('update:selected', newVal);
 		},
-		selected(newVal) {
-			this.choice = newVal;
+		refreshSearch(newVal) {
+			this.options = [];
+			this.selected = null;
+			this.choice = this.selected;
+			this.getValueForSelect();
+
+			this.refresh = newVal;
 		},
 	},
 };

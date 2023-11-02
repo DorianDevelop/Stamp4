@@ -325,7 +325,7 @@ exports.deleteValue = (req, res) => {
 
 //Récupère tout les labels de la table "Target"
 exports.getAllTargetsLabel = (req, res) => {
-	const query = 'SELECT T.id, T.label FROM `target` as T';
+	const query = 'SELECT T.id, T.label FROM `target` as T ORDER BY T.label';
 
 	stamp3.query(query, (error, results) => {
 		if (error) {
@@ -355,12 +355,12 @@ exports.createTarget = (req, res) => {
 	//Récupère les données pour la requête
 	const datas = [
 		req.body.label ? req.body.label : '',
-		req.body.label_fr ? req.body.label : '',
-		req.body.label_en ? req.body.label : '',
-		req.body.label_xx ? req.body.label : '',
-		req.body.who ? req.body.label : '',
+		req.body.label_fr ? req.body.label_fr : '',
+		req.body.label_en ? req.body.label_en : '',
+		req.body.label_xx ? req.body.label_xx : '',
+		req.body.who ? req.body.who : '',
 		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.label : '',
+		req.body.comment ? req.body.comment : '',
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
@@ -383,12 +383,12 @@ exports.modifyTarget = (req, res) => {
 	const requestId = req.params.id;
 	const datas = [
 		req.body.label ? req.body.label : '',
-		req.body.label_fr ? req.body.label : '',
-		req.body.label_en ? req.body.label : '',
-		req.body.label_xx ? req.body.label : '',
-		req.body.who ? req.body.label : '',
+		req.body.label_fr ? req.body.label_fr : '',
+		req.body.label_en ? req.body.label_en : '',
+		req.body.label_xx ? req.body.label_xx : '',
+		req.body.who ? req.body.who : '',
 		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.label : '',
+		req.body.comment ? req.body.comment : '',
 
 		//Pour le "WHERE"
 		requestId,
@@ -463,16 +463,16 @@ exports.createFunct = (req, res) => {
 	const datas = [
 		req.body.label ? req.body.label : '',
 		req.body.idTarget ? req.body.idTarget : null,
-		req.body.label_fr ? req.body.label : '',
-		req.body.label_en ? req.body.label : '',
-		req.body.label_xx ? req.body.label : '',
-		req.body.who ? req.body.label : '',
+		req.body.label_fr ? req.body.label_fr : '',
+		req.body.label_en ? req.body.label_en : '',
+		req.body.label_xx ? req.body.label_xx : '',
+		req.body.who ? req.body.who : '',
 		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.label : '',
+		req.body.comment ? req.body.comment : '',
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
-		'INSERT INTO `funct`(`label`, `idTarget`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+		'INSERT INTO `funct`(`label`, `idTarget`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
@@ -492,12 +492,12 @@ exports.modifyFunct = (req, res) => {
 	const datas = [
 		req.body.label ? req.body.label : '',
 		req.body.idTarget ? req.body.idTarget : null,
-		req.body.label_fr ? req.body.label : '',
-		req.body.label_en ? req.body.label : '',
-		req.body.label_xx ? req.body.label : '',
-		req.body.who ? req.body.label : '',
+		req.body.label_fr ? req.body.label_fr : '',
+		req.body.label_en ? req.body.label_en : '',
+		req.body.label_xx ? req.body.label_xx : '',
+		req.body.who ? req.body.who : '',
 		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.label : '',
+		req.body.comment ? req.body.comment : '',
 
 		//Pour le "WHERE"
 		requestId,
@@ -573,12 +573,12 @@ exports.createOrgan = (req, res) => {
 		req.body.label ? req.body.label : '',
 		req.body.idTarget ? req.body.idTarget : null,
 		req.body.idFunc ? req.body.idFunc : null,
-		req.body.label_fr ? req.body.label : '',
-		req.body.label_en ? req.body.label : '',
-		req.body.label_xx ? req.body.label : '',
-		req.body.who ? req.body.label : '',
+		req.body.label_fr ? req.body.label_fr : '',
+		req.body.label_en ? req.body.label_en : '',
+		req.body.label_xx ? req.body.label_xx : '',
+		req.body.who ? req.body.who : '',
 		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.label : '',
+		req.body.comment ? req.body.comment : '',
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
@@ -603,12 +603,12 @@ exports.modifyOrgan = (req, res) => {
 		req.body.label ? req.body.label : '',
 		req.body.idTarget ? req.body.idTarget : null,
 		req.body.idFunc ? req.body.idFunc : null,
-		req.body.label_fr ? req.body.label : '',
-		req.body.label_en ? req.body.label : '',
-		req.body.label_xx ? req.body.label : '',
-		req.body.who ? req.body.label : '',
+		req.body.label_fr ? req.body.label_fr : '',
+		req.body.label_en ? req.body.label_en : '',
+		req.body.label_xx ? req.body.label_xx : '',
+		req.body.who ? req.body.who : '',
 		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.label : '',
+		req.body.comment ? req.body.comment : '',
 
 		//Pour le "WHERE"
 		requestId,
@@ -691,12 +691,12 @@ exports.createAction = (req, res) => {
 		req.body.track ? req.body.track : null,
 		req.body.err ? req.body.err : null,
 		req.body.ident ? req.body.ident : null,
-		req.body.label_fr ? req.body.label : '',
-		req.body.label_en ? req.body.label : '',
-		req.body.label_xx ? req.body.label : '',
-		req.body.who ? req.body.label : '',
+		req.body.label_fr ? req.body.label_fr : '',
+		req.body.label_en ? req.body.label_en : '',
+		req.body.label_xx ? req.body.label_xx : '',
+		req.body.who ? req.body.who : '',
 		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.label : '',
+		req.body.comment ? req.body.comment : '',
 
 		req.body.type0 ? req.body.type0 : '',
 		req.body.param0_fr ? req.body.param0_fr : '',
@@ -784,12 +784,12 @@ exports.modifyAction = (req, res) => {
 		req.body.track ? req.body.track : null,
 		req.body.err ? req.body.err : null,
 		req.body.ident ? req.body.ident : null,
-		req.body.label_fr ? req.body.label : '',
-		req.body.label_en ? req.body.label : '',
-		req.body.label_xx ? req.body.label : '',
-		req.body.who ? req.body.label : '',
+		req.body.label_fr ? req.body.label_fr : '',
+		req.body.label_en ? req.body.label_en : '',
+		req.body.label_xx ? req.body.label_xx : '',
+		req.body.who ? req.body.who : '',
 		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.label : '',
+		req.body.comment ? req.body.comment : '',
 
 		req.body.type0 ? req.body.type0 : '',
 		req.body.param0_fr ? req.body.param0_fr : '',

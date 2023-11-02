@@ -1,7 +1,7 @@
 <template>
 	<Layout
 		class="layout"
-		routeAPI="/stamp3/value"
+		routeAPI="/stamp3/target"
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"
@@ -18,14 +18,23 @@
 						v-model="props.datas.label"
 					>
 					</w-input>
-					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="Id Famille" v-model="props.datas.idFamily">
-					</w-input>
+					<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.label_en"> </w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-start">
-					<w-input label-color="red" class="mb1 pa1" label="Type" v-model="props.datas.type"> </w-input>
-					<w-input label-color="red" class="mb1 pa1" label="Valeur" v-model="props.datas.value"> </w-input>
+					<w-input label-color="red" class="mb1 xs3 pa1" label="Créateur" v-model="props.datas.who"> </w-input>
+					<w-input label-color="red" class="mb1 xs3 pa1" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
+
+				<w-textarea
+					rows="4"
+					:no-autogrow="true"
+					label-color="red"
+					class="pa1 textAreaForm"
+					label="Comment"
+					v-model="props.datas.comment"
+				>
+				</w-textarea>
 			</w-form>
 		</template>
 	</Layout>
@@ -48,9 +57,10 @@ export default {
 		createJSONItem(datas) {
 			return {
 				label: datas.label,
-				idFamily: datas.idFamily ? datas.idFamily : 0,
-				type: datas.type ? datas.type : '',
-				value: datas.value ? datas.value : '',
+				label_en: datas.label_en ? datas.label_en : '',
+				who: datas.who ? datas.who : '',
+				when: datas.when ? datas.when : '',
+				comment: datas.comment ? datas.comment : '',
 			};
 		},
 		validationBeforeSave(datas) {

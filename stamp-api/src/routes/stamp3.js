@@ -3,7 +3,7 @@ const controller = require('../controllers/stamp3.js'); //Import toutes les fonc
 const validator = require('../utils/requestValidatorStamp3.js'); //Import checking received datas
 
 //TE
-router.get('/te', controller.getAllTeLabel);
+router.get('/tes', controller.getAllTeLabel);
 router.get('/te/:id', controller.getTeByID);
 
 router.post('/te', validator.validateTE, controller.createTE);

@@ -2,12 +2,11 @@ version: '3'
 services:
   db:
     image: mysql:latest
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "Admin"
-      MYSQL_DATABASE: "stamp3"
       MYSQL_USER: "client"
       MYSQL_PASSWORD: "Admin"
+      MYSQL_AUTHENTIFICATION_PLUGIN: mysql_native_password
     ports:
       - 3306:3306
     volumes:
@@ -15,7 +14,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
-    restart: always
     environment:
       PMA_HOST: db
       PMA_PORT: 3306

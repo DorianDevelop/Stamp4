@@ -11,11 +11,14 @@ const routes = [
 	},
 	{
 		path: '/admin',
+		name: 'A.D.M.I.N',
 		children: [
-			{ path: '', name: 'ADMIN', component: Views.AdminPage },
-			{ path: 'te', name: 'TEPage', component: Admin.TEPage },
-			{ path: 'errors', name: 'ErrorsPage', component: Admin.ErrorsPage },
-			{ path: 'values', name: 'ValuePage', component: Admin.ValuePage },
+			{ path: '', name: 'A.D.M.I.N', component: Views.AdminPage },
+			{ path: 'te', name: 'TE', component: Admin.TEPage },
+			{ path: 'errors', name: 'Erreurs', component: Admin.ErrorsPage },
+			{ path: 'values', name: 'Valeurs', component: Admin.ValuePage },
+			{ path: 'targets', name: 'Targets', component: Admin.TargetPage },
+			{ path: 'functions', name: 'Functions', component: Admin.FunctionPage },
 		],
 	},
 	{
