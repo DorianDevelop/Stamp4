@@ -37,6 +37,7 @@ router.delete('/target/:id', controller.deleteTarget);
 //Funct
 router.get('/functs', controller.getAllFunctsLabel);
 router.get('/funct/:id', controller.getFunctByID);
+router.get('/functsWithTarget/:id', controller.getAllFunctOfTarget);
 
 router.post('/funct', validator.validateFunct, controller.createFunct);
 router.put('/funct/:id', validator.validateFunct, controller.modifyFunct);
@@ -45,6 +46,7 @@ router.delete('/funct/:id', controller.deleteFunct);
 //Organ
 router.get('/organs', controller.getAllOrgansLabel);
 router.get('/organ/:id', controller.getOrganByID);
+router.get('/organsWithFunct/:id', controller.getAllOrgansByFunct);
 
 router.post('/organ', validator.validateOrgan, controller.createOrgan);
 router.put('/organ/:id', validator.validateOrgan, controller.modifyOrgan);

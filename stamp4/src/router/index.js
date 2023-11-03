@@ -19,6 +19,7 @@ const routes = [
 			{ path: 'values', name: 'Valeurs', component: Admin.ValuePage },
 			{ path: 'targets', name: 'Targets', component: Admin.TargetPage },
 			{ path: 'functions', name: 'Functions', component: Admin.FunctionPage },
+			{ path: 'organs', name: 'Organs', component: Admin.OrganPage },
 		],
 	},
 	{

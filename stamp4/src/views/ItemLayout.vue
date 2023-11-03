@@ -165,6 +165,7 @@ export default {
 			});
 			this.selectedId = null;
 			this.datas = [];
+
 			this.refreshSearch = !this.refreshSearch;
 		},
 		addItem() {

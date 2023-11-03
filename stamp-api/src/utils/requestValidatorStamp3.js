@@ -15,7 +15,6 @@ const teSchema = Joi.object({
 });
 
 exports.validateTE = (req, res, next) => {
-	console.log('Debugger', req.body);
 	const { error } = teSchema.validate(req.body);
 	if (error) {
 		return res.status(400).json({ Error: 'Bad request, try to verify the datas format\n' });
@@ -107,7 +106,6 @@ const functSchema = Joi.object({
 });
 
 exports.validateFunct = (req, res, next) => {
-	console.log(req.body);
 	const { error } = functSchema.validate(req.body);
 	if (error) {
 		console.error(error);
@@ -120,6 +118,7 @@ exports.validateFunct = (req, res, next) => {
 
 //#region Organ
 const organSchema = Joi.object({
+	id: Joi.number(),
 	label: Joi.string().max(32).required(),
 	idTarget: Joi.number().min(0).required(), //TODO : savoir si on aurtorise de créer sans avoir de target
 	idFunc: Joi.number().min(0).required(), //TODO : savoir si on aurtorise de créer sans avoir de funct

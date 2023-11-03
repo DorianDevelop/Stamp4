@@ -26,11 +26,14 @@
 					<w-input label-color="red" class="mb1 xs3 pa1" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
 
-				<div class="selects">
-					<p>Target</p>
-					<select v-model="props.datas.idTarget">
-						<option v-for="item in allTargets" :key="item.id" :value="item.id">{{ item.label }}</option>
-					</select>
+				<div class="groupOfSelect">
+					<div class="selects">
+						<p>Target</p>
+						<select v-model="props.datas.idTarget">
+							<option v-for="item in allTargets" :key="item.id" :value="item.id">{{ item.label }}</option>
+						</select>
+						<span v-if="showRequired && !props.datas.idTarget">This field is required</span>
+					</div>
 				</div>
 
 				<w-textarea
@@ -60,6 +63,7 @@ export default {
 				required: (value) => !!value || 'This field is required',
 			},
 			allTargets: [],
+			showRequired: false,
 		};
 	},
 	async mounted() {
@@ -71,10 +75,6 @@ export default {
 			});
 	},
 	methods: {
-		getLabelById(id) {
-			let item = this.allTargets.find((item) => item.id === id);
-			return item ? item.label : 'Label not found';
-		},
 		createJSONItem(datas) {
 			console.log(datas);
 			return {
@@ -93,28 +93,8 @@ export default {
 		},
 		validateAll() {
 			this.$refs.labelInput.validate();
+			this.showRequired = true;
 		},
 	},
 };
 </script>
-<style scoped>
-.selects {
-	color: #fa3317;
-	font-size: 1rem !important;
-	margin: 0 auto;
-}
-.selects p {
-	scale: 0.9;
-}
-
-.selects select {
-	margin-top: 4px;
-	border: none;
-	padding: 8px 16px;
-	box-shadow: 0 0 2px rgba(90, 90, 90, 0.5);
-}
-
-.selects select * {
-	border: none;
-}
-</style>

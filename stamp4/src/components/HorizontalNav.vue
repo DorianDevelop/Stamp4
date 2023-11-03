@@ -40,7 +40,7 @@
 					<router-link to="/admin/values" class="sub-router-link">Valeurs</router-link>
 					<router-link to="/admin/targets" class="sub-router-link">Targets</router-link>
 					<router-link to="/admin/functions" class="sub-router-link">Functions</router-link>
-					<p>Organs</p>
+					<router-link to="/admin/organs" class="sub-router-link">Organs</router-link>
 					<p>Actions</p>
 				</div>
 			</router-link>

@@ -395,7 +395,7 @@ exports.modifyTarget = (req, res) => {
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
-		'UPDATE `target` SET `label` = ?, `label_fr` = ?, `label_en` = ?, `label_xx`, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
+		'UPDATE `target` SET `label` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
@@ -457,6 +457,23 @@ exports.getFunctByID = (req, res) => {
 	});
 };
 
+//Récupère tout les labels de la table "Funct" qui sont lié à une certaine Target
+exports.getAllFunctOfTarget = (req, res) => {
+	const param = req.params.id;
+	const query =
+		'SELECT F.id, F.label as label ' +
+		'FROM `funct` as F ' +
+		'INNER JOIN `target` as T ON F.idTarget=T.id WHERE T.id = ? ORDER BY label;';
+
+	stamp3.query(query, [param], (error, results) => {
+		if (error) {
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json(results);
+		}
+	});
+};
+
 //Fonction pour insérer les données d'une nouvelle Funct dans la table "Funct"
 exports.createFunct = (req, res) => {
 	//Récupère les données pour la requête
@@ -504,7 +521,7 @@ exports.modifyFunct = (req, res) => {
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
-		'UPDATE `funct` SET `label` = ?, `idTarget` = ?, `label_fr` = ?, `label_en` = ?, `label_xx`, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
+		'UPDATE `funct` SET `label` = ?, `idTarget` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
@@ -555,9 +572,26 @@ exports.getAllOrgansLabel = (req, res) => {
 //Récupère tout les champs d'une ligne spécifique de la table "Organ"
 exports.getOrganByID = (req, res) => {
 	const requestId = req.params.id;
-	const query = 'SELECT * FROM `organs` as O WHERE O.id = ?';
+	const query = 'SELECT * FROM `organ` as O WHERE O.id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
+		if (error) {
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json(results);
+		}
+	});
+};
+
+//Récupère tout les labels de la table "Funct"
+exports.getAllOrgansByFunct = (req, res) => {
+	const param = req.params.id;
+	const query =
+		'SELECT O.id, O.label as label ' +
+		'FROM `organ` as O INNER JOIN `funct` as F ON O.idFunc=F.id ' +
+		'WHERE F.id = ? ORDER BY label;';
+
+	stamp3.query(query, [param], (error, results) => {
 		if (error) {
 			res.status(500).json({ error: 'An error occurred \n' + error });
 		} else {
@@ -582,7 +616,7 @@ exports.createOrgan = (req, res) => {
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
-		'INSERT INTO `organ`(`label`, `idTarget`, `idFunc`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+		'INSERT INTO `organ`(`label`, `idTarget`, `idFunc`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
@@ -615,7 +649,7 @@ exports.modifyOrgan = (req, res) => {
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
-		'UPDATE `organ` SET `label` = ?, `idTarget` = ?, `idFunc` = ?, `label_fr` = ?, `label_en` = ?, `label_xx`, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
+		'UPDATE `organ` SET `label` = ?, `idTarget` = ?, `idFunc` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
