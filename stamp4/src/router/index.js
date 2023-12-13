@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import * as Views from '@/views';
 import * as Admin from '@/views/AdminViews';
+import * as Produit from '@/views/ProduitViews';
 
 const routes = [
 	{
@@ -17,15 +18,20 @@ const routes = [
 			{ path: 'te', name: 'TE', component: Admin.TEPage },
 			{ path: 'errors', name: 'Erreurs', component: Admin.ErrorsPage },
 			{ path: 'values', name: 'Valeurs', component: Admin.ValuePage },
-			{ path: 'targets', name: 'Targets', component: Admin.TargetPage },
-			{ path: 'functions', name: 'Functions', component: Admin.FunctionPage },
+			{ path: 'cibles', name: 'Cibles', component: Admin.TargetPage },
+			{ path: 'fonctions', name: 'Fonctions', component: Admin.FunctionPage },
 			{ path: 'organs', name: 'Organs', component: Admin.OrganPage },
+			{ path: 'actions', name: 'Actions', component: Admin.ActionPage },
 		],
 	},
 	{
 		path: '/produit',
 		name: 'Produit',
-		component: Views.ProduitPage,
+		children: [
+			{ path: '', name: 'Produit', component: Views.ProduitPage },
+			{ path: 'gammes', name: 'Gammes', component: Produit.GammePage },
+			{ path: 'uuts', name: 'UUT', component: Produit.UUTPage },
+		],
 	},
 	{
 		path: '/analyse',

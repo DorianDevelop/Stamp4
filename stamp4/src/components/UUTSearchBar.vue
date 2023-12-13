@@ -1,8 +1,10 @@
 <template>
 	<div class="search mt5">
 		<w-breadcrumbs :items="items" class="liens" />
+		<v-select :options="gammeFilter" v-model="gammeChoice" @update:modelValue="filterChanged"></v-select>
+		<ArrowFilter mot="une Gamme" v-if="!(gammeChoice || !showArrow)" class="fleche_filtre" />
 		<v-select :options="options" v-model="choice"></v-select>
-		<ArrowIndication :mot="namePage" v-if="!(choice || !showArrow)" />
+		<ArrowIndication :mot="namePage" v-if="!(choice || !showArrow)" class="fleche" />
 	</div>
 </template>
 
@@ -10,6 +12,7 @@
 import vSelect from 'vue-select';
 import axios from 'axios';
 import ArrowIndication from '@/components/ArrowIndication.vue';
+import ArrowFilter from '@/components/ArrowFilter.vue';
 
 export default {
 	props: {
@@ -20,12 +23,19 @@ export default {
 	components: {
 		vSelect,
 		ArrowIndication,
+		ArrowFilter,
 	},
 	data() {
 		return {
 			showArrow: true,
-			options: [],
+
+			selectedGammeFilter: null,
 			selected: null,
+
+			gammeFilter: [],
+			gammeChoice: this.selectedGammeFilter,
+
+			options: [],
 			choice: this.selected,
 
 			refresh: this.refreshSearch,
@@ -35,13 +45,32 @@ export default {
 		};
 	},
 	created() {
-		this.getValueForSelect();
+		this.getGammeForFilter();
 	},
 	methods: {
-		async getValueForSelect() {
-			console.log('http://localhost:3000' + this.route);
+		async getGammeForFilter() {
 			await axios
-				.get('http://localhost:3000' + this.route)
+				.get('http://localhost:3000/stamp3uut/gammes')
+				.then((reponse) => reponse.data)
+				.then((data) => {
+					this.gammeFilter = data;
+				});
+
+			await axios
+				.get('http://localhost:3000/stamp3uut/uuts')
+				.then((reponse) => reponse.data)
+				.then((data) => {
+					this.options = data;
+				});
+		},
+
+		async filterChanged(val) {
+			this.selected = null;
+			this.choice = this.selected;
+
+			const id = val.id;
+			await axios
+				.get('http://localhost:3000/stamp3uut/uutsFiltered/' + id)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;
@@ -71,8 +100,11 @@ export default {
 			this.options = [];
 			this.selected = null;
 			this.choice = this.selected;
-			this.getValueForSelect();
+			this.getGammeForFilter();
+			this.gammeFilter = [];
+			this.gammeChoice = this.selectedGammeFilter;
 
+			this.showArrow = true;
 			this.refresh = newVal;
 		},
 		newItem(newVal) {
@@ -89,6 +121,15 @@ export default {
 	background: var(--white);
 	font-size: 0.8rem;
 
-	height: 32px;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.fleche {
+	top: 165px;
+}
+.fleche_filtre {
+	left: 365px;
 }
 </style>

@@ -2,6 +2,7 @@
 	<Layout
 		class="layout"
 		routeAPI="/stamp3/funct"
+		:searchType="0"
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"
@@ -28,7 +29,7 @@
 
 				<div class="groupOfSelect">
 					<div class="selects">
-						<p>Target</p>
+						<p>Cible</p>
 						<select v-model="props.datas.idTarget">
 							<option v-for="item in allTargets" :key="item.id" :value="item.id">{{ item.label }}</option>
 						</select>

@@ -2,6 +2,7 @@
 	<Layout
 		class="layout"
 		routeAPI="/stamp3/target"
+		:searchType="0"
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"

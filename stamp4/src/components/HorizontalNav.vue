@@ -9,8 +9,8 @@
 			<router-link to="/produit" class="router-link">
 				Produit
 				<div class="hoverLink">
-					<p>Gammes</p>
-					<p>UUT</p>
+					<router-link to="/produit/gammes" class="sub-router-link">Gammes</router-link>
+					<router-link to="/produit/uuts" class="sub-router-link">UUT</router-link>
 					<p>Spec</p>
 					<p>Sequences</p>
 				</div>
@@ -38,10 +38,10 @@
 					<router-link to="/admin/te" class="sub-router-link">TE</router-link>
 					<router-link to="/admin/errors" class="sub-router-link">Erreurs</router-link>
 					<router-link to="/admin/values" class="sub-router-link">Valeurs</router-link>
-					<router-link to="/admin/targets" class="sub-router-link">Targets</router-link>
-					<router-link to="/admin/functions" class="sub-router-link">Functions</router-link>
+					<router-link to="/admin/cibles" class="sub-router-link">Cibles</router-link>
+					<router-link to="/admin/fonctions" class="sub-router-link">Fonctions</router-link>
 					<router-link to="/admin/organs" class="sub-router-link">Organs</router-link>
-					<p>Actions</p>
+					<router-link to="/admin/actions" class="sub-router-link">Actions</router-link>
 				</div>
 			</router-link>
 		</div>
@@ -79,6 +79,8 @@ nav {
 	padding: 0px 1rem;
 
 	border-bottom: 1px solid var(--black);
+	background: #ffffff;
+	z-index: 499;
 }
 
 .home {

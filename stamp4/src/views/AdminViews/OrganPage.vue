@@ -2,6 +2,7 @@
 	<Layout
 		class="layout"
 		routeAPI="/stamp3/organ"
+		:searchType="0"
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"
@@ -28,14 +29,14 @@
 
 				<div class="groupOfSelect">
 					<div class="selects">
-						<p>Target</p>
+						<p>Cible</p>
 						<select v-model="props.datas.idTarget">
 							<option v-for="item in allTargets" :key="item.id" :value="item.id">{{ item.label }}</option>
 						</select>
 						<span v-if="showRequired && !props.datas.idTarget">This field is required</span>
 					</div>
 					<div class="selects">
-						<p>Functions</p>
+						<p>Fonction</p>
 						<select v-model="props.datas.idFunc">
 							<option v-for="item in allFunctions" :key="item.id" :value="item.id">
 								{{ item.label }}

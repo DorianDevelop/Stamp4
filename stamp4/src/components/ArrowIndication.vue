@@ -19,3 +19,14 @@ export default {
 	},
 };
 </script>
+<style scoped>
+.empty {
+	position: absolute;
+	top: 120px;
+	left: 20%;
+	font-weight: 500;
+}
+.empty span {
+	color: var(--green);
+}
+</style>

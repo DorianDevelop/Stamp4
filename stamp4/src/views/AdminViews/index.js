@@ -4,5 +4,6 @@ import ValuePage from './ValuePage.vue';
 import TargetPage from './TargetPage.vue';
 import FunctionPage from './FunctionPage.vue';
 import OrganPage from './OrganPage.vue';
+import ActionPage from './ActionPage.vue';
 
-export { TEPage, ErrorsPage, ValuePage, TargetPage, FunctionPage, OrganPage };
+export { TEPage, ErrorsPage, ValuePage, TargetPage, FunctionPage, OrganPage, ActionPage };

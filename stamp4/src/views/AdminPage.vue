@@ -93,7 +93,7 @@
 
 			<p>Organs</p>
 		</router-link>
-		<router-link to="/admin/organs" class="card"
+		<router-link to="/admin/actions" class="card"
 			><svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="72"
@@ -114,41 +114,3 @@ export default {
 	name: 'AdminPage',
 };
 </script>
-<style scoped>
-.cardContainer {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 2rem;
-
-	width: 900px;
-	height: calc(100vh - 35px);
-	margin-top: 35px;
-
-	padding: 4.5rem 0;
-}
-
-.card {
-	height: 270px;
-	width: 200px;
-	box-shadow: 0 0 2px rgba(90, 90, 90, 0.4);
-	border-radius: 25px;
-	font-size: 1.5rem;
-	text-align: center;
-
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	gap: 2rem;
-	align-items: center;
-	padding-top: 3rem;
-
-	cursor: pointer;
-	transition: all 0.1s ease;
-}
-.card:hover {
-	box-shadow: 0 0 4px rgba(90, 90, 90, 0.9);
-	opacity: 0.9;
-}
-</style>

@@ -1,8 +1,20 @@
 <template>
 	<div class="container">
-		<w-breadcrumbs :items="items" class="mb1" />
 		<div class="topOptions">
-			<SearchBar :refreshSearch="refreshSearch" :route="routeAPI + 's'" @update:selected="getValueForOne" />
+			<SearchBar
+				v-if="searchBar === 0"
+				:newItem="newItemCreated"
+				:refreshSearch="refreshSearch"
+				:route="routeAPI + 's'"
+				@update:selected="getValueForOne"
+			/>
+			<UUTSearchBar
+				v-if="searchBar === 1"
+				:newItem="newItemCreated"
+				:refreshSearch="refreshSearch"
+				:route="routeAPI + 's'"
+				@update:selected="getValueForOne"
+			/>
 			<ButtonBar
 				:status="selectedId !== null"
 				:displayEditBtn="showEditBtn"
@@ -21,27 +33,27 @@
 		<div class="infos" v-if="selectedId !== null">
 			<slot :datas="datas"></slot>
 		</div>
-		<ArrowIndication :mot="namePage" v-if="selectedId === null" />
 	</div>
 </template>
 
 <script>
 import axios from 'axios';
 import SearchBar from '@/components/SearchBar.vue';
+import UUTSearchBar from '@/components/UUTSearchBar.vue';
 import ButtonBar from '@/components/ButtonBar.vue';
-import ArrowIndication from '@/components/ArrowIndication.vue';
 
 export default {
 	props: {
 		routeAPI: String,
 		formating: Function,
 		validation: Function,
+		searchType: Number,
 	},
 	name: 'ItemLayout',
 	components: {
+		UUTSearchBar,
 		SearchBar,
 		ButtonBar,
-		ArrowIndication,
 	},
 	data() {
 		return {
@@ -58,24 +70,10 @@ export default {
 			duplicationAlerte: { show: false },
 			creationAlerte: { show: false },
 
-			items: [{ label: 'Home', route: '/' }],
-			namePage: '',
+			searchBar: this.searchType,
+
+			newItemCreated: false,
 		};
-	},
-	mounted() {
-		const route = this.$router.currentRoute.value.matched;
-
-		route.forEach((r) => {
-			this.items.push({
-				label: r.name,
-				route: r.path,
-			});
-		});
-
-		this.namePage = route[route.length - 1].name;
-		if (this.namePage.endsWith('s')) {
-			this.namePage = this.namePage.slice(0, -1);
-		}
 	},
 	methods: {
 		async getValueForOne(val) {
@@ -169,6 +167,8 @@ export default {
 			this.refreshSearch = !this.refreshSearch;
 		},
 		addItem() {
+			this.newItemCreated = true;
+
 			this.creationAlerte.show = true;
 			this.duplicationAlerte.show = false;
 			this.showEditBtn = false;
