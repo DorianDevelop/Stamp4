@@ -1,8 +1,8 @@
 <template>
 	<Layout
 		class="layout"
-		routeAPI="/stamp3uut/gamme"
-		:searchType="0"
+		routeAPI="/stamp3uut/step"
+		:searchType="1"
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"
@@ -13,13 +13,18 @@
 					<w-input
 						ref="labelInput"
 						label-color="green-dark1"
-						class="xs3"
+						class="mb1 xs5 pa1"
 						label="Label"
 						:validators="[validators.required]"
 						v-model="props.datas.label"
 					>
 					</w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Service" v-model="props.datas.sName"> </w-input>
+					<div class="selects my1 ml5">
+						<p>Gammes</p>
+						<select v-model="props.datas.range">
+							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
+						</select>
+					</div>
 				</w-flex>
 
 				<w-flex class="py2 align-start mb1 px1" gap="3">
@@ -41,18 +46,34 @@
 	</Layout>
 </template>
 <script>
+import vSelect from 'vue-select';
 import Layout from '@/views/ItemLayout.vue';
+import axios from 'axios';
 
 export default {
 	components: {
 		Layout,
+		vSelect,
 	},
 	data() {
 		return {
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},
+			allGammes: [],
+			allSelectedSteps: [],
+			allSteps: [],
+			newStep: null,
+			newStepNumber: 0,
 		};
+	},
+	async mounted() {
+		await axios
+			.get('http://localhost:3000/stamp3uut/gammes')
+			.then((reponse) => reponse.data)
+			.then((data) => {
+				this.allGammes = data;
+			});
 	},
 	methods: {
 		createJSONItem(datas) {
@@ -74,3 +95,13 @@ export default {
 	},
 };
 </script>
+<style scoped>
+.selects {
+	color: #76c76b;
+	width: 200px;
+}
+
+.selects select {
+	width: 100%;
+}
+</style>

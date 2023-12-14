@@ -57,7 +57,7 @@ export default {
 				});
 
 			await axios
-				.get('http://localhost:3000/stamp3uut/uuts')
+				.get(`http://localhost:3000${this.route}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;
@@ -65,12 +65,13 @@ export default {
 		},
 
 		async filterChanged(val) {
+			if (!val) return;
 			this.selected = null;
 			this.choice = this.selected;
 
 			const id = val.id;
 			await axios
-				.get('http://localhost:3000/stamp3uut/uutsFiltered/' + id)
+				.get(`http://localhost:3000${this.route}Filtered/${id}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;

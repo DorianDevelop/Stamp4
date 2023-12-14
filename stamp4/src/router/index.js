@@ -31,6 +31,8 @@ const routes = [
 			{ path: '', name: 'Produit', component: Views.ProduitPage },
 			{ path: 'gammes', name: 'Gammes', component: Produit.GammePage },
 			{ path: 'uuts', name: 'UUT', component: Produit.UUTPage },
+			{ path: 'specs', name: 'Spec', component: Produit.SpecPage },
+			{ path: 'sequences', name: 'Sequences', component: Produit.SequencePage },
 		],
 	},
 	{

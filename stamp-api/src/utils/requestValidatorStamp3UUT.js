@@ -107,3 +107,64 @@ exports.validateUut = (req, res, next) => {
 	next();
 };
 //#endregion
+
+//#region Spec
+const specSchema = Joi.object({
+	id: Joi.number(),
+	range: Joi.number().allow(null),
+	ctrl: Joi.number().allow(null),
+	label: Joi.string().max(64).required(),
+	replay: Joi.number().allow(null),
+	date: Joi.date().allow(null),
+	who: Joi.string().max(64).allow(null, ''),
+	comment: Joi.string().max(1024).allow(null, ''),
+});
+
+exports.validateSpec = (req, res, next) => {
+	const { error } = specSchema.validate(req.body);
+	if (error) {
+		return res.status(400).json({ Error: 'Bad request, try to verify the datas format\n' });
+	}
+
+	next();
+};
+
+//Step
+const stepSchema = Joi.object({
+	id: Joi.number(),
+	tstFunc: Joi.string().max(10).allow(null, ''),
+	label: Joi.string().max(64).required(),
+	range: Joi.number().allow(null),
+	date: Joi.date().allow(null),
+	who: Joi.string().max(64).allow(null, ''),
+	comment: Joi.string().max(1024).allow(null, ''),
+});
+
+exports.validateStep = (req, res, next) => {
+	const { error } = stepSchema.validate(req.body);
+	if (error) {
+		return res.status(400).json({ Error: 'Bad request, try to verify the datas format\n' });
+	}
+
+	next();
+};
+
+//StepLinkSpec
+const stepLinkSpecSchema = Joi.object({
+	id: Joi.number(),
+	idMain: Joi.number().required(),
+	idLink: Joi.number().required(),
+	No: Joi.number().allow(null),
+});
+
+exports.validateStepLinkSpec = (req, res, next) => {
+	const { error } = stepLinkSpecSchema.validate(req.body);
+	if (error) {
+		console.log(error);
+		return res.status(400).json({ Error: 'Bad request, try to verify the datas format\n' });
+	}
+
+	next();
+};
+
+//#endregion

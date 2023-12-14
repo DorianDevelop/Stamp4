@@ -11,8 +11,8 @@
 				<div class="hoverLink">
 					<router-link to="/produit/gammes" class="sub-router-link">Gammes</router-link>
 					<router-link to="/produit/uuts" class="sub-router-link">UUT</router-link>
-					<p>Spec</p>
-					<p>Sequences</p>
+					<router-link to="/produit/specs" class="sub-router-link">Spec</router-link>
+					<router-link to="/produit/sequences" class="sub-router-link">Sequences</router-link>
 				</div>
 			</router-link>
 			<router-link to="/station" class="router-link">
@@ -78,7 +78,7 @@ nav {
 
 	padding: 0px 1rem;
 
-	border-bottom: 1px solid var(--black);
+	border-bottom: 1px solid rgba(90, 90, 90, 0.5);
 	background: #ffffff;
 	z-index: 499;
 }

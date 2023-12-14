@@ -201,7 +201,7 @@ a {
 
 .label_param {
 	color: #fa3317;
-	font-size: 0.92rem !important;
+	font-size: 0.85rem !important;
 }
 
 .etendre_btn {
@@ -252,4 +252,89 @@ a {
 
 .window .opened {
 	transform: rotateZ(180deg);
+}
+
+.stepContainer {
+	width: 95%;
+	margin: 1.5rem auto 0 auto;
+
+	display: flex;
+	justify-content: center;
+	gap: 2.5rem;
+	align-items: start;
+}
+
+.stepContainer .adding,
+.steps {
+	box-shadow: 0 0 2px rgba(90, 90, 90, 0.877);
+	border-radius: 7px;
+	padding: 0.8rem 1.5rem;
+	position: relative;
+}
+
+.stepContainer .adding {
+	width: 55%;
+}
+.steps {
+	max-width: 40%;
+}
+
+.steps .step p {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	margin: 0.3rem 0;
+
+	font-size: 0.9rem;
+}
+
+.steps .step span {
+	display: block;
+	min-width: 30px;
+	color: #1baf59;
+}
+
+.steps .step p svg {
+	margin-right: 1rem;
+	cursor: pointer;
+}
+
+.steps .step p svg:hover {
+	opacity: 0.6;
+}
+
+.addingLabel,
+.stepsLabel {
+	position: absolute;
+	top: -20px;
+	left: 5px;
+	color: #1baf59;
+	font-size: 0.85rem !important;
+}
+
+.stepContainer .adding {
+	display: flex;
+	justify-content: center;
+	gap: 2rem;
+	align-items: center;
+}
+
+.stepContainer .adding select {
+	margin-top: 4px;
+	border: none;
+	padding: 8px 16px;
+	width: 100%;
+	box-shadow: 0 0 2px rgba(90, 90, 90, 0.5);
+}
+
+.stepContainer .adding .w-button.size--md {
+	height: 28px !important;
+	width: 50px !important;
+}
+
+.stepContainer .adding .v-select {
+	width: 100% !important;
+	min-width: 230px !important;
+	font-size: 0.75rem !important;
 }
