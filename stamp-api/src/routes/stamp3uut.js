@@ -33,8 +33,8 @@ router.get('/steps', controller.getAllStepLabel);
 router.get('/step/:id', controller.getStepByID);
 router.get('/stepsFiltered/:id', controller.getAllStepForAGamme);
 
-router.post('/step', validator.validateSpec, controller.createStep);
-router.put('/step/:id', validator.validateSpec, controller.modifyStep);
+router.post('/step', validator.validateStep, controller.createStep);
+router.put('/step/:id', validator.validateStep, controller.modifyStep);
 router.delete('/step/:id', controller.deleteStep);
 
 router.get('/stepForSpec/:id', controller.getAllStepForASpec);
@@ -42,4 +42,17 @@ router.get('/stepForGamme/:id', controller.getAllStepForAGamme);
 
 router.post('/stepForSpec', validator.validateStepLinkSpec, controller.addStepToSpec);
 router.delete('/stepForSpec/:id', controller.deleteStepForSpec);
+
+//Action
+router.get('/actionForStep/:id', controller.getAllActionForAStep);
+router.get('/actionForUUT/:id', controller.getAllActionForUUT);
+router.get('/actionCategoryById/:id', controller.getAllActionCategoriesById);
+
+router.post('/action', validator.validateAction, controller.createAction);
+router.put('/action/:id', validator.validateAction, controller.modifyAction);
+router.delete('/action/:id', controller.deleteAction);
+router.delete('/actionByStep/:id', controller.deleteActionByStep);
+
+router.get('/findNextID', controller.findNextIdStep);
+
 module.exports = router; //Export le router

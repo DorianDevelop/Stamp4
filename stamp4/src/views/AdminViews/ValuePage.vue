@@ -6,21 +6,13 @@
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"
+		:showBtns="showBtn"
 	>
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-start">
-					<w-input
-						ref="labelInput"
-						label-color="red"
-						class="mb1 xs6 pa1"
-						label="Label"
-						:validators="[validators.required]"
-						v-model="props.datas.label"
-					>
-					</w-input>
-					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="Id Famille" v-model="props.datas.idFamily">
-					</w-input>
+					<w-input ref="labelInput" label-color="red" class="mb1 xs6 pa1" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
+					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="Id Famille" v-model="props.datas.idFamily"> </w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-start">
@@ -40,6 +32,7 @@ export default {
 	},
 	data() {
 		return {
+			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},

@@ -100,7 +100,6 @@ const uutSchema = Joi.object({
 exports.validateUut = (req, res, next) => {
 	const { error } = uutSchema.validate(req.body);
 	if (error) {
-		console.log(error, req.body);
 		return res.status(400).json({ Error: 'Bad request, try to verify the datas format\n' });
 	}
 
@@ -160,7 +159,44 @@ const stepLinkSpecSchema = Joi.object({
 exports.validateStepLinkSpec = (req, res, next) => {
 	const { error } = stepLinkSpecSchema.validate(req.body);
 	if (error) {
-		console.log(error);
+		return res.status(400).json({ Error: 'Bad request, try to verify the datas format\n' });
+	}
+
+	next();
+};
+
+//#endregion
+
+//Actions
+const actionSchema = Joi.object({
+	id: Joi.number(),
+	idStep: Joi.number().integer().allow(null),
+	range: Joi.number().integer().allow(null),
+	order: Joi.number().integer().allow(null),
+	track: Joi.number().integer().allow(null),
+	errStamp: Joi.string().max(16).allow(null, ''),
+	errApc: Joi.string().max(16).allow(null, ''),
+	idTarget: Joi.number().integer().allow(null),
+	idFunc: Joi.number().integer().allow(null),
+	idOrgan: Joi.number().integer().allow(null),
+	idAction: Joi.number().integer().allow(null),
+	ident: Joi.string().max(32).allow(null, ''),
+	pattern: Joi.string().max(10).allow(null, ''),
+	param0: Joi.string().max(128).allow(null, ''),
+	param1: Joi.string().max(128).allow(null, ''),
+	param2: Joi.string().max(128).allow(null, ''),
+	param3: Joi.string().max(256).allow(null, ''),
+	param4: Joi.string().max(256).allow(null, ''),
+	param5: Joi.string().max(256).allow(null, ''),
+	param6: Joi.string().max(128).allow(null, ''),
+	param7: Joi.string().max(128).allow(null, ''),
+	param8: Joi.string().max(128).allow(null, ''),
+	param9: Joi.string().max(128).allow(null, ''),
+});
+
+exports.validateAction = (req, res, next) => {
+	const { error } = actionSchema.validate(req.body);
+	if (error) {
 		return res.status(400).json({ Error: 'Bad request, try to verify the datas format\n' });
 	}
 

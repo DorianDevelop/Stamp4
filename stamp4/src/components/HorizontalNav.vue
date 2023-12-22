@@ -27,8 +27,8 @@
 			<router-link to="/analyse" class="router-link">
 				Analyse
 				<div class="hoverLink">
-					<p>Spec</p>
-					<p>Résultats</p>
+					<router-link to="/analyse/reports" class="sub-router-link">Reports</router-link>
+					<router-link to="/analyse/analyses" class="sub-router-link">Analyses</router-link>
 				</div>
 			</router-link>
 

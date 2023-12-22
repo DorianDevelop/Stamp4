@@ -921,4 +921,78 @@ exports.deleteAction = (req, res) => {
 	});
 };
 
+exports.getAllActionsFromOrgan = (req, res) => {
+	const param = req.params.id;
+	const query =
+		'SELECT A.id, A.label as label ' +
+		'FROM `action` as A INNER JOIN `organ` as O ON A.idOrgan=O.id ' +
+		'WHERE O.id = ? ORDER BY label;';
+
+	stamp3.query(query, [param], (error, results) => {
+		if (error) {
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json(results);
+		}
+	});
+};
+
 //#endregion
+
+exports.getActionFullName = (req, res) => {
+	const datas = [
+		req.body.idTarget ? req.body.idTarget : 10,
+		req.body.idFunc ? req.body.idFunc : 1,
+		req.body.idOrgan ? req.body.idOrgan : 30,
+		req.body.idAction ? req.body.idAction : 1,
+	];
+	//Construit les "fondation" de la requête (sans les données)
+	const query =
+		'SELECT CONCAT(T.label, ":", F.label, ":", O.label, ":", A.label) as `label` ' +
+		'FROM `target` as T, `funct` as F, `organ` as O, `action` as A ' +
+		'WHERE T.id = ? AND F.id = ? AND O.id = ? AND A.id = ?;';
+
+	//Fusionnne la requête avec les données et execute la requête
+	stamp3.query(query, datas, (error, results) => {
+		if (error) {
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json(results);
+		}
+	});
+};
+
+exports.getAllCategories = (req, res) => {
+	const query1 = 'SELECT T.label FROM `target` as T;';
+	const query2 = 'SELECT F.label FROM `funct` as F; ';
+	const query3 = 'SELECT O.label FROM `organ` as O; ';
+	const query4 = 'SELECT A.label FROM `action` as A;';
+
+	allAnswer = [];
+
+	stamp3.query(query1, (error, results) => {
+		if (error) {
+		} else {
+			allAnswer.push(results);
+		}
+	});
+	stamp3.query(query2, (error, results) => {
+		if (error) {
+		} else {
+			allAnswer.push(results);
+		}
+	});
+	stamp3.query(query3, (error, results) => {
+		if (error) {
+		} else {
+			allAnswer.push(results);
+		}
+	});
+	stamp3.query(query4, (error, results) => {
+		if (error) {
+		} else {
+			allAnswer.push(results);
+			res.status(200).json(allAnswer);
+		}
+	});
+};

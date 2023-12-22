@@ -1,14 +1,9 @@
 <template>
 	<div class="container">
 		<div class="topOptions">
-			<SearchBar
-				v-if="searchBar === 0"
-				:newItem="newItemCreated"
-				:refreshSearch="refreshSearch"
-				:route="routeAPI + 's'"
-				@update:selected="getValueForOne"
-			/>
+			<SearchBar v-if="searchBar === 0" :newItem="newItemCreated" :refreshSearch="refreshSearch" :route="routeAPI + 's'" @update:selected="getValueForOne" />
 			<UUTSearchBar
+				:displayArrow="showArrow"
 				v-if="searchBar === 1"
 				:newItem="newItemCreated"
 				:refreshSearch="refreshSearch"
@@ -16,6 +11,7 @@
 				@update:selected="getValueForOne"
 			/>
 			<ButtonBar
+				v-if="showBtns"
 				:status="selectedId !== null"
 				:displayEditBtn="showEditBtn"
 				@btn:save="saveSelection"
@@ -24,12 +20,8 @@
 				@btn:dup="dupItem"
 			/>
 		</div>
-		<w-alert v-model="duplicationAlerte.show" class="actionWarning" info>
-			Pensez bien à sauvegarder pour terminer la duplication.
-		</w-alert>
-		<w-alert v-model="creationAlerte.show" class="actionWarning" warning>
-			Pensez bien à sauvegarder pour terminer la création.
-		</w-alert>
+		<w-alert v-model="duplicationAlerte.show" class="actionWarning" info> Pensez bien à sauvegarder pour terminer la duplication. </w-alert>
+		<w-alert v-model="creationAlerte.show" class="actionWarning" warning> Pensez bien à sauvegarder pour terminer la création. </w-alert>
 		<div class="infos" v-if="selectedId !== null">
 			<slot :datas="datas"></slot>
 		</div>
@@ -48,6 +40,7 @@ export default {
 		formating: Function,
 		validation: Function,
 		searchType: Number,
+		showBtns: Boolean,
 	},
 	name: 'ItemLayout',
 	components: {
@@ -57,6 +50,7 @@ export default {
 	},
 	data() {
 		return {
+			showArrow: true,
 			refreshSearch: false,
 			showEditBtn: true,
 
@@ -64,6 +58,7 @@ export default {
 
 			datas: {},
 
+			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},
@@ -102,6 +97,14 @@ export default {
 			if (this.datas.when) {
 				let englishDate = new Date(this.datas.when).toLocaleDateString('fr-FR');
 				this.datas.when = englishDate.split('/').reverse().join('-');
+			}
+			if (this.datas.dateStart) {
+				let englishDate = new Date(this.datas.dateStart).toLocaleDateString('fr-FR');
+				this.datas.dateStart = englishDate.split('/').reverse().join('-');
+			}
+			if (this.datas.dateEnd) {
+				let englishDate = new Date(this.datas.dateEnd).toLocaleDateString('fr-FR');
+				this.datas.dateEnd = englishDate.split('/').reverse().join('-');
 			}
 		},
 		saveSelection() {

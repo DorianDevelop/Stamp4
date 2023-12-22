@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import * as Views from '@/views';
 import * as Admin from '@/views/AdminViews';
 import * as Produit from '@/views/ProduitViews';
+import * as Analyse from '@/views/AnalyseViews';
 
 const routes = [
 	{
@@ -38,7 +39,11 @@ const routes = [
 	{
 		path: '/analyse',
 		name: 'Analyse',
-		component: Views.AnalysePage,
+		children: [
+			{ path: '', name: 'Analyse', component: Views.AnalysePage },
+			{ path: 'analyses', name: 'Analyses', component: Analyse.AnalysePage },
+			{ path: 'reports', name: 'Reports', component: Analyse.ReportPage },
+		],
 	},
 	{
 		path: '/station',

@@ -6,30 +6,14 @@
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"
+		:showBtns="showBtn"
 	>
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-start">
 					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="ApcNo" v-model="props.datas.apcNo"> </w-input>
-					<w-input
-						ref="codeInput"
-						type="number"
-						label-color="red"
-						class="mb1 xs2 pa1"
-						label="Code"
-						v-model="props.datas.code"
-						:validators="[validators.required]"
-					>
-					</w-input>
-					<w-input
-						ref="labelInput"
-						label-color="red"
-						class="mb1 xs5 pa1"
-						label="Label"
-						:validators="[validators.required]"
-						v-model="props.datas.label"
-					>
-					</w-input>
+					<w-input ref="codeInput" type="number" label-color="red" class="mb1 xs2 pa1" label="Code" v-model="props.datas.code" :validators="[validators.required]"> </w-input>
+					<w-input ref="labelInput" label-color="red" class="mb1 xs5 pa1" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-start">
@@ -41,24 +25,8 @@
 				</w-flex>
 
 				<w-flex class="py2 align-start">
-					<w-textarea
-						rows="5"
-						:no-autogrow="true"
-						label-color="red"
-						class="pa1 textAreaForm"
-						label="Message Français"
-						v-model="props.datas.msgFR"
-					>
-					</w-textarea>
-					<w-textarea
-						rows="5"
-						:no-autogrow="true"
-						label-color="red"
-						class="pa1 textAreaForm"
-						label="Message Anglais"
-						v-model="props.datas.msgEN"
-					>
-					</w-textarea>
+					<w-textarea rows="5" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Message Français" v-model="props.datas.msgFR"> </w-textarea>
+					<w-textarea rows="5" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Message Anglais" v-model="props.datas.msgEN"> </w-textarea>
 				</w-flex>
 
 				<w-textarea label-color="red" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
@@ -75,6 +43,7 @@ export default {
 	},
 	data() {
 		return {
+			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},

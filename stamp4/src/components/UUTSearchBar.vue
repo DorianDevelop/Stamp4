@@ -2,9 +2,9 @@
 	<div class="search mt5">
 		<w-breadcrumbs :items="items" class="liens" />
 		<v-select :options="gammeFilter" v-model="gammeChoice" @update:modelValue="filterChanged"></v-select>
-		<ArrowFilter mot="une Gamme" v-if="!(gammeChoice || !showArrow)" class="fleche_filtre" />
+		<ArrowFilter mot="une Gamme" v-if="!(gammeChoice || !showArrow) && displayArrow" class="fleche_filtre fl" />
 		<v-select :options="options" v-model="choice"></v-select>
-		<ArrowIndication :mot="namePage" v-if="!(choice || !showArrow)" class="fleche" />
+		<ArrowIndication :mot="namePage" v-if="!(choice || !showArrow) && displayArrow" class="fleche fl" />
 	</div>
 </template>
 
@@ -19,6 +19,7 @@ export default {
 		route: String,
 		refreshSearch: Boolean,
 		newItem: Boolean,
+		displayArrow: Boolean,
 	},
 	components: {
 		vSelect,
@@ -56,6 +57,7 @@ export default {
 					this.gammeFilter = data;
 				});
 
+			console.log(`http://localhost:3000${this.route}`);
 			await axios
 				.get(`http://localhost:3000${this.route}`)
 				.then((reponse) => reponse.data)
@@ -76,6 +78,7 @@ export default {
 				.then((data) => {
 					this.options = data;
 				});
+			console.log('tests');
 		},
 	},
 	mounted() {

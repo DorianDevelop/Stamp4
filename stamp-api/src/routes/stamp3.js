@@ -55,9 +55,14 @@ router.delete('/organ/:id', controller.deleteOrgan);
 //Action
 router.get('/actions', controller.getAllActionsLabel);
 router.get('/action/:id', controller.getActionByID);
+router.get('/actionsWithOrgan/:id', controller.getAllActionsFromOrgan);
 
 router.post('/action', validator.validateAction, controller.createAction);
 router.put('/action/:id', validator.validateAction, controller.modifyAction);
 router.delete('/action/:id', controller.deleteAction);
+
+router.get('/allCategories', controller.getAllCategories);
+//Bad code but forced bc of old man
+router.post('/actionFullName', controller.getActionFullName);
 
 module.exports = router; //Export le router

@@ -6,19 +6,12 @@
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"
+		:showBtns="showBtn"
 	>
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-start">
-					<w-input
-						ref="labelInput"
-						label-color="red"
-						class="mb1 xs6 pa1"
-						label="Label"
-						:validators="[validators.required]"
-						v-model="props.datas.label"
-					>
-					</w-input>
+					<w-input ref="labelInput" label-color="red" class="mb1 xs6 pa1" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 					<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.label_en"> </w-input>
 				</w-flex>
 
@@ -46,15 +39,7 @@
 					</div>
 				</div>
 
-				<w-textarea
-					rows="4"
-					:no-autogrow="true"
-					label-color="red"
-					class="pa1 textAreaForm"
-					label="Comment"
-					v-model="props.datas.comment"
-				>
-				</w-textarea>
+				<w-textarea rows="4" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
@@ -74,6 +59,7 @@ export default {
 	},
 	data() {
 		return {
+			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},
@@ -92,7 +78,6 @@ export default {
 	},
 	methods: {
 		createJSONItem(datas) {
-			console.log(datas);
 			return {
 				label: datas.label,
 				idTarget: datas.idTarget ? datas.idTarget : 0,
@@ -116,7 +101,6 @@ export default {
 		},
 
 		async getAllFunctionsRelatedToTarget(id) {
-			console.log(id);
 			if (id !== -1) {
 				await axios
 					.get(`http://localhost:3000/stamp3/functsWithTarget/${id}`)

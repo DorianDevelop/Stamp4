@@ -429,8 +429,7 @@ exports.modifySpec = (req, res) => {
 		requestId,
 	];
 	//Construit les "fondation" de la requête (sans les données)
-	const query =
-		'UPDATE spec SET `label` = ?, `range` = ?, `ctrl` = ?, `replay` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
+	const query = 'UPDATE spec SET `label` = ?, `range` = ?, `ctrl` = ?, `replay` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
@@ -573,6 +572,16 @@ exports.modifyStep = (req, res) => {
 exports.deleteStep = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `step` WHERE id = ?';
+	const query2 = 'DELETE FROM `action` WHERE idStep = ?';
+
+	stamp3uut.query(query2, [requestId], (error, results) => {
+		if (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			console.log('Delete all actions related to Step');
+		}
+	});
 
 	stamp3uut.query(query, [requestId], (error, results) => {
 		if (error) {
@@ -635,11 +644,7 @@ exports.getAllStepForAGamme = (req, res) => {
 //Ajoute une Step à une SPEC
 exports.addStepToSpec = (req, res) => {
 	//Récupère les données pour la requête
-	const datas = [
-		req.body.idMain ? req.body.idMain : null,
-		req.body.idLink ? req.body.idLink : null,
-		req.body.No ? req.body.No : null,
-	];
+	const datas = [req.body.idMain ? req.body.idMain : null, req.body.idLink ? req.body.idLink : null, req.body.No ? req.body.No : null];
 	const query = 'INSERT INTO `link_spec_step`(`idMain`,`idLink`,`No`) VALUES (?, ?, ?);';
 
 	stamp3uut.query(query, datas, (error, results) => {
@@ -668,3 +673,180 @@ exports.deleteStepForSpec = (req, res) => {
 };
 
 //#endregion
+
+//#region Action
+
+//Récupère tout les champs d'une ligne spécifique de la table "Step"
+exports.getAllActionForAStep = (req, res) => {
+	const param = req.params.id;
+	const query = 'SELECT A.* FROM `action` as A WHERE A.idStep = ? ORDER BY A.order';
+
+	stamp3uut.query(query, [param], (error, results) => {
+		if (error) {
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json(results);
+		}
+	});
+};
+exports.getAllActionForUUT = (req, res) => {
+	const param = req.params.id;
+	const query = 'SELECT A.* from `link_uut_spec` as LUS JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain JOIN `action` as A on A.idStep = LSS.idLink WHERE LUS.idMain = ?;';
+
+	stamp3uut.query(query, [param], (error, results) => {
+		if (error) {
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json(results);
+		}
+	});
+};
+
+exports.getAllActionCategoriesById = (req, res) => {
+	const param = req.params.id;
+	const query =
+		'SELECT S.label as catLabel, ST.label as stepLabel, A.id from `link_uut_spec` as LUS JOIN `spec` as S on S.id = LUS.idLink JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain JOIN `action` as A on A.idStep = LSS.idLink JOIN `step` as ST on ST.id = LSS.idLink WHERE A.id = ?;';
+	stamp3uut.query(query, [param], (error, results) => {
+		if (error) {
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json(results);
+		}
+	});
+};
+
+exports.createAction = (req, res) => {
+	//Récupère les données pour la requête
+	const datas = [
+		req.body.idStep,
+		req.body.range || null,
+		req.body.order || null,
+		req.body.track || null,
+		req.body.errStamp || '',
+		req.body.errApc || '',
+		req.body.idTarget || null,
+		req.body.idFunc || null,
+		req.body.idOrgan || null,
+		req.body.idAction || null,
+		req.body.ident || '',
+		req.body.pattern || '',
+		req.body.param0 || '',
+		req.body.param1 || '',
+		req.body.param2 || '',
+		req.body.param3 || '',
+		req.body.param4 || '',
+		req.body.param5 || '',
+		req.body.param6 || '',
+		req.body.param7 || '',
+		req.body.param8 || '',
+		req.body.param9 || '',
+	];
+
+	//Construit les "fondation" de la requête (sans les données)
+	const query =
+		'INSERT INTO `action` (`idStep`, `range`, `order`, `track`, `errStamp`, `errApc`, `idTarget`, `idFunc`, `idOrgan`, `idAction`, `ident`, `pattern`, `param0`, `param1`, `param2`, `param3`, `param4`, `param5`, `param6`, `param7`, `param8`, `param9`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+	//Fusionnne la requête avec les données et execute la requête
+	stamp3uut.query(query, datas, (error, results) => {
+		if (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json({ message: 'Creation succeed!' });
+		}
+	});
+};
+
+//Fonction pour modifier les données d'une Spec dans la table "Action"
+exports.modifyAction = (req, res) => {
+	//Récupère les données pour la requête
+	const requestId = req.params.id;
+	const datas = [
+		req.body.idStep || null,
+		req.body.range || null,
+		req.body.order || null,
+		req.body.track || null,
+		req.body.errStamp || '',
+		req.body.errApc || '',
+		req.body.idTarget || null,
+		req.body.idFunc || null,
+		req.body.idOrgan || null,
+		req.body.idAction || null,
+		req.body.ident || '',
+		req.body.pattern || '',
+		req.body.param0 || '',
+		req.body.param1 || '',
+		req.body.param2 || '',
+		req.body.param3 || '',
+		req.body.param4 || '',
+		req.body.param5 || '',
+		req.body.param6 || '',
+		req.body.param7 || '',
+		req.body.param8 || '',
+		req.body.param9 || '',
+
+		//Pour le "WHERE"
+		requestId,
+	];
+	//Construit les "fondation" de la requête (sans les données)
+	const query =
+		'UPDATE `action`  SET `idStep` = ?, `range` = ?, `order` = ?, `track` = ?, `errStamp` = ?, `errApc` = ?, `idTarget` = ?, `idFunc` = ?, `idOrgan` = ?, `idAction` = ?, `ident` = ?, `pattern` = ?, `param0` = ?, `param1` = ?, `param2` = ?, `param3` = ?, `param4` = ?, `param5` = ?, `param6` = ?, `param7` = ?, `param8` = ?, `param9` = ? WHERE `id` = ?;';
+	//Fusionnne la requête avec les données et execute la requête
+	stamp3uut.query(query, datas, (error, results) => {
+		if (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json({ message: 'Modification succeed!' });
+		}
+	});
+};
+
+//Fonction pour supprimer les données d'une Step dans la table "Action"
+exports.deleteAction = (req, res) => {
+	const requestId = req.params.id;
+	const query = 'DELETE FROM `action` WHERE id = ?';
+
+	stamp3uut.query(query, [requestId], (error, results) => {
+		if (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json({ message: 'Deletion succeed!' });
+		}
+	});
+};
+
+exports.deleteActionByStep = (req, res) => {
+	const requestId = req.params.id;
+	const query = 'DELETE FROM `action` WHERE idStep = ?';
+
+	stamp3uut.query(query, [requestId], (error, results) => {
+		if (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			res.status(200).json({ message: 'Deletion succeed!' });
+		}
+	});
+};
+//#endregion
+
+exports.findNextIdStep = (req, res) => {
+	const queryID = 'SELECT AUTO_INCREMENT FROM information_schema.tables ' + 'WHERE table_name = "step" AND table_schema = "stamp3uut";';
+
+	const queryHelp = 'SET information_schema_stats_expiry = 0;';
+	stamp3uut.query(queryHelp, (error, results) => {
+		if (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			stamp3uut.query(queryID, (error, results) => {
+				if (error) {
+					res.status(500).json({ error: 'An error occurred \n' + error });
+				} else {
+					res.status(200).json(results);
+				}
+			});
+		}
+	});
+};

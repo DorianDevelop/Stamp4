@@ -6,11 +6,13 @@
 		:formating="createJSONItem"
 		:validation="validationBeforeSave"
 		@update:validators="validateAll"
+		:showBtns="showBtn"
 	>
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-start mb1 px1" gap="3">
 					<w-input
+						@input="hasBeenSaved = false"
 						ref="labelInput"
 						label-color="green-dark1"
 						class="mb1 xs5 pa1"
@@ -21,29 +23,21 @@
 					</w-input>
 					<div class="selects my1 ml5">
 						<p>Gammes</p>
-						<select v-model="props.datas.range">
+						<select @change="hasBeenSaved = false" v-model="props.datas.range">
 							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
 						</select>
 					</div>
 				</w-flex>
 
 				<w-flex class="py2 align-start mb1 px1" gap="3">
-					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
+					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
+					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
 
 				<div class="stepContainer">
 					<div class="adding">
 						<p class="addingLabel">Ajout de step</p>
-						<w-input
-							type="number"
-							label-color="green-dark1"
-							class="xs3"
-							step="5"
-							max="999"
-							min="0"
-							v-model="newStepNumber"
-						></w-input>
+						<w-input type="number" label-color="green-dark1" class="xs3" step="5" max="999" min="0" v-model="newStepNumber"></w-input>
 
 						<v-select :options="allSteps" v-model="newStep"></v-select>
 
@@ -61,9 +55,7 @@
 									style="fill: #f87777; transform: ; msfilter: "
 									@click="removeStep(item.linkId, props.datas.id)"
 								>
-									<path
-										d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"
-									></path>
+									<path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
 								</svg>
 								<span>{{ item.No.toString().padStart(3, '0') }}</span>
 								<i class="inter">-</i>
@@ -83,14 +75,7 @@
 					</div>
 				</div>
 
-				<w-textarea
-					rows="4"
-					:no-autogrow="true"
-					label-color="green-dark1"
-					class="pa1 textAreaForm"
-					label="Comment"
-					v-model="props.datas.comment"
-				>
+				<w-textarea @input="hasBeenSaved = false" rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment">
 				</w-textarea>
 			</w-form>
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
@@ -113,6 +98,7 @@ export default {
 	},
 	data() {
 		return {
+			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},
@@ -121,6 +107,8 @@ export default {
 			allSteps: [],
 			newStep: null,
 			newStepNumber: 0,
+
+			hasBeenSaved: true,
 		};
 	},
 	async mounted() {
@@ -211,11 +199,23 @@ export default {
 		},
 		validationBeforeSave(datas) {
 			if (!datas.label || datas.label === '' || datas.label === null) return false;
+			this.hasBeenSaved = true;
 			return true;
 		},
 		validateAll() {
 			this.$refs.labelInput.validate();
 		},
+	},
+	async beforeRouteLeave(to, from, next) {
+		if (!this.hasBeenSaved) {
+			if (confirm('Es-tu sur de vouloir quitter la page sans sauvegarder ?')) {
+				next();
+			} else {
+				next(false);
+			}
+		} else {
+			next();
+		}
 	},
 };
 </script>

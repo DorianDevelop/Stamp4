@@ -39,7 +39,6 @@ export default {
 	},
 	methods: {
 		async getValueForSelect() {
-			console.log('http://localhost:3000' + this.route);
 			await axios
 				.get('http://localhost:3000' + this.route)
 				.then((reponse) => reponse.data)
