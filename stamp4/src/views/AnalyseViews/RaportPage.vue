@@ -114,25 +114,31 @@
 			</div>
 			<div class="separator"></div>
 			<div class="tests">
-				<div class="stepAction" v-for="item in allActions" :key="item.id" :value="item.id">
-					<div class="params">
-						<p class="nom" v-if="item.param0">{{ `[${item.order}] nom` }}</p>
-						<div class="paramsContainer">
-							<p v-if="item.param0 && item.param0.trim() !== ''">{{ item.param0 }}</p>
-							<p v-if="item.param1 && item.param1.trim() !== ''">{{ item.param1 }}</p>
-							<p v-if="item.param2 && item.param2.trim() !== ''">{{ item.param2 }}</p>
-							<p v-if="item.param3 && item.param3.trim() !== ''">{{ item.param3 }}</p>
-							<p v-if="item.param4 && item.param4.trim() !== ''">{{ item.param4 }}</p>
-							<p v-if="item.param5 && item.param5.trim() !== ''">{{ item.param5 }}</p>
-							<p v-if="item.param6 && item.param6.trim() !== ''">{{ item.param6 }}</p>
-							<p v-if="item.param7 && item.param7.trim() !== ''">{{ item.param7 }}</p>
-							<p v-if="item.param8 && item.param8.trim() !== ''">{{ item.param8 }}</p>
-							<p v-if="item.param9 && item.param9.trim() !== ''">{{ item.param9 }}</p>
+				<div v-for="cat in allActions" :key="cat.bigKey">
+					<p class="bigKey">{{ cat.bigKey }}</p>
+					<div v-for="small in cat.datas" :key="small.smallKey">
+						<p class="smallKey">{{ small.smallKey }}</p>
+						<div class="stepAction" v-for="item in small.actions" :key="item.id">
+							<div class="params">
+								<p class="nom" v-if="item.param0">{{ `[${item.order}] ${actionNames[item.id]}` }}</p>
+								<div class="paramsContainer">
+									<p v-if="item.param0 && item.param0.trim() !== ''">{{ item.param0 }}</p>
+									<p v-if="item.param1 && item.param1.trim() !== ''">{{ item.param1 }}</p>
+									<p v-if="item.param2 && item.param2.trim() !== ''">{{ item.param2 }}</p>
+									<p v-if="item.param3 && item.param3.trim() !== ''">{{ item.param3 }}</p>
+									<p v-if="item.param4 && item.param4.trim() !== ''">{{ item.param4 }}</p>
+									<p v-if="item.param5 && item.param5.trim() !== ''">{{ item.param5 }}</p>
+									<p v-if="item.param6 && item.param6.trim() !== ''">{{ item.param6 }}</p>
+									<p v-if="item.param7 && item.param7.trim() !== ''">{{ item.param7 }}</p>
+									<p v-if="item.param8 && item.param8.trim() !== ''">{{ item.param8 }}</p>
+									<p v-if="item.param9 && item.param9.trim() !== ''">{{ item.param9 }}</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="separator"></div>
+			<div class="separator" v-if="allActions.length >= 1"></div>
 			<h1>TODO : PDF</h1>
 		</div>
 	</section>
@@ -149,6 +155,7 @@ export default {
 
 			datas: null,
 			allActions: [],
+			actionNames: [],
 		};
 	},
 	components: {
@@ -162,19 +169,17 @@ export default {
 			}
 
 			this.selectedId = val.id;
+			this.allActions = [];
+			this.allComplements = [];
 
 			await axios
 				.get(`http://localhost:3000/stamp3uut/uut/${this.selectedId}`)
 				.then((reponse) => reponse.data[0])
 				.then((data) => {
 					this.datas = data;
-				});
-
-			await axios
-				.get(`http://localhost:3000/stamp3uut/actionForUUT/${this.selectedId}`)
-				.then((reponse) => reponse.data)
-				.then((data) => {
-					this.allActions = data;
+				})
+				.then(() => {
+					this.getAllCategories();
 				});
 
 			if (this.datas.date) {
@@ -185,6 +190,73 @@ export default {
 				let englishDate = new Date(this.datas.when).toLocaleDateString('fr-FR');
 				this.datas.when = englishDate.split('/').reverse().join('-');
 			}
+		},
+		async getAllCategories() {
+			if (this.selectedId == null) return;
+			let donnees = [];
+			let temp = [];
+			await axios
+				.get(`http://localhost:3000/stamp3uut/actionForUUT/${this.selectedId}`)
+				.then((reponse) => reponse.data)
+				.then((data) => {
+					donnees = data;
+				})
+				.then(() => {
+					donnees.forEach((val) => {
+						let copy = Object.assign({}, val);
+						delete copy.bigKey;
+						delete copy.smallKey;
+						this.getActionName(copy);
+
+						let exist = false;
+						if (temp !== null) {
+							temp.forEach((t) => {
+								if (t.bigKey === val.bigKey) {
+									exist = true;
+									let exist2 = false;
+									t.datas.forEach((data) => {
+										if (data.smallKey === val.smallKey) {
+											exist2 = true;
+											data.actions.push(copy);
+										}
+									});
+									if (!exist2) {
+										t.datas.push({
+											smallKey: val.smallKey,
+											actions: [copy],
+										});
+									}
+								}
+							});
+						}
+						if (!exist || temp === null) {
+							temp.push({
+								bigKey: val.bigKey,
+								datas: [
+									{
+										smallKey: val.smallKey,
+										actions: [copy],
+									},
+								],
+							});
+						}
+					});
+				});
+			this.allActions = temp;
+		},
+		async getActionName(datas) {
+			let d = {
+				idTarget: datas.idTarget,
+				idFunc: datas.idFunc,
+				idOrgan: datas.idOrgan,
+				idAction: datas.idAction,
+			};
+			await axios
+				.post(`http://localhost:3000/stamp3/actionFullName`, d)
+				.then((reponse) => reponse.data[0])
+				.then((data) => {
+					this.actionNames[datas.id] = data.label;
+				});
 		},
 	},
 };
@@ -202,7 +274,7 @@ export default {
 }
 .topOptions {
 	position: absolute;
-	top: 60px;
+	top: 55px;
 	left: 170px;
 	width: 800px;
 }
@@ -300,14 +372,29 @@ export default {
 	flex-wrap: wrap;
 	gap: 0.3rem;
 
-	max-width: 87%;
+	max-width: 70%;
 }
 
 .stepAction .nom {
-	font-size: 1rem;
+	font-size: 0.9rem;
 	margin-right: 0.8rem;
 	border: none;
-	width: 100px;
+	width: 270px;
 	padding-bottom: 0.25rem;
+	color: #119146;
+}
+
+.bigKey {
+	font-size: 1.2rem;
+	font-weight: 600;
+	text-align: center;
+	color: #119146;
+}
+.smallKey {
+	font-size: 1rem;
+	margin: 0.5rem 0 0.4rem 0;
+	text-align: center;
+	text-decoration: underline;
+	color: #119146;
 }
 </style>

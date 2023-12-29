@@ -46,7 +46,6 @@ router.delete('/stepForSpec/:id', controller.deleteStepForSpec);
 //Action
 router.get('/actionForStep/:id', controller.getAllActionForAStep);
 router.get('/actionForUUT/:id', controller.getAllActionForUUT);
-router.get('/actionCategoryById/:id', controller.getAllActionCategoriesById);
 
 router.post('/action', validator.validateAction, controller.createAction);
 router.put('/action/:id', validator.validateAction, controller.modifyAction);

@@ -4,6 +4,7 @@ import * as Views from '@/views';
 import * as Admin from '@/views/AdminViews';
 import * as Produit from '@/views/ProduitViews';
 import * as Analyse from '@/views/AnalyseViews';
+import * as Station from '@/views/StationViews';
 
 const routes = [
 	{
@@ -42,13 +43,18 @@ const routes = [
 		children: [
 			{ path: '', name: 'Analyse', component: Views.AnalysePage },
 			{ path: 'analyses', name: 'Analyses', component: Analyse.AnalysePage },
-			{ path: 'reports', name: 'Reports', component: Analyse.ReportPage },
+			{ path: 'raports', name: 'Raports', component: Analyse.RaportPage },
 		],
 	},
 	{
 		path: '/station',
 		name: 'Station',
-		component: Views.StationPage,
+		children: [
+			{ path: '', name: 'Station', component: Views.StationPage },
+			{ path: 'operateurs', name: 'Opérateurs', component: Station.OpPage },
+			{ path: 'ates', name: 'Testeurs', component: Station.ATEPage },
+			{ path: 'protocols', name: 'Protocoles', component: Station.ProtocolPage },
+		],
 	},
 ];
 

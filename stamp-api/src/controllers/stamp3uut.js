@@ -689,23 +689,12 @@ exports.getAllActionForAStep = (req, res) => {
 		}
 	});
 };
+
 exports.getAllActionForUUT = (req, res) => {
 	const param = req.params.id;
-	const query = 'SELECT A.* from `link_uut_spec` as LUS JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain JOIN `action` as A on A.idStep = LSS.idLink WHERE LUS.idMain = ?;';
-
-	stamp3uut.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
-	});
-};
-
-exports.getAllActionCategoriesById = (req, res) => {
-	const param = req.params.id;
 	const query =
-		'SELECT S.label as catLabel, ST.label as stepLabel, A.id from `link_uut_spec` as LUS JOIN `spec` as S on S.id = LUS.idLink JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain JOIN `action` as A on A.idStep = LSS.idLink JOIN `step` as ST on ST.id = LSS.idLink WHERE A.id = ?;';
+		'SELECT DISTINCT S.label as bigKey, ST.label as smallKey, A.* from `link_uut_spec` as LUS JOIN `spec` as S on S.id = LUS.idLink JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain ' +
+		'JOIN `action` as A on A.idStep = LSS.idLink JOIN `step` as ST on ST.id = LSS.idLink WHERE A.id IN (SELECT A.id from `link_uut_spec` as LUS JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain JOIN `action` as A on A.idStep = LSS.idLink WHERE LUS.idMain = ?) ORDER BY A.order ASC;';
 	stamp3uut.query(query, [param], (error, results) => {
 		if (error) {
 			res.status(500).json({ error: 'An error occurred \n' + error });

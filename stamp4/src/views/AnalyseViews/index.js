@@ -1,4 +1,4 @@
 import AnalysePage from './AnalysePage.vue';
-import ReportPage from './ReportPage.vue';
+import RaportPage from './RaportPage.vue';
 
-export { AnalysePage, ReportPage };
+export { AnalysePage, RaportPage };

@@ -1,18 +1,20 @@
 
 			<div class="tests">
 				<div class="stepAction" v-for="item in allActions" :key="item.id" :value="item.id">
-					<p class="nom" v-if="item.param0">{{ `[${item.order}] ${allActionsName[item.id]}` }}</p>
 					<div class="params">
-						<p v-if="item.param0 && item.param0.trim() !== ''">{{ item.param0 }}</p>
-						<p v-if="item.param1 && item.param1.trim() !== ''">{{ item.param1 }}</p>
-						<p v-if="item.param2 && item.param2.trim() !== ''">{{ item.param2 }}</p>
-						<p v-if="item.param3 && item.param3.trim() !== ''">{{ item.param3 }}</p>
-						<p v-if="item.param4 && item.param4.trim() !== ''">{{ item.param4 }}</p>
-						<p v-if="item.param5 && item.param5.trim() !== ''">{{ item.param5 }}</p>
-						<p v-if="item.param6 && item.param6.trim() !== ''">{{ item.param6 }}</p>
-						<p v-if="item.param7 && item.param7.trim() !== ''">{{ item.param7 }}</p>
-						<p v-if="item.param8 && item.param8.trim() !== ''">{{ item.param8 }}</p>
-						<p v-if="item.param9 && item.param9.trim() !== ''">{{ item.param9 }}</p>
+						<p class="nom" v-if="item.param0">{{ `[${item.order}] nom` }}</p>
+						<div class="paramsContainer">
+							<p v-if="item.param0 && item.param0.trim() !== ''">{{ item.param0 }}</p>
+							<p v-if="item.param1 && item.param1.trim() !== ''">{{ item.param1 }}</p>
+							<p v-if="item.param2 && item.param2.trim() !== ''">{{ item.param2 }}</p>
+							<p v-if="item.param3 && item.param3.trim() !== ''">{{ item.param3 }}</p>
+							<p v-if="item.param4 && item.param4.trim() !== ''">{{ item.param4 }}</p>
+							<p v-if="item.param5 && item.param5.trim() !== ''">{{ item.param5 }}</p>
+							<p v-if="item.param6 && item.param6.trim() !== ''">{{ item.param6 }}</p>
+							<p v-if="item.param7 && item.param7.trim() !== ''">{{ item.param7 }}</p>
+							<p v-if="item.param8 && item.param8.trim() !== ''">{{ item.param8 }}</p>
+							<p v-if="item.param9 && item.param9.trim() !== ''">{{ item.param9 }}</p>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -19,15 +19,15 @@
 				Station
 				<div class="hoverLink">
 					<p>Plugins</p>
-					<p>Testeurs</p>
+					<router-link to="/station/ates" class="sub-router-link">Testeurs</router-link>
 					<p>Protocols</p>
-					<p>Opérateurs</p>
+					<router-link to="/station/operateurs" class="sub-router-link">Opérateurs</router-link>
 				</div>
 			</router-link>
 			<router-link to="/analyse" class="router-link">
 				Analyse
 				<div class="hoverLink">
-					<router-link to="/analyse/reports" class="sub-router-link">Reports</router-link>
+					<router-link to="/analyse/raports" class="sub-router-link">Raports</router-link>
 					<router-link to="/analyse/analyses" class="sub-router-link">Analyses</router-link>
 				</div>
 			</router-link>
