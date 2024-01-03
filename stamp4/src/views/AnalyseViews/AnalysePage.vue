@@ -178,7 +178,7 @@ export default {
 </script>
 <style scoped>
 .selects {
-	color: #76c76b;
+	color: #439b47;
 	width: 200px;
 }
 

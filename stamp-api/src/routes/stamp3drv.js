@@ -12,4 +12,20 @@ router.delete('/protocol/:id', controller.deleteProtocol);
 
 router.get('/protocolDatas/:id', controller.getProtocolDatasById);
 
+//Protocol DATAS
+router.get('/protocolBooleans/:id', controller.getAllBooleans);
+router.post('/protocolBoolean', validator.validateProtocolDatas, controller.createBoolean);
+router.put('/protocolBoolean/:id', validator.validateProtocolDatas, controller.modifyBoolean);
+router.delete('/protocolBoolean/:id', controller.deleteBoolean);
+
+router.get('/protocolDatas/:id', controller.getAllDatas);
+router.post('/protocolData', validator.validateProtocolDatas, controller.createData);
+router.put('/protocolData/:id', validator.validateProtocolDatas, controller.modifyData);
+router.delete('/protocolData/:id', controller.deleteData);
+
+router.get('/protocolDatas/:id', controller.getAllStrings);
+router.post('/protocolString', validator.validateProtocolDatas, controller.createString);
+router.put('/protocolString/:id', validator.validateProtocolDatas, controller.modifyString);
+router.delete('/protocolString/:id', controller.deleteString);
+
 module.exports = router; //Export le router

@@ -382,7 +382,7 @@ export default {
 </script>
 <style scoped>
 .selects {
-	color: #76c76b;
+	color: #439b47;
 	width: 200px;
 }
 
@@ -392,12 +392,12 @@ export default {
 
 .order {
 	width: 50px;
-	color: #76c76b;
+	color: #439b47;
 	display: block;
 	text-align: center;
 
-	border-left: 3px solid #76c76b;
-	border-right: 3px solid #76c76b;
+	border-left: 3px solid #439b47;
+	border-right: 3px solid #439b47;
 
 	font-weight: 800;
 }

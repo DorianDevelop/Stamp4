@@ -1,3 +1,4 @@
+const handler = require('../services/handler.js');
 const createConnection = require('../configs/database.config.js'); //Import la fonction créer un lien vers un base de données
 const stamp3 = createConnection('stamp3'); //Créer le lien vers la base de donnée "stamp3"
 /*
@@ -13,11 +14,7 @@ exports.getAllTeLabel = (req, res) => {
 	const query = 'SELECT T.id, T.label FROM `te` as T';
 
 	stamp3.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -27,37 +24,20 @@ exports.getTeByID = (req, res) => {
 	const query = 'SELECT * FROM `te` as T WHERE T.id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 //Fonction pour insérer les données d'un nouveau TE dans la table "TE"
 exports.createTE = (req, res) => {
 	//Récupère les données pour la requête
-	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.host ? req.body.host : '',
-		req.body.email ? req.body.email : '',
-		req.body.service ? req.body.service : '',
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
-	];
+	const datas = [req.body.label, req.body.host, req.body.email, req.body.service, req.body.date, req.body.who, req.body.comment];
 	//Construit les "fondation" de la requête (sans les données)
 	const query = 'INSERT INTO `te`(`label`, `host`, `email`, `service`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -66,29 +46,23 @@ exports.modifyTE = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.host ? req.body.host : '',
-		req.body.email ? req.body.email : '',
-		req.body.service ? req.body.service : '',
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.label,
+		req.body.host,
+		req.body.email,
+		req.body.service,
+		req.body.date,
+		req.body.who,
+		req.body.comment,
 
 		//Pour le "WHERE"
 		requestId,
 	];
 	//Construit les "fondation" de la requête (sans les données)
-	const query =
-		'UPDATE te SET `label` = ?, `host` = ?, `email` = ?, `service` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
+	const query = 'UPDATE te SET `label` = ?, `host` = ?, `email` = ?, `service` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -98,12 +72,7 @@ exports.deleteTE = (req, res) => {
 	const query = 'DELETE FROM `te` WHERE id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -116,11 +85,7 @@ exports.getAllErrorsCodeAndLabel = (req, res) => {
 	const query = 'SELECT E.id, CONCAT("[", E.code,"] ", E.label) as label FROM `error` as E';
 
 	stamp3.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -130,11 +95,7 @@ exports.getErrorByID = (req, res) => {
 	const query = 'SELECT * FROM `error` as E WHERE E.id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -142,32 +103,26 @@ exports.getErrorByID = (req, res) => {
 exports.createError = (req, res) => {
 	//Récupère les données pour la requête
 	const datas = [
-		req.body.code ? req.body.code : null,
-		req.body.module ? req.body.module : '',
-		req.body.function ? req.body.function : '',
-		req.body.label ? req.body.label : '',
-		req.body.apcNo ? req.body.apcNo : null,
-		req.body.level ? req.body.level : null,
-		req.body.helpF ? req.body.helpF : '',
-		req.body.helpS ? req.body.helpS : '',
-		req.body.msgFR ? req.body.msgFR : '',
-		req.body.msgEN ? req.body.msgEN : '',
-		req.body.msgXX ? req.body.msgXX : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.code,
+		req.body.module,
+		req.body.function,
+		req.body.label,
+		req.body.apcNo,
+		req.body.level,
+		req.body.helpF,
+		req.body.helpS,
+		req.body.msgFR,
+		req.body.msgEN,
+		req.body.msgXX,
+		req.body.comment,
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
-		'INSERT INTO `error`(`code`, `module`, `function`, `label`, `apcNo`, `level`, `helpF`, `helpS`, `msgFR`, `msgEN`, `msgXX`, `comment`) ' +
-		'VALUES (?,?,?,?,?,?,?,?,?,?,?,?);';
+		'INSERT INTO `error`(`code`, `module`, `function`, `label`, `apcNo`, `level`, `helpF`, `helpS`, `msgFR`, `msgEN`, `msgXX`, `comment`) ' + 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?);';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -176,18 +131,18 @@ exports.modifyError = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.code ? req.body.code : null,
-		req.body.module ? req.body.module : '',
-		req.body.function ? req.body.function : '',
-		req.body.label ? req.body.comment : '',
-		req.body.apcNo ? req.body.apcNo : null,
-		req.body.level ? req.body.level : null,
-		req.body.helpF ? req.body.helpF : '',
-		req.body.helpS ? req.body.helpS : '',
-		req.body.msgFR ? req.body.msgFR : '',
-		req.body.msgEN ? req.body.msgEN : '',
-		req.body.msgXX ? req.body.msgXX : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.code,
+		req.body.module,
+		req.body.function,
+		req.body.label,
+		req.body.apcNo,
+		req.body.level,
+		req.body.helpF,
+		req.body.helpS,
+		req.body.msgFR,
+		req.body.msgEN,
+		req.body.msgXX,
+		req.body.comment,
 
 		//Pour le WHERE
 		requestId,
@@ -199,12 +154,7 @@ exports.modifyError = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -214,12 +164,7 @@ exports.deleteError = (req, res) => {
 	const query = 'DELETE FROM `error` WHERE `id` = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -232,11 +177,7 @@ exports.getAllValuesTypeAndLabel = (req, res) => {
 	const query = 'SELECT V.id, V.type, V.label FROM `value` as V';
 
 	stamp3.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -246,34 +187,20 @@ exports.getValueByID = (req, res) => {
 	const query = 'SELECT * FROM `value` as V WHERE V.id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 //Fonction pour insérer les données d'une nouvelle Value dans la table "Value"
 exports.createValue = (req, res) => {
 	//Récupère les données pour la requête
-	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.idFamily ? req.body.idFamily : null,
-		req.body.type ? req.body.type : '',
-		req.body.value ? req.body.value : '',
-	];
+	const datas = [req.body.label, req.body.idFamily, req.body.type, req.body.value ? req.body.value : ''];
 	//Construit les "fondation" de la requête (sans les données)
 	const query = 'INSERT INTO `value`(`label`, `idFamily`, `type`, `value`) VALUES (?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -282,10 +209,10 @@ exports.modifyValue = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.idFamily ? req.body.idFamily : null,
-		req.body.type ? req.body.type : '',
-		req.body.value ? req.body.value : '',
+		req.body.label,
+		req.body.idFamily,
+		req.body.type,
+		req.body.value,
 
 		//Pour le "WHERE"
 		requestId,
@@ -295,12 +222,7 @@ exports.modifyValue = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -310,12 +232,7 @@ exports.deleteValue = (req, res) => {
 	const query = 'DELETE FROM `value` WHERE id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -328,11 +245,7 @@ exports.getAllTargetsLabel = (req, res) => {
 	const query = 'SELECT T.id, T.label FROM `target` as T ORDER BY T.label';
 
 	stamp3.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -342,11 +255,7 @@ exports.getTargetByID = (req, res) => {
 	const query = 'SELECT * FROM `target` as T WHERE T.id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -354,26 +263,20 @@ exports.getTargetByID = (req, res) => {
 exports.createTarget = (req, res) => {
 	//Récupère les données pour la requête
 	const datas = [
-		req.body.label ? req.body.label : '',
+		req.body.label,
 		req.body.label_fr ? req.body.label_fr : '',
 		req.body.label_en ? req.body.label_en : '',
 		req.body.label_xx ? req.body.label_xx : '',
-		req.body.who ? req.body.who : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.comment : '',
+		req.body.who,
+		req.body.when,
+		req.body.comment,
 	];
 	//Construit les "fondation" de la requête (sans les données)
-	const query =
-		'INSERT INTO `target`(`label`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+	const query = 'INSERT INTO `target`(`label`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -382,29 +285,23 @@ exports.modifyTarget = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
+		req.body.label,
 		req.body.label_fr ? req.body.label_fr : '',
 		req.body.label_en ? req.body.label_en : '',
 		req.body.label_xx ? req.body.label_xx : '',
-		req.body.who ? req.body.who : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.comment : '',
+		req.body.who,
+		req.body.when,
+		req.body.comment,
 
 		//Pour le "WHERE"
 		requestId,
 	];
 	//Construit les "fondation" de la requête (sans les données)
-	const query =
-		'UPDATE `target` SET `label` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
+	const query = 'UPDATE `target` SET `label` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -414,12 +311,7 @@ exports.deleteTarget = (req, res) => {
 	const query = 'DELETE FROM `target` WHERE id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -429,17 +321,10 @@ exports.deleteTarget = (req, res) => {
 
 //Récupère tout les labels de la table "Funct"
 exports.getAllFunctsLabel = (req, res) => {
-	const query =
-		'SELECT F.id, CONCAT(T.label,":", F.label) as label ' +
-		'FROM `funct` as F ' +
-		'LEFT JOIN `target` as T ON F.idTarget=T.id ORDER BY label;';
+	const query = 'SELECT F.id, CONCAT(T.label,":", F.label) as label ' + 'FROM `funct` as F ' + 'LEFT JOIN `target` as T ON F.idTarget=T.id ORDER BY label;';
 
 	stamp3.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -449,28 +334,17 @@ exports.getFunctByID = (req, res) => {
 	const query = 'SELECT * FROM `funct` as F WHERE F.id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 //Récupère tout les labels de la table "Funct" qui sont lié à une certaine Target
 exports.getAllFunctOfTarget = (req, res) => {
 	const param = req.params.id;
-	const query =
-		'SELECT F.id, F.label as label ' +
-		'FROM `funct` as F ' +
-		'INNER JOIN `target` as T ON F.idTarget=T.id WHERE T.id = ? ORDER BY label;';
+	const query = 'SELECT F.id, F.label as label ' + 'FROM `funct` as F ' + 'INNER JOIN `target` as T ON F.idTarget=T.id WHERE T.id = ? ORDER BY label;';
 
 	stamp3.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -478,27 +352,21 @@ exports.getAllFunctOfTarget = (req, res) => {
 exports.createFunct = (req, res) => {
 	//Récupère les données pour la requête
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.idTarget ? req.body.idTarget : null,
+		req.body.label,
+		req.body.idTarget,
 		req.body.label_fr ? req.body.label_fr : '',
 		req.body.label_en ? req.body.label_en : '',
 		req.body.label_xx ? req.body.label_xx : '',
-		req.body.who ? req.body.who : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.comment : '',
+		req.body.who,
+		req.body.when,
+		req.body.comment,
 	];
 	//Construit les "fondation" de la requête (sans les données)
-	const query =
-		'INSERT INTO `funct`(`label`, `idTarget`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+	const query = 'INSERT INTO `funct`(`label`, `idTarget`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -507,30 +375,24 @@ exports.modifyFunct = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.idTarget ? req.body.idTarget : null,
+		req.body.label,
+		req.body.idTarget,
 		req.body.label_fr ? req.body.label_fr : '',
 		req.body.label_en ? req.body.label_en : '',
 		req.body.label_xx ? req.body.label_xx : '',
-		req.body.who ? req.body.who : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.comment : '',
+		req.body.who,
+		req.body.when,
+		req.body.comment,
 
 		//Pour le "WHERE"
 		requestId,
 	];
 	//Construit les "fondation" de la requête (sans les données)
-	const query =
-		'UPDATE `funct` SET `label` = ?, `idTarget` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
+	const query = 'UPDATE `funct` SET `label` = ?, `idTarget` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -540,12 +402,7 @@ exports.deleteFunct = (req, res) => {
 	const query = 'DELETE FROM `funct` WHERE id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -561,11 +418,7 @@ exports.getAllOrgansLabel = (req, res) => {
 		'LEFT JOIN `target` as T ON F.idTarget=T.id ORDER BY label;';
 
 	stamp3.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -575,28 +428,17 @@ exports.getOrganByID = (req, res) => {
 	const query = 'SELECT * FROM `organ` as O WHERE O.id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 //Récupère tout les labels de la table "Funct"
 exports.getAllOrgansByFunct = (req, res) => {
 	const param = req.params.id;
-	const query =
-		'SELECT O.id, O.label as label ' +
-		'FROM `organ` as O INNER JOIN `funct` as F ON O.idFunc=F.id ' +
-		'WHERE F.id = ? ORDER BY label;';
+	const query = 'SELECT O.id, O.label as label ' + 'FROM `organ` as O INNER JOIN `funct` as F ON O.idFunc=F.id ' + 'WHERE F.id = ? ORDER BY label;';
 
 	stamp3.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -604,28 +446,22 @@ exports.getAllOrgansByFunct = (req, res) => {
 exports.createOrgan = (req, res) => {
 	//Récupère les données pour la requête
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.idTarget ? req.body.idTarget : null,
-		req.body.idFunc ? req.body.idFunc : null,
+		req.body.label,
+		req.body.idTarget,
+		req.body.idFunc,
 		req.body.label_fr ? req.body.label_fr : '',
 		req.body.label_en ? req.body.label_en : '',
 		req.body.label_xx ? req.body.label_xx : '',
-		req.body.who ? req.body.who : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.comment : '',
+		req.body.who,
+		req.body.when,
+		req.body.comment,
 	];
 	//Construit les "fondation" de la requête (sans les données)
-	const query =
-		'INSERT INTO `organ`(`label`, `idTarget`, `idFunc`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+	const query = 'INSERT INTO `organ`(`label`, `idTarget`, `idFunc`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -634,31 +470,25 @@ exports.modifyOrgan = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.idTarget ? req.body.idTarget : null,
-		req.body.idFunc ? req.body.idFunc : null,
+		req.body.label,
+		req.body.idTarget,
+		req.body.idFunc,
 		req.body.label_fr ? req.body.label_fr : '',
 		req.body.label_en ? req.body.label_en : '',
 		req.body.label_xx ? req.body.label_xx : '',
-		req.body.who ? req.body.who : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.comment : '',
+		req.body.who,
+		req.body.when,
+		req.body.comment,
 
 		//Pour le "WHERE"
 		requestId,
 	];
 	//Construit les "fondation" de la requête (sans les données)
-	const query =
-		'UPDATE `organ` SET `label` = ?, `idTarget` = ?, `idFunc` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
+	const query = 'UPDATE `organ` SET `label` = ?, `idTarget` = ?, `idFunc` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -668,12 +498,7 @@ exports.deleteOrgan = (req, res) => {
 	const query = 'DELETE FROM `organ` WHERE id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -692,11 +517,7 @@ exports.getAllActionsLabel = (req, res) => {
 		'LEFT JOIN `target` ON funct.idTarget=target.id ORDER BY label;';
 
 	stamp3.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -706,31 +527,27 @@ exports.getActionByID = (req, res) => {
 	const query = 'SELECT * FROM `action` as A WHERE A.id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 //Fonction pour insérer les données d'une nouvelle Action dans la table "Action"
 exports.createAction = (req, res) => {
 	//Récupère les données pour la requête
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.idTarget ? req.body.idTarget : null,
-		req.body.idFunc ? req.body.idFunc : null,
-		req.body.idOrgan ? req.body.idOrgan : null,
-		req.body.act ? req.body.act : '',
-		req.body.track ? req.body.track : null,
-		req.body.err ? req.body.err : null,
-		req.body.ident ? req.body.ident : null,
+		req.body.label,
+		req.body.idTarget,
+		req.body.idFunc,
+		req.body.idOrgan,
+		req.body.act,
+		req.body.track,
+		req.body.err,
+		req.body.ident,
 		req.body.label_fr ? req.body.label_fr : '',
 		req.body.label_en ? req.body.label_en : '',
 		req.body.label_xx ? req.body.label_xx : '',
-		req.body.who ? req.body.who : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.comment : '',
+		req.body.who,
+		req.body.when,
+		req.body.comment,
 
 		req.body.type0 ? req.body.type0 : '',
 		req.body.param0_fr ? req.body.param0_fr : '',
@@ -796,12 +613,7 @@ exports.createAction = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -810,20 +622,20 @@ exports.modifyAction = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.idTarget ? req.body.idTarget : null,
-		req.body.idFunc ? req.body.idFunc : null,
-		req.body.idOrgan ? req.body.idOrgan : null,
-		req.body.act ? req.body.act : '',
-		req.body.track ? req.body.track : null,
-		req.body.err ? req.body.err : null,
-		req.body.ident ? req.body.ident : null,
+		req.body.label,
+		req.body.idTarget,
+		req.body.idFunc,
+		req.body.idOrgan,
+		req.body.act,
+		req.body.track,
+		req.body.err,
+		req.body.ident,
 		req.body.label_fr ? req.body.label_fr : '',
 		req.body.label_en ? req.body.label_en : '',
 		req.body.label_xx ? req.body.label_xx : '',
-		req.body.who ? req.body.who : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.comment ? req.body.comment : '',
+		req.body.who,
+		req.body.when,
+		req.body.comment,
 
 		req.body.type0 ? req.body.type0 : '',
 		req.body.param0_fr ? req.body.param0_fr : '',
@@ -897,12 +709,7 @@ exports.modifyAction = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -912,28 +719,16 @@ exports.deleteAction = (req, res) => {
 	const query = 'DELETE FROM `action` WHERE id = ?';
 
 	stamp3.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
 exports.getAllActionsFromOrgan = (req, res) => {
 	const param = req.params.id;
-	const query =
-		'SELECT A.id, A.label as label ' +
-		'FROM `action` as A INNER JOIN `organ` as O ON A.idOrgan=O.id ' +
-		'WHERE O.id = ? ORDER BY label;';
+	const query = 'SELECT A.id, A.label as label ' + 'FROM `action` as A INNER JOIN `organ` as O ON A.idOrgan=O.id ' + 'WHERE O.id = ? ORDER BY label;';
 
 	stamp3.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -954,11 +749,7 @@ exports.getActionFullName = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3.query(query, datas, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 

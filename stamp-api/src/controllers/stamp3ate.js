@@ -1,3 +1,4 @@
+const handler = require('../services/handler.js');
 const createConnection = require('../configs/database.config.js'); //Import la fonction créer un lien vers un base de données
 const stamp3ate = createConnection('stamp3ate'); //Créer le lien vers la base de donnée "stamp3"
 /*
@@ -16,11 +17,7 @@ exports.getAllUser = (req, res) => {
 		FROM user as U  ORDER BY CASE WHEN U.level = 5 THEN 1 WHEN U.level = 4 THEN 2 ELSE 3  END, label ASC;`;
 
 	stamp3ate.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -30,38 +27,20 @@ exports.getUserById = (req, res) => {
 	const query = 'SELECT * FROM `user` as U WHERE U.id = ?';
 
 	stamp3ate.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 //Fonction pour insérer les données d'un nouveau user dans la table "user"
 exports.createUser = (req, res) => {
 	//Récupère les données pour la requête
-	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.code ? req.body.code : '',
-		req.body.pass ? req.body.pass : '',
-		req.body.level ? req.body.level : 0,
-		req.body.service ? req.body.service : '',
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
-	];
+	const datas = [req.body.label, req.body.code, req.body.pass, req.body.level, req.body.service, req.body.date, req.body.who, req.body.comment];
 	//Construit les "fondation" de la requête (sans les données)
 	const query = 'INSERT INTO `user`(`label`, `code`, `pass`, `level`, `service`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3ate.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -70,14 +49,14 @@ exports.modifyUser = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.code ? req.body.code : '',
-		req.body.pass ? req.body.pass : '',
-		req.body.level ? req.body.level : 0,
-		req.body.service ? req.body.service : '',
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.label,
+		req.body.code,
+		req.body.pass,
+		req.body.level,
+		req.body.service,
+		req.body.date,
+		req.body.who,
+		req.body.comment,
 
 		//Pour le "WHERE"
 		requestId,
@@ -87,12 +66,7 @@ exports.modifyUser = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3ate.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -102,12 +76,7 @@ exports.deleteUser = (req, res) => {
 	const query = 'DELETE FROM `user` WHERE id = ?';
 
 	stamp3ate.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -121,11 +90,7 @@ exports.getAllATE = (req, res) => {
 	const query = 'SELECT A.id, A.label FROM `ate` as A ORDER BY A.label';
 
 	stamp3ate.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -135,11 +100,7 @@ exports.getATEById = (req, res) => {
 	const query = 'SELECT * FROM `ate` as A WHERE A.id = ?';
 
 	stamp3ate.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -147,24 +108,24 @@ exports.getATEById = (req, res) => {
 exports.createATE = (req, res) => {
 	//Récupère les données pour la requête
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.qualif ? req.body.qualif : 0,
-		req.body.langage ? req.body.langage : '',
-		req.body.name ? req.body.name : '',
-		req.body.type ? req.body.type : 0,
-		req.body.func ? req.body.func : 0,
-		req.body.mode ? req.body.mode : '',
-		req.body.host ? req.body.host : '',
-		req.body.index ? req.body.index : '',
-		req.body.trace ? req.body.trace : 0,
-		req.body.tPath ? req.body.tPath : '',
-		req.body.quasar ? req.body.quasar : '',
-		req.body.lQuasar ? req.body.lQuasar : '',
-		req.body.nQuasar ? req.body.nQuasar : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
-		req.body.begin ? req.body.begin : 0,
+		req.body.label,
+		req.body.qualif,
+		req.body.langage,
+		req.body.name,
+		req.body.type,
+		req.body.func,
+		req.body.mode,
+		req.body.host,
+		req.body.index,
+		req.body.trace,
+		req.body.tPath,
+		req.body.quasar,
+		req.body.lQuasar,
+		req.body.nQuasar,
+		req.body.when,
+		req.body.who,
+		req.body.comment,
+		req.body.begin,
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
@@ -172,12 +133,7 @@ exports.createATE = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3ate.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -186,24 +142,24 @@ exports.modifyATE = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.qualif ? req.body.qualif : 0,
-		req.body.langage ? req.body.langage : '',
-		req.body.name ? req.body.name : '',
-		req.body.type ? req.body.type : 0,
-		req.body.func ? req.body.func : 0,
-		req.body.mode ? req.body.mode : '',
-		req.body.host ? req.body.host : '',
-		req.body.index ? req.body.index : '',
-		req.body.trace ? req.body.trace : 0,
-		req.body.tPath ? req.body.tPath : '',
-		req.body.quasar ? req.body.quasar : 0,
-		req.body.lQuasar ? req.body.lQuasar : '',
-		req.body.nQuasar ? req.body.nQuasar : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
-		req.body.begin ? req.body.begin : 0,
+		req.body.label,
+		req.body.qualif,
+		req.body.langage,
+		req.body.name,
+		req.body.type,
+		req.body.func,
+		req.body.mode,
+		req.body.host,
+		req.body.index,
+		req.body.trace,
+		req.body.tPath,
+		req.body.quasar,
+		req.body.lQuasar,
+		req.body.nQuasar,
+		req.body.when,
+		req.body.who,
+		req.body.comment,
+		req.body.begin,
 
 		//Pour le "WHERE"
 		requestId,
@@ -214,12 +170,7 @@ exports.modifyATE = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3ate.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -229,12 +180,7 @@ exports.deleteATE = (req, res) => {
 	const query = 'DELETE FROM `ate` WHERE id = ?';
 
 	stamp3ate.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -248,11 +194,7 @@ exports.getAllPlug = (req, res) => {
 	const query = 'SELECT P.id, P.label FROM `plug` as P';
 
 	stamp3ate.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -262,11 +204,7 @@ exports.getPlugById = (req, res) => {
 	const query = 'SELECT * FROM `plug` as P WHERE P.id = ?';
 
 	stamp3ate.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 //#endregion

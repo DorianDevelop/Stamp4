@@ -63,6 +63,107 @@
 			</div>
 
 
+			
+
+					<div class="window" v-if="allDatas[1]">
+						<div class="windowTitle" @click="opens[1] = !opens[1]">
+							<p>État</p>
+							<button class="icon" :class="{ opened: opens[1] }">
+								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); transform: ; msfilter: ">
+									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+								</svg>
+							</button>
+						</div>
+						<div class="windowContent" v-if="opens[1]">
+							<div class="parameter" v-if="definePagination(table.paginations[1], allDatas[1].length) && refreshTable">
+								<w-button class="mb3" bg-color="green-dark1" color="white" @click="addEmptyRow(allDatas[1], 1)">
+									<w-icon class="mr1">wi-plus</w-icon>
+									Ajout d'une ligne
+								</w-button>
+								<w-table :headers="table.header_one" :items="allDatas[1]" :pagination="table.paginations[1]" :sort="table.sorts[1]">
+									<template #item="{ item }">
+										<tr>
+											<td v-for="(header, i) in table.header_one" :key="i" class="pa1">
+												<w-input
+													v-if="header.key !== 'access' && header.key !== 'answerExpected'"
+													v-model="item[header.key]"
+													:class="`text-${header.key}`"
+													:disabled="shouldBeDisabled(header.key, props.datas, item.answerExpected)"
+												>
+												</w-input>
+												<select v-else-if="header.key !== 'answerExpected'" v-model="item[header.key]">
+													<option value="WR">Write</option>
+													<option value="RD">Read</option>
+												</select>
+												<w-switch v-else v-model="item[header.key]" color="green"></w-switch>
+											</td>
+											<td>
+												<w-flex>
+													<w-button class="pt1 px1 mr1" bg-color="error" icon="wi-cross"></w-button>
+													<w-button class="pt1 px1" bg-color="success" icon="wi-check"></w-button>
+												</w-flex>
+											</td>
+										</tr>
+									</template>
+								</w-table>
+							</div>
+						</div>
+					</div>
+					<!-- Second part -->
+					<div class="window" v-if="allDatas[2]">
+						<div class="windowTitle" @click="opens[2] = !opens[2]">
+							<p>Paramètre</p>
+							<button class="icon" :class="{ opened: opens[2] }">
+								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); transform: ; msfilter: ">
+									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+								</svg>
+							</button>
+						</div>
+						<div class="windowContent" v-if="opens[2]">
+							<div class="parameter" v-if="definePagination(table.paginations[2], allDatas[2].length) && refreshTable">
+								<w-button class="mb3" bg-color="green-dark1" color="white" @click="addEmptyRow(allDatas[2], 2)">
+									<w-icon class="mr1">wi-plus</w-icon>
+									Ajout d'une ligne
+								</w-button>
+								<w-table :headers="table.header_two" :items="allDatas[2]" :pagination="table.paginations[2]" :sort="table.sorts[2]">
+									<template #item="{ item }">
+										<tr>
+											<td v-for="(header, i) in table.header_one" :key="i" class="pa1">
+												<w-input
+													v-if="header.key !== 'access' && header.key !== 'answerExpected'"
+													v-model="item[header.key]"
+													:class="`text-${header.key}`"
+													:disabled="shouldBeDisabled(header.key, props.datas, item.answerExpected)"
+												>
+												</w-input>
+												<select v-else-if="header.key !== 'answerExpected'" v-model="item[header.key]">
+													<option value="WR">Write</option>
+													<option value="RD">Read</option>
+												</select>
+												<w-switch v-else v-model="item[header.key]" color="green"></w-switch>
+											</td>
+											<td>
+												<w-flex>
+													<w-button class="pt1 px1 mr1" bg-color="error" icon="wi-cross"></w-button>
+													<w-button class="pt1 px1" bg-color="success" icon="wi-check"></w-button>
+												</w-flex>
+											</td>
+										</tr>
+									</template>
+								</w-table>
+							</div>
+						</div>
+					</div>
+
+
+
+
+
+					
+							
+					.
+
+
 
 
 
@@ -94,5 +195,8 @@
 }
 
 
+\? req\.body\.[A-Za-z]+ : '',
+\? req\.body\.[A-Za-z]+ : null,
+\? req\.body\.[A-Za-z]+ : 0,
+\? req\.body\.[A-Za-z]+ : '1900-01-01',
 //////
-

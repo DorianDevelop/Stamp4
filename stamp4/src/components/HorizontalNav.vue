@@ -20,7 +20,7 @@
 				<div class="hoverLink">
 					<p>Plugins</p>
 					<router-link to="/station/ates" class="sub-router-link">Testeurs</router-link>
-					<p>Protocols</p>
+					<router-link to="/station/protocoles" class="sub-router-link">Protocoles</router-link>
 					<router-link to="/station/operateurs" class="sub-router-link">Opérateurs</router-link>
 				</div>
 			</router-link>
@@ -67,7 +67,7 @@ nav {
 	top: 0;
 	left: 50%;
 
-	width: 1200px;
+	width: 1350px;
 	max-width: 100%;
 	height: 35px;
 	transform: translateX(-50%);

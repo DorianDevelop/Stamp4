@@ -53,7 +53,7 @@ const routes = [
 			{ path: '', name: 'Station', component: Views.StationPage },
 			{ path: 'operateurs', name: 'Opérateurs', component: Station.OpPage },
 			{ path: 'ates', name: 'Testeurs', component: Station.ATEPage },
-			{ path: 'protocols', name: 'Protocoles', component: Station.ProtocolPage },
+			{ path: 'protocoles', name: 'Protocoles', component: Station.ProtocolPage },
 		],
 	},
 ];

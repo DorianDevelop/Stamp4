@@ -1,3 +1,4 @@
+const handler = require('../services/handler.js');
 const createConnection = require('../configs/database.config.js'); //Import la fonction créer un lien vers un base de données
 const stamp3uut = createConnection('stamp3uut'); //Créer le lien vers la base de donnée "stamp3uut"
 /*
@@ -13,11 +14,7 @@ exports.getAllGammeLabel = (req, res) => {
 	const query = 'SELECT R.id, R.label FROM `range` as R';
 
 	stamp3uut.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -27,35 +24,20 @@ exports.getGammeByID = (req, res) => {
 	const query = 'SELECT * FROM `range` as R WHERE R.id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 //Fonction pour insérer les données d'une nouvelle Gamme dans la table "Gamme"
 exports.createGamme = (req, res) => {
 	//Récupère les données pour la requête
-	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.sName ? req.body.sName : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
-	];
+	const datas = [req.body.label, req.body.sName, req.body.when, req.body.who, req.body.comment];
 	//Construit les "fondation" de la requête (sans les données)
 	const query = 'INSERT INTO `range`(`label`, `sName`, `when`, `who`, `comment`) VALUES (?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -64,11 +46,11 @@ exports.modifyGamme = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.sName ? req.body.sName : '',
-		req.body.when ? req.body.when : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.label,
+		req.body.sName,
+		req.body.when,
+		req.body.who,
+		req.body.comment,
 
 		//Pour le "WHERE"
 		requestId,
@@ -78,12 +60,7 @@ exports.modifyGamme = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -93,12 +70,7 @@ exports.deleteGamme = (req, res) => {
 	const query = 'DELETE FROM `range` WHERE id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -113,11 +85,7 @@ exports.getAllUUTLabel = (req, res) => {
 		`CASE WHEN U.power IS NOT NULL AND U.power <> '' THEN CONCAT(U.refsku, "  [", U.power, " VA", "]") ELSE CONCAT(U.refsku, "  [0 VA]") END as label FROM uut as U ORDER BY label;`;
 
 	stamp3uut.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -127,11 +95,7 @@ exports.getUUTByID = (req, res) => {
 	const query = 'SELECT * FROM `uut` as U WHERE U.id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -139,44 +103,44 @@ exports.getUUTByID = (req, res) => {
 exports.createUUT = (req, res) => {
 	//Récupère les données pour la requête
 	const datas = [
-		req.body.refsku ? req.body.refsku : '',
-		req.body.qualified ? req.body.qualified : null,
-		req.body.range ? req.body.range : null,
-		req.body.dateStart ? req.body.dateStart : null,
-		req.body.dateEnd ? req.body.dateEnd : null,
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.refsku,
+		req.body.qualified,
+		req.body.range,
+		req.body.dateStart,
+		req.body.dateEnd,
+		req.body.date,
+		req.body.who,
+		req.body.comment,
 		req.body.reference ? req.body.reference : '%1F%1Q%2Q%2Y%2W%1O%*U',
-		req.body.serial ? req.body.serial : '',
-		req.body.topo ? req.body.topo : null,
-		req.body.design ? req.body.design : '',
-		req.body.power ? req.body.power : '',
-		req.body.backup ? req.body.backup : '',
-		req.body.volt ? req.body.volt : '',
-		req.body.freq ? req.body.freq : '',
-		req.body.model ? req.body.model : '',
-		req.body.pnp ? req.body.pnp : '',
-		req.body.firm ? req.body.firm : '',
-		req.body.sku ? req.body.sku : '',
-		req.body.hiVolt ? req.body.hiVolt : '',
-		req.body.hiAmps ? req.body.hiAmps : '',
-		req.body.hiTime ? req.body.hiTime : '',
-		req.body.hiRamp ? req.body.hiRamp : '',
-		req.body.hisVolt ? req.body.hisVolt : '',
-		req.body.hisAmps ? req.body.hisAmps : '',
-		req.body.hisTime ? req.body.hisTime : '',
-		req.body.hisRamp ? req.body.hisRamp : '',
-		req.body.hifVolt ? req.body.hifVolt : '',
-		req.body.hifAmps ? req.body.hifAmps : '',
-		req.body.hifTime ? req.body.hifTime : '',
-		req.body.hifRamp ? req.body.hifRamp : '',
-		req.body.gndAmps ? req.body.gndAmps : '',
-		req.body.gndOhms ? req.body.gndOhms : '',
-		req.body.gndTime ? req.body.gndTime : '',
-		req.body.contAmps ? req.body.contAmps : '',
-		req.body.contOhms ? req.body.contOhms : '',
-		req.body.contTime ? req.body.contTime : '',
+		req.body.serial,
+		req.body.topo,
+		req.body.design,
+		req.body.power,
+		req.body.backup,
+		req.body.volt,
+		req.body.freq,
+		req.body.model,
+		req.body.pnp,
+		req.body.firm,
+		req.body.sku,
+		req.body.hiVolt,
+		req.body.hiAmps,
+		req.body.hiTime,
+		req.body.hiRamp,
+		req.body.hisVolt,
+		req.body.hisAmps,
+		req.body.hisTime,
+		req.body.hisRamp,
+		req.body.hifVolt,
+		req.body.hifAmps,
+		req.body.hifTime,
+		req.body.hifRamp,
+		req.body.gndAmps,
+		req.body.gndOhms,
+		req.body.gndTime,
+		req.body.contAmps,
+		req.body.contOhms,
+		req.body.contTime,
 		req.body.main1U ? req.body.main1U : '',
 		req.body.main1Umaxi ? req.body.main1Umaxi : '',
 		req.body.main1Umini ? req.body.main1Umini : '',
@@ -189,28 +153,28 @@ exports.createUUT = (req, res) => {
 		req.body.main2Yield ? req.body.main2Yield : '',
 		req.body.main2Imaxi ? req.body.main2Imaxi : '',
 		req.body.main2Thdi ? req.body.main2Thdi : '',
-		req.body.outU ? req.body.outU : '',
-		req.body.outUtol ? req.body.outUtol : '',
-		req.body.outThdu ? req.body.outThdu : '',
-		req.body.outUdc ? req.body.outUdc : '',
-		req.body.outF ? req.body.outF : '',
-		req.body.outFtol ? req.body.outFtol : '',
-		req.body.outVA ? req.body.outVA : '',
-		req.body.outW ? req.body.outW : '',
-		req.body.outPhi ? req.body.outPhi : '',
-		req.body.batU ? req.body.batU : '',
-		req.body.batUmaxi ? req.body.batUmaxi : '',
-		req.body.batUmini ? req.body.batUmini : '',
-		req.body.batAH ? req.body.batAH : '',
-		req.body.batLife ? req.body.batLife : '',
-		req.body.batBranch ? req.body.batBranch : '',
+		req.body.outU,
+		req.body.outUtol,
+		req.body.outThdu,
+		req.body.outUdc,
+		req.body.outF,
+		req.body.outFtol,
+		req.body.outVA,
+		req.body.outW,
+		req.body.outPhi,
+		req.body.batU,
+		req.body.batUmaxi,
+		req.body.batUmini,
+		req.body.batAH,
+		req.body.batLife,
+		req.body.batBranch,
 		req.body.batConst1 ? req.body.batConst1 : '',
 		req.body.batConst2 ? req.body.batConst2 : '',
 		req.body.batConst3 ? req.body.batConst3 : '',
 		req.body.batConst4 ? req.body.batConst4 : '',
-		req.body.chrgU ? req.body.chrgU : '',
-		req.body.chrgI ? req.body.chrgI : '',
-		req.body.chrgTemp ? req.body.chrgTemp : '',
+		req.body.chrgU,
+		req.body.chrgI,
+		req.body.chrgTemp,
 	];
 	//Construit les "fondation" de la requête (sans les données)
 	const query =
@@ -218,12 +182,7 @@ exports.createUUT = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -232,44 +191,44 @@ exports.modifyUUT = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.refsku ? req.body.refsku : '',
-		req.body.qualified ? req.body.qualified : null,
-		req.body.range ? req.body.range : null,
-		req.body.dateStart ? req.body.dateStart : null,
-		req.body.dateEnd ? req.body.dateEnd : null,
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.refsku,
+		req.body.qualified,
+		req.body.range,
+		req.body.dateStart,
+		req.body.dateEnd,
+		req.body.date,
+		req.body.who,
+		req.body.comment,
 		req.body.reference ? req.body.reference : '%1F%1Q%2Q%2Y%2W%1O%*U',
-		req.body.serial ? req.body.serial : '',
-		req.body.topo ? req.body.topo : null,
-		req.body.design ? req.body.design : '',
-		req.body.power ? req.body.power : '',
-		req.body.backup ? req.body.backup : '',
-		req.body.volt ? req.body.volt : '',
-		req.body.freq ? req.body.freq : '',
-		req.body.model ? req.body.model : '',
-		req.body.pnp ? req.body.pnp : '',
-		req.body.firm ? req.body.firm : '',
-		req.body.sku ? req.body.sku : '',
-		req.body.hiVolt ? req.body.hiVolt : '',
-		req.body.hiAmps ? req.body.hiAmps : '',
-		req.body.hiTime ? req.body.hiTime : '',
-		req.body.hiRamp ? req.body.hiRamp : '',
-		req.body.hisVolt ? req.body.hisVolt : '',
-		req.body.hisAmps ? req.body.hisAmps : '',
-		req.body.hisTime ? req.body.hisTime : '',
-		req.body.hisRamp ? req.body.hisRamp : '',
-		req.body.hifVolt ? req.body.hifVolt : '',
-		req.body.hifAmps ? req.body.hifAmps : '',
-		req.body.hifTime ? req.body.hifTime : '',
-		req.body.hifRamp ? req.body.hifRamp : '',
-		req.body.gndAmps ? req.body.gndAmps : '',
-		req.body.gndOhms ? req.body.gndOhms : '',
-		req.body.gndTime ? req.body.gndTime : '',
-		req.body.contAmps ? req.body.contAmps : '',
-		req.body.contOhms ? req.body.contOhms : '',
-		req.body.contTime ? req.body.contTime : '',
+		req.body.serial,
+		req.body.topo,
+		req.body.design,
+		req.body.power,
+		req.body.backup,
+		req.body.volt,
+		req.body.freq,
+		req.body.model,
+		req.body.pnp,
+		req.body.firm,
+		req.body.sku,
+		req.body.hiVolt,
+		req.body.hiAmps,
+		req.body.hiTime,
+		req.body.hiRamp,
+		req.body.hisVolt,
+		req.body.hisAmps,
+		req.body.hisTime,
+		req.body.hisRamp,
+		req.body.hifVolt,
+		req.body.hifAmps,
+		req.body.hifTime,
+		req.body.hifRamp,
+		req.body.gndAmps,
+		req.body.gndOhms,
+		req.body.gndTime,
+		req.body.contAmps,
+		req.body.contOhms,
+		req.body.contTime,
 		req.body.main1U ? req.body.main1U : '',
 		req.body.main1Umaxi ? req.body.main1Umaxi : '',
 		req.body.main1Umini ? req.body.main1Umini : '',
@@ -282,28 +241,28 @@ exports.modifyUUT = (req, res) => {
 		req.body.main2Yield ? req.body.main2Yield : '',
 		req.body.main2Imaxi ? req.body.main2Imaxi : '',
 		req.body.main2Thdi ? req.body.main2Thdi : '',
-		req.body.outU ? req.body.outU : '',
-		req.body.outUtol ? req.body.outUtol : '',
-		req.body.outThdu ? req.body.outThdu : '',
-		req.body.outUdc ? req.body.outUdc : '',
-		req.body.outF ? req.body.outF : '',
-		req.body.outFtol ? req.body.outFtol : '',
-		req.body.outVA ? req.body.outVA : '',
-		req.body.outW ? req.body.outW : '',
-		req.body.outPhi ? req.body.outPhi : '',
-		req.body.batU ? req.body.batU : '',
-		req.body.batUmaxi ? req.body.batUmaxi : '',
-		req.body.batUmini ? req.body.batUmini : '',
-		req.body.batAH ? req.body.batAH : '',
-		req.body.batLife ? req.body.batLife : '',
-		req.body.batBranch ? req.body.batBranch : '',
+		req.body.outU,
+		req.body.outUtol,
+		req.body.outThdu,
+		req.body.outUdc,
+		req.body.outF,
+		req.body.outFtol,
+		req.body.outVA,
+		req.body.outW,
+		req.body.outPhi,
+		req.body.batU,
+		req.body.batUmaxi,
+		req.body.batUmini,
+		req.body.batAH,
+		req.body.batLife,
+		req.body.batBranch,
 		req.body.batConst1 ? req.body.batConst1 : '',
 		req.body.batConst2 ? req.body.batConst2 : '',
 		req.body.batConst3 ? req.body.batConst3 : '',
 		req.body.batConst4 ? req.body.batConst4 : '',
-		req.body.chrgU ? req.body.chrgU : '',
-		req.body.chrgI ? req.body.chrgI : '',
-		req.body.chrgTemp ? req.body.chrgTemp : '',
+		req.body.chrgU,
+		req.body.chrgI,
+		req.body.chrgTemp,
 
 		//Pour le "WHERE"
 		requestId,
@@ -314,12 +273,7 @@ exports.modifyUUT = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -329,12 +283,7 @@ exports.deleteUUT = (req, res) => {
 	const query = 'DELETE FROM `uut` WHERE id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -347,11 +296,7 @@ exports.getAllUUTRelatedGamme = (req, res) => {
 		'WHERE U.range = ? ORDER BY label';
 
 	stamp3uut.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -364,11 +309,7 @@ exports.getAllSpecLabel = (req, res) => {
 	const query = 'SELECT S.id, S.label FROM `spec` as S';
 
 	stamp3uut.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -378,37 +319,20 @@ exports.getSpecByID = (req, res) => {
 	const query = 'SELECT * FROM `spec` as S WHERE S.id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 //Fonction pour insérer les données d'une nouvelle Spec dans la table "Spec"
 exports.createSpec = (req, res) => {
 	//Récupère les données pour la requête
-	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.range ? req.body.range : null,
-		req.body.ctrl ? req.body.ctrl : null,
-		req.body.replay ? req.body.replay : null,
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
-	];
+	const datas = [req.body.label, req.body.range, req.body.ctrl, req.body.replay, req.body.date, req.body.who, req.body.comment];
 	//Construit les "fondation" de la requête (sans les données)
 	const query = 'INSERT INTO `spec`(`label`, `range`, `ctrl`, `replay`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -417,13 +341,13 @@ exports.modifySpec = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.range ? req.body.range : null,
-		req.body.ctrl ? req.body.ctrl : null,
-		req.body.replay ? req.body.replay : null,
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.label,
+		req.body.range,
+		req.body.ctrl,
+		req.body.replay,
+		req.body.date,
+		req.body.who,
+		req.body.comment,
 
 		//Pour le "WHERE"
 		requestId,
@@ -433,12 +357,7 @@ exports.modifySpec = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -448,12 +367,7 @@ exports.deleteSpec = (req, res) => {
 	const query = 'DELETE FROM `spec` WHERE id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -463,11 +377,7 @@ exports.getAllSpecRelatedGamme = (req, res) => {
 	const query = 'SELECT S.id, S.label FROM `spec` as S ' + 'WHERE S.range = ? ORDER BY label';
 
 	stamp3uut.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -479,11 +389,7 @@ exports.getAllStepLabel = (req, res) => {
 	const query = 'SELECT S.id, S.label FROM `step` as S';
 
 	stamp3uut.query(query, (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -493,11 +399,7 @@ exports.getAllStepRelatedGamme = (req, res) => {
 	const query = 'SELECT S.id, S.label FROM `step` as S ' + 'WHERE S.range = ? ORDER BY label';
 
 	stamp3uut.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -507,35 +409,19 @@ exports.getStepByID = (req, res) => {
 	const query = 'SELECT * FROM `step` as S WHERE S.id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 exports.createStep = (req, res) => {
 	//Récupère les données pour la requête
-	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.tstFunc ? req.body.tstFunc : '',
-		req.body.range ? req.body.range : null,
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
-	];
+	const datas = [req.body.label, req.body.tstFunc, req.body.range, req.body.date, req.body.who, req.body.comment];
 	//Construit les "fondation" de la requête (sans les données)
 	const query = 'INSERT INTO `step`(`label`, `tstFunc`, `range`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?)';
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -544,12 +430,12 @@ exports.modifyStep = (req, res) => {
 	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
-		req.body.label ? req.body.label : '',
-		req.body.tstFunc ? req.body.tstFunc : '',
-		req.body.range ? req.body.range : null,
-		req.body.date ? req.body.date : '1900-01-01',
-		req.body.who ? req.body.who : '',
-		req.body.comment ? req.body.comment : '',
+		req.body.label,
+		req.body.tstFunc,
+		req.body.range,
+		req.body.date,
+		req.body.who,
+		req.body.comment,
 
 		//Pour le "WHERE"
 		requestId,
@@ -559,12 +445,7 @@ exports.modifyStep = (req, res) => {
 
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -584,12 +465,7 @@ exports.deleteStep = (req, res) => {
 	});
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -601,11 +477,7 @@ exports.getAllSpecRelatedGamme = (req, res) => {
 	const query = 'SELECT S.id, S.label FROM `spec` as S ' + 'WHERE S.range = ? ORDER BY label';
 
 	stamp3uut.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -619,11 +491,7 @@ exports.getAllStepForASpec = (req, res) => {
 		'WHERE SP.id = ?;';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -633,27 +501,18 @@ exports.getAllStepForAGamme = (req, res) => {
 	const query = 'SELECT ST.* FROM `step` as ST WHERE ST.range = ?;';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
 //Ajoute une Step à une SPEC
 exports.addStepToSpec = (req, res) => {
 	//Récupère les données pour la requête
-	const datas = [req.body.idMain ? req.body.idMain : null, req.body.idLink ? req.body.idLink : null, req.body.No ? req.body.No : null];
+	const datas = [req.body.idMain, req.body.idLink, req.body.No ? req.body.No : null];
 	const query = 'INSERT INTO `link_spec_step`(`idMain`,`idLink`,`No`) VALUES (?, ?, ?);';
 
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -663,12 +522,7 @@ exports.deleteStepForSpec = (req, res) => {
 	const query = 'DELETE FROM `link_spec_step` WHERE id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -682,11 +536,7 @@ exports.getAllActionForAStep = (req, res) => {
 	const query = 'SELECT A.* FROM `action` as A WHERE A.idStep = ? ORDER BY A.order';
 
 	stamp3uut.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -696,11 +546,7 @@ exports.getAllActionForUUT = (req, res) => {
 		'SELECT DISTINCT S.label as bigKey, ST.label as smallKey, A.* from `link_uut_spec` as LUS JOIN `spec` as S on S.id = LUS.idLink JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain ' +
 		'JOIN `action` as A on A.idStep = LSS.idLink JOIN `step` as ST on ST.id = LSS.idLink WHERE A.id IN (SELECT A.id from `link_uut_spec` as LUS JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain JOIN `action` as A on A.idStep = LSS.idLink WHERE LUS.idMain = ?) ORDER BY A.order ASC;';
 	stamp3uut.query(query, [param], (error, results) => {
-		if (error) {
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json(results);
-		}
+		handler.handleReponse(res, error, results);
 	});
 };
 
@@ -736,12 +582,7 @@ exports.createAction = (req, res) => {
 		'INSERT INTO `action` (`idStep`, `range`, `order`, `track`, `errStamp`, `errApc`, `idTarget`, `idFunc`, `idOrgan`, `idAction`, `ident`, `pattern`, `param0`, `param1`, `param2`, `param3`, `param4`, `param5`, `param6`, `param7`, `param8`, `param9`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Creation succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
@@ -781,12 +622,7 @@ exports.modifyAction = (req, res) => {
 		'UPDATE `action`  SET `idStep` = ?, `range` = ?, `order` = ?, `track` = ?, `errStamp` = ?, `errApc` = ?, `idTarget` = ?, `idFunc` = ?, `idOrgan` = ?, `idAction` = ?, `ident` = ?, `pattern` = ?, `param0` = ?, `param1` = ?, `param2` = ?, `param3` = ?, `param4` = ?, `param5` = ?, `param6` = ?, `param7` = ?, `param8` = ?, `param9` = ? WHERE `id` = ?;';
 	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Modification succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
@@ -796,12 +632,7 @@ exports.deleteAction = (req, res) => {
 	const query = 'DELETE FROM `action` WHERE id = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 
@@ -810,12 +641,7 @@ exports.deleteActionByStep = (req, res) => {
 	const query = 'DELETE FROM `action` WHERE idStep = ?';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
-		if (error) {
-			console.error(error);
-			res.status(500).json({ error: 'An error occurred \n' + error });
-		} else {
-			res.status(200).json({ message: 'Deletion succeed!' });
-		}
+		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
 };
 //#endregion
