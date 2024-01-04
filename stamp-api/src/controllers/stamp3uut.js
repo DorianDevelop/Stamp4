@@ -1,15 +1,9 @@
 const handler = require('../services/handler.js');
 const createConnection = require('../configs/database.config.js'); //Import la fonction créer un lien vers un base de données
 const stamp3uut = createConnection('stamp3uut'); //Créer le lien vers la base de donnée "stamp3uut"
-/*
- * Dans ce fichier, des morceaux de code sont entouré par des #region et #endregion
- * Ils permettent sur certains IDE de facilement organiser son fichier pendant la phase de dev
- * Si intéressé vous pouvez cherchez sur internet leur fonctionnement
- */
 
 //#region Gamme
 
-//Récupère tout les labels de la table "Gamme"
 exports.getAllGammeLabel = (req, res) => {
 	const query = 'SELECT R.id, R.label FROM `range` as R';
 
@@ -18,7 +12,6 @@ exports.getAllGammeLabel = (req, res) => {
 	});
 };
 
-//Récupère tout les champs d'une ligne spécifique de la table "Gamme"
 exports.getGammeByID = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `range` as R WHERE R.id = ?';
@@ -28,43 +21,27 @@ exports.getGammeByID = (req, res) => {
 	});
 };
 
-//Fonction pour insérer les données d'une nouvelle Gamme dans la table "Gamme"
 exports.createGamme = (req, res) => {
-	//Récupère les données pour la requête
 	const datas = [req.body.label, req.body.sName, req.body.when, req.body.who, req.body.comment];
-	//Construit les "fondation" de la requête (sans les données)
+
 	const query = 'INSERT INTO `range`(`label`, `sName`, `when`, `who`, `comment`) VALUES (?, ?, ?, ?, ?)';
 
-	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
-//Fonction pour modifier les données d'une Gamme dans la table "Gamme"
 exports.modifyGamme = (req, res) => {
-	//Récupère les données pour la requête
 	const requestId = req.params.id;
-	const datas = [
-		req.body.label,
-		req.body.sName,
-		req.body.when,
-		req.body.who,
-		req.body.comment,
+	const datas = [req.body.label, req.body.sName, req.body.when, req.body.who, req.body.comment, requestId];
 
-		//Pour le "WHERE"
-		requestId,
-	];
-	//Construit les "fondation" de la requête (sans les données)
 	const query = 'UPDATE range SET `label` = ?, `sName` = ?, `when` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
-	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
-//Fonction pour supprimer les données d'une Gamme dans la table "Gamme"
 exports.deleteGamme = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `range` WHERE id = ?';
@@ -78,7 +55,6 @@ exports.deleteGamme = (req, res) => {
 
 //#region UUT
 
-//Récupère tout les labels de la table "UUT"
 exports.getAllUUTLabel = (req, res) => {
 	const query =
 		'SELECT U.id, ' +
@@ -89,7 +65,6 @@ exports.getAllUUTLabel = (req, res) => {
 	});
 };
 
-//Récupère tout les champs d'une ligne spécifique de la table "UUT"
 exports.getUUTByID = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `uut` as U WHERE U.id = ?';
@@ -99,9 +74,7 @@ exports.getUUTByID = (req, res) => {
 	});
 };
 
-//Fonction pour insérer les données d'une nouvelle UUT dans la table "UUT"
 exports.createUUT = (req, res) => {
-	//Récupère les données pour la requête
 	const datas = [
 		req.body.refsku,
 		req.body.qualified,
@@ -176,19 +149,16 @@ exports.createUUT = (req, res) => {
 		req.body.chrgI,
 		req.body.chrgTemp,
 	];
-	//Construit les "fondation" de la requête (sans les données)
+
 	const query =
 		'INSERT INTO `uut` (`refsku`, `qualified`, `range`, `dateStart`, `dateEnd`, `date`, `who`, `comment`, `reference`, `serial`, `topo`, `design`, `power`, `backup`, `volt`, `freq`, `model`, `pnp`, `firm`, `sku`, `hiVolt`, `hiAmps`, `hiTime`, `hiRamp`, `hisVolt`, `hisAmps`, `hisTime`, `hisRamp`, `hifVolt`, `hifAmps`, `hifTime`, `hifRamp`, `gndAmps`, `gndOhms`, `gndTime`, `contAmps`, `contOhms`, `contTime`, `main1U`, `main1Umaxi`, `main1Umini`, `main1Yield`, `main1Imaxi`, `main1Thdi`, `main2U`, `main2Umaxi`, `main2Umini`, `main2Yield`, `main2Imaxi`, `main2Thdi`, `outU`, `outUtol`, `outThdu`, `outUdc`, `outF`, `outFtol`, `outVA`, `outW`, `outPhi`, `batU`, `batUmaxi`, `batUmini`, `batAH`, `batLife`, `batBranch`, `batConst1`, `batConst2`, `batConst3`, `batConst4`, `chrgU`, `chrgI`, `chrgTemp`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
-//Fonction pour modifier les données d'une UUT dans la table "UUT"
 exports.modifyUUT = (req, res) => {
-	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
 		req.body.refsku,
@@ -264,20 +234,17 @@ exports.modifyUUT = (req, res) => {
 		req.body.chrgI,
 		req.body.chrgTemp,
 
-		//Pour le "WHERE"
 		requestId,
 	];
-	//Construit les "fondation" de la requête (sans les données)
+
 	const query =
 		'UPDATE `uut` SET `label` = ?, `refsku` = ?, `qualified` = ?, `range` = ?, `dateStart` = ?, `dateEnd` = ?, `date` = ?, `who` = ?, `comment` = ?, `reference` = ?, `serial` = ?, `topo` = ?, `design` = ?, `power` = ?, `backup` = ?, `volt` = ?, `freq` = ?, `model` = ?, `pnp` = ?, `firm` = ?, `sku` = ?, `hiVolt` = ?, `hiAmps` = ?, `hiTime` = ?, `hiRamp` = ?, `hisVolt` = ?, `hisAmps` = ?, `hisTime` = ?, `hisRamp` = ?, `hifVolt` = ?, `hifAmps` = ?, `hifTime` = ?, `hifRamp` = ?, `gndAmps` = ?, `gndOhms` = ?, `gndTime` = ?, `contAmps` = ?, `contOhms` = ?, `contTime` = ?, `main1U` = ?, `main1Umaxi` = ?, `main1Umini` = ?, `main1Yield` = ?, `main1Imaxi` = ?, `main1Thdi` = ?, `main2U` = ?, `main2Umaxi` = ?, `main2Umini` = ?, `main2Yield` = ?, `main2Imaxi` = ?, `main2Thdi` = ?, `outU` = ?, `outUtol` = ? WHERE id = ?';
 
-	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
-//Fonction pour supprimer les données d'une UUT dans la table "UUT"
 exports.deleteUUT = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `uut` WHERE id = ?';
@@ -287,7 +254,6 @@ exports.deleteUUT = (req, res) => {
 	});
 };
 
-//Récupère tout les champs d'une ligne spécifique de la table "UUT"
 exports.getAllUUTRelatedGamme = (req, res) => {
 	const param = req.params.id;
 	const query =
@@ -304,7 +270,6 @@ exports.getAllUUTRelatedGamme = (req, res) => {
 
 //#region Spec
 
-//Récupère tout les labels de la table "Spec"
 exports.getAllSpecLabel = (req, res) => {
 	const query = 'SELECT S.id, S.label FROM `spec` as S';
 
@@ -313,7 +278,6 @@ exports.getAllSpecLabel = (req, res) => {
 	});
 };
 
-//Récupère tout les champs d'une ligne spécifique de la table "Spec"
 exports.getSpecByID = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `spec` as S WHERE S.id = ?';
@@ -323,45 +287,27 @@ exports.getSpecByID = (req, res) => {
 	});
 };
 
-//Fonction pour insérer les données d'une nouvelle Spec dans la table "Spec"
 exports.createSpec = (req, res) => {
-	//Récupère les données pour la requête
 	const datas = [req.body.label, req.body.range, req.body.ctrl, req.body.replay, req.body.date, req.body.who, req.body.comment];
-	//Construit les "fondation" de la requête (sans les données)
+
 	const query = 'INSERT INTO `spec`(`label`, `range`, `ctrl`, `replay`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
-//Fonction pour modifier les données d'une Spec dans la table "Spec"
 exports.modifySpec = (req, res) => {
-	//Récupère les données pour la requête
 	const requestId = req.params.id;
-	const datas = [
-		req.body.label,
-		req.body.range,
-		req.body.ctrl,
-		req.body.replay,
-		req.body.date,
-		req.body.who,
-		req.body.comment,
+	const datas = [req.body.label, req.body.range, req.body.ctrl, req.body.replay, req.body.date, req.body.who, req.body.comment, requestId];
 
-		//Pour le "WHERE"
-		requestId,
-	];
-	//Construit les "fondation" de la requête (sans les données)
 	const query = 'UPDATE spec SET `label` = ?, `range` = ?, `ctrl` = ?, `replay` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
-	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
-//Fonction pour supprimer les données d'une Spec dans la table "Spec"
 exports.deleteSpec = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `spec` WHERE id = ?';
@@ -371,7 +317,6 @@ exports.deleteSpec = (req, res) => {
 	});
 };
 
-//Récupère tout les champs d'une ligne spécifique de la table "Spec"
 exports.getAllSpecRelatedGamme = (req, res) => {
 	const param = req.params.id;
 	const query = 'SELECT S.id, S.label FROM `spec` as S ' + 'WHERE S.range = ? ORDER BY label';
@@ -384,7 +329,7 @@ exports.getAllSpecRelatedGamme = (req, res) => {
 //#endregion
 
 //#region STEP
-//Récupère tout les labels de la table "Step"
+
 exports.getAllStepLabel = (req, res) => {
 	const query = 'SELECT S.id, S.label FROM `step` as S';
 
@@ -393,7 +338,6 @@ exports.getAllStepLabel = (req, res) => {
 	});
 };
 
-//Récupère tout les champs d'une ligne spécifique de la table "Step"
 exports.getAllStepRelatedGamme = (req, res) => {
 	const param = req.params.id;
 	const query = 'SELECT S.id, S.label FROM `step` as S ' + 'WHERE S.range = ? ORDER BY label';
@@ -403,7 +347,6 @@ exports.getAllStepRelatedGamme = (req, res) => {
 	});
 };
 
-//Récupère tout les champs d'une ligne spécifique de la table "Step"
 exports.getStepByID = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `step` as S WHERE S.id = ?';
@@ -414,42 +357,26 @@ exports.getStepByID = (req, res) => {
 };
 
 exports.createStep = (req, res) => {
-	//Récupère les données pour la requête
 	const datas = [req.body.label, req.body.tstFunc, req.body.range, req.body.date, req.body.who, req.body.comment];
-	//Construit les "fondation" de la requête (sans les données)
+
 	const query = 'INSERT INTO `step`(`label`, `tstFunc`, `range`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?)';
 
-	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
-//Fonction pour modifier les données d'une Spec dans la table "Step"
 exports.modifyStep = (req, res) => {
-	//Récupère les données pour la requête
 	const requestId = req.params.id;
-	const datas = [
-		req.body.label,
-		req.body.tstFunc,
-		req.body.range,
-		req.body.date,
-		req.body.who,
-		req.body.comment,
+	const datas = [req.body.label, req.body.tstFunc, req.body.range, req.body.date, req.body.who, req.body.comment, requestId];
 
-		//Pour le "WHERE"
-		requestId,
-	];
-	//Construit les "fondation" de la requête (sans les données)
 	const query = 'UPDATE step SET `label` = ?, `tstFunc` = ?, `range` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
-	//Fusionnne la requête avec les données et execute la requête
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
-//Fonction pour supprimer les données d'une Step dans la table "Step"
 exports.deleteStep = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `step` WHERE id = ?';
@@ -471,7 +398,6 @@ exports.deleteStep = (req, res) => {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
-//Récupère tout les champs d'une ligne spécifique de la table "Step"
 exports.getAllSpecRelatedGamme = (req, res) => {
 	const param = req.params.id;
 	const query = 'SELECT S.id, S.label FROM `spec` as S ' + 'WHERE S.range = ? ORDER BY label';
@@ -481,7 +407,6 @@ exports.getAllSpecRelatedGamme = (req, res) => {
 	});
 };
 
-//Récupère tout les labels de la table "Step" pour une Spec
 exports.getAllStepForASpec = (req, res) => {
 	const requestId = req.params.id;
 	const query =
@@ -495,7 +420,6 @@ exports.getAllStepForASpec = (req, res) => {
 	});
 };
 
-//Récupère tout les labels de la table "Step" pour une range
 exports.getAllStepForAGamme = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'SELECT ST.* FROM `step` as ST WHERE ST.range = ?;';
@@ -507,7 +431,6 @@ exports.getAllStepForAGamme = (req, res) => {
 
 //Ajoute une Step à une SPEC
 exports.addStepToSpec = (req, res) => {
-	//Récupère les données pour la requête
 	const datas = [req.body.idMain, req.body.idLink, req.body.No ? req.body.No : null];
 	const query = 'INSERT INTO `link_spec_step`(`idMain`,`idLink`,`No`) VALUES (?, ?, ?);';
 
@@ -516,7 +439,6 @@ exports.addStepToSpec = (req, res) => {
 	});
 };
 
-//Fonction pour supprimer les données d'une Spec dans la table "Spec"
 exports.deleteStepForSpec = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `link_spec_step` WHERE id = ?';
@@ -530,7 +452,6 @@ exports.deleteStepForSpec = (req, res) => {
 
 //#region Action
 
-//Récupère tout les champs d'une ligne spécifique de la table "Step"
 exports.getAllActionForAStep = (req, res) => {
 	const param = req.params.id;
 	const query = 'SELECT A.* FROM `action` as A WHERE A.idStep = ? ORDER BY A.order';
@@ -551,7 +472,6 @@ exports.getAllActionForUUT = (req, res) => {
 };
 
 exports.createAction = (req, res) => {
-	//Récupère les données pour la requête
 	const datas = [
 		req.body.idStep,
 		req.body.range || null,
@@ -577,18 +497,15 @@ exports.createAction = (req, res) => {
 		req.body.param9 || '',
 	];
 
-	//Construit les "fondation" de la requête (sans les données)
 	const query =
 		'INSERT INTO `action` (`idStep`, `range`, `order`, `track`, `errStamp`, `errApc`, `idTarget`, `idFunc`, `idOrgan`, `idAction`, `ident`, `pattern`, `param0`, `param1`, `param2`, `param3`, `param4`, `param5`, `param6`, `param7`, `param8`, `param9`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
-	//Fusionnne la requête avec les données et execute la requête
+
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
 };
 
-//Fonction pour modifier les données d'une Spec dans la table "Action"
 exports.modifyAction = (req, res) => {
-	//Récupère les données pour la requête
 	const requestId = req.params.id;
 	const datas = [
 		req.body.idStep || null,
@@ -614,19 +531,17 @@ exports.modifyAction = (req, res) => {
 		req.body.param8 || '',
 		req.body.param9 || '',
 
-		//Pour le "WHERE"
 		requestId,
 	];
-	//Construit les "fondation" de la requête (sans les données)
+
 	const query =
 		'UPDATE `action`  SET `idStep` = ?, `range` = ?, `order` = ?, `track` = ?, `errStamp` = ?, `errApc` = ?, `idTarget` = ?, `idFunc` = ?, `idOrgan` = ?, `idAction` = ?, `ident` = ?, `pattern` = ?, `param0` = ?, `param1` = ?, `param2` = ?, `param3` = ?, `param4` = ?, `param5` = ?, `param6` = ?, `param7` = ?, `param8` = ?, `param9` = ? WHERE `id` = ?;';
-	//Fusionnne la requête avec les données et execute la requête
+
 	stamp3uut.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
 };
 
-//Fonction pour supprimer les données d'une Step dans la table "Action"
 exports.deleteAction = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `action` WHERE id = ?';

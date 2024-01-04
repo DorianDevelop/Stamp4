@@ -1,11 +1,6 @@
 const handler = require('../services/handler.js');
 const createConnection = require('../configs/database.config.js'); //Import la fonction créer un lien vers un base de données
 const stamp3drv = createConnection('stamp3drv'); //Créer le lien vers la base de donnée "stamp3"
-/*
- * Dans ce fichier, des morceaux de code sont entouré par des #region et #endregion
- * Ils permettent sur certains IDE de facilement organiser son fichier pendant la phase de dev
- * Si intéressé vous pouvez cherchez sur internet leur fonctionnement
- */
 
 //#region Protocol
 

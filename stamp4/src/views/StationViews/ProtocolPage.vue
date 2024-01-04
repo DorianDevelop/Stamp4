@@ -39,7 +39,7 @@
 					</w-flex>
 				</div>
 
-				<div class="windowsContainer" v-if="allDatas[0]">
+				<div class="windowsContainer">
 					<div class="window" v-for="(valeurs, i) in allDatas" :key="i">
 						<div class="windowTitle" @click="opens[i] = !opens[i]">
 							<p>{{ names[i] }}</p>
@@ -90,11 +90,11 @@
 				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
-			<div>
+			<div v-if="loadedId !== props.datas.id">
 				<div v-if="getAllDatasOfProtocol(props.datas.id ? props.datas.id : -1)"></div>
 			</div>
 
-			<div class="saveAll">
+			<div class="saveAll" v-if="loadedId !== null">
 				<p>Activer la sauvegarde générale</p>
 				<w-switch class="saveAllSwitch" v-model="saveAll" color="red"></w-switch>
 			</div>
@@ -219,21 +219,17 @@ export default {
 			return;
 		},
 		async getAllDatasOfProtocol(id) {
-			if (id !== -1 && id !== this.loadedId) {
-				this.loadedId = id;
-				this.refreshTable = false;
-				await axios
-					.get(`http://localhost:3000/stamp3drv/protocolDatas/${id}`)
-					.then((reponse) => reponse.data)
-					.then((data) => {
-						this.allDatas = data;
-						this.refreshTable = true;
-					});
+			this.loadedId = id;
+			if (this.loadedId === null || this.loadedId === -1) return true;
+			this.allDatas = [];
+			await axios
+				.get(`http://localhost:3000/stamp3drv/protocolDatas/${this.loadedId}`)
+				.then((reponse) => reponse.data)
+				.then((data) => {
+					this.allDatas = data;
+				});
 
-				return false;
-			}
-
-			return true;
+			return false;
 		},
 		shouldBeDisabled(header, datas, answerEx) {
 			if (header === 'slave' && !datas.fieldSlave) return true;
@@ -576,11 +572,11 @@ td {
 .saveAll {
 	position: absolute;
 	top: 105px;
-	right: 16px;
+	right: 40px;
 
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: flex-end;
 	gap: 0.3rem;
 }
 

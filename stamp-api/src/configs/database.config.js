@@ -1,7 +1,6 @@
 const mysql = require('mysql');
 require('dotenv').config();
 
-//Fonction qui permet de créer un lien vers une base de données spécifique
 const createConnection = (dbName) => {
 	const connection = mysql.createConnection({
 		host: process.env.DB_HOST,
