@@ -26,6 +26,8 @@ router.delete('/protocolData/:id', controller.deleteData);
 router.get('/protocolDatas/:id', controller.getAllStrings);
 router.post('/protocolString', validator.validateProtocolDatas, controller.createString);
 router.put('/protocolString/:id', validator.validateProtocolDatas, controller.modifyString);
-router.delete('/protocolString/:id', controller.deleteString);
+router.delete('/protocolString/:id', controller.deleteString); //findNextIdProtocol
+
+router.get('/findNextProtocolID', controller.findNextIdProtocol);
 
 module.exports = router; //Export le router

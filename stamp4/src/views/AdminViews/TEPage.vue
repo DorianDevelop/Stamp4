@@ -2,13 +2,13 @@
 	<Layout class="layout" routeAPI="/stamp3/te" :searchType="0" :formating="createJSONItem" :validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
 		<template #default="props">
 			<w-form class="editForm">
-				<w-flex class="py2 align-start">
+				<w-flex class="py2 align-end">
 					<w-input ref="labelInput" label-color="red" class="mb1 xs5 pa1" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 					<w-input ref="hostInput" label-color="red" class="mb1 xs4 pa1" label="Host" :validators="[validators.required]" v-model="props.datas.host"> </w-input>
 					<w-input label-color="red" class="mb1 xs4 pa1" label="Service" v-model="props.datas.service"> </w-input>
 				</w-flex>
 
-				<w-flex class="py2 align-start">
+				<w-flex class="py2 align-end">
 					<w-input label-color="red" class="mb1 xs6 pa1" label="Email" v-model="props.datas.email"> </w-input>
 					<w-input label-color="red" class="mb1 xs3 pa1" label="Créateur" v-model="props.datas.who"> </w-input>
 					<w-input label-color="red" class="mb1 xs3 pa1" label="Date" type="date" v-model="props.datas.date"> </w-input>

@@ -22,4 +22,7 @@ router.delete('/ate/:id', controller.deleteATE);
 router.get('/plugs', controller.getAllPlug);
 router.get('/plug/:id', controller.getPlugById);
 
+router.get('/driversForPlug/:id', controller.getDriversOfPlug);
+router.get('/actionsForPlug/:id', controller.getActionsOfPlug);
+
 module.exports = router; //Export le router

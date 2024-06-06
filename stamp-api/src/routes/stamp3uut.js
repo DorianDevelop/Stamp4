@@ -14,6 +14,8 @@ router.delete('/gamme/:id', controller.deleteGamme);
 router.get('/uuts', controller.getAllUUTLabel);
 router.get('/uut/:id', controller.getUUTByID);
 router.get('/uutsFiltered/:id', controller.getAllUUTRelatedGamme);
+router.get('/uutsFiltered/:id/:ctrl', controller.getAllUUTRelatedGammeCtrl);
+router.get('/uutsFilteredctrl/:ctrl', controller.getAllUUTRelatedCtrl);
 
 router.post('/uut', validator.validateUut, controller.createUUT);
 router.put('/uut/:id', validator.validateUut, controller.modifyUUT);

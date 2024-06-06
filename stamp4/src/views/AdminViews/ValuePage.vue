@@ -10,12 +10,12 @@
 	>
 		<template #default="props">
 			<w-form class="editForm">
-				<w-flex class="py2 align-start">
+				<w-flex class="py2 align-end">
 					<w-input ref="labelInput" label-color="red" class="mb1 xs6 pa1" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="Id Famille" v-model="props.datas.idFamily"> </w-input>
 				</w-flex>
 
-				<w-flex class="py2 align-start">
+				<w-flex class="py2 align-end">
 					<w-input label-color="red" class="mb1 pa1" label="Type" v-model="props.datas.type"> </w-input>
 					<w-input label-color="red" class="mb1 pa1" label="Valeur" v-model="props.datas.value"> </w-input>
 				</w-flex>

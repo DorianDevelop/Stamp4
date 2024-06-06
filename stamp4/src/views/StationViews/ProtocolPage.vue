@@ -10,20 +10,20 @@
 	>
 		<template #default="props">
 			<w-form class="editForm">
-				<w-flex class="py2 align-start mb1 px1" gap="3">
+				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input ref="labelInput" label-color="green-dark1" class="xs5" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Nom court" v-model="props.datas.shortName"> </w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.date"> </w-input>
 				</w-flex>
 				<div class="switchDetails">
-					<w-flex class="column py1 align-start mb1 px1" gap="3">
+					<w-flex class="column py1 align-center mb1 px1" gap="3">
 						<p class="detailsTitle">Synchronisation</p>
 						<div class="wrapper">
 							<w-switch class="mr4" v-model="props.datas.repeatOrder" color="green" label="Répétition de l'ordre" label-color="green-dark1"></w-switch>
 						</div>
 					</w-flex>
-					<w-flex class="column py1 align-start mb1 px1" gap="3">
+					<w-flex class="column py1 align-center mb1 px1" gap="3">
 						<p class="detailsTitle">Adressabilité</p>
 						<div class="wrapper">
 							<w-switch class="mr4" v-model="props.datas.fieldSlave" color="green" label="Numéro slave" label-color="green-dark1"></w-switch>
@@ -31,7 +31,7 @@
 							<w-switch class="mr4" v-model="props.datas.fieldAddSecond" color="green" label="Adresse secondaire" label-color="green-dark1"></w-switch>
 						</div>
 					</w-flex>
-					<w-flex class="column py1 align-start mb1 px1" gap="3">
+					<w-flex class="column py1 align-center mb1 px1" gap="3">
 						<p class="detailsTitle">Divers</p>
 						<div class="wrapper">
 							<w-switch class="mr4" v-model="props.datas.fieldCmdString" color="green" label="Chaîne de commande" label-color="green-dark1"></w-switch>
@@ -131,8 +131,8 @@ export default {
 					{ label: 'Add pri', key: 'addPrim' },
 					{ label: 'Add sec', key: 'addSecond' },
 					{ label: 'Commandes', key: 'cmdString' },
-					{ label: 'Sync', key: 'answerExpected', align: 'center' },
-					{ label: 'Accès', key: 'access', align: 'center' },
+					{ label: 'Sync', key: 'answerExpected', align: 'left' },
+					{ label: 'Accès', key: 'access', align: 'left' },
 					{ label: 'Délai(S)', key: 'time' },
 					{ label: 'Boucles', key: 'loop' },
 					{ label: 'Réponses', key: 'answerValue' },
@@ -361,8 +361,6 @@ export default {
 				return;
 			}
 
-			console.log(i, id);
-
 			let queryString = '';
 			switch (i) {
 				case 0:
@@ -445,14 +443,23 @@ export default {
 					this.refreshTable = true;
 				});
 		},
-		saveAllDatas() {
+		async saveAllDatas() {
 			let index = 0;
-			this.allDatas.forEach((all) => {
-				all.forEach((e) => {
-					this.saveRow(e, index, false);
+			let next_index = -1;
+			await axios
+				.get(`http://localhost:3000/stamp3drv/findNextProtocolID`)
+				.then((reponse) => reponse.data)
+				.then((data) => {
+					next_index = data[0]['AUTO_INCREMENT'];
+					this.allDatas.forEach((all) => {
+						all.forEach((e) => {
+							e.idProtocol = next_index;
+							e.id = null;
+							this.saveRow(e, index, false);
+						});
+						index++;
+					});
 				});
-				index++;
-			});
 		},
 	},
 };
@@ -494,7 +501,7 @@ export default {
 
 .switchDetails .windowContent .parameter {
 	padding: 0 0.1rem 1.5rem 0.1rem;
-	font-size: 12px;
+	font-size: 18px;
 }
 
 .separator {
@@ -510,7 +517,7 @@ export default {
 }
 
 td {
-	font-size: 12px;
+	font-size: 18px;
 }
 
 .text-label {
@@ -538,7 +545,12 @@ td {
 .text-slave,
 .text-addPrim,
 .text-addSecond {
-	width: 85px;
+	width: 95px;
+}
+
+.text-access select {
+	font-size: 1rem;
+	padding: 0.15rem 0.3rem;
 }
 
 .w-input--disabled {
@@ -571,13 +583,10 @@ td {
 }
 .saveAll {
 	position: absolute;
-	top: 105px;
-	right: 40px;
-
+	top: 136px;
+	right: 42px;
 	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-	gap: 0.3rem;
+	gap: 1rem;
 }
 
 .saveAll p {

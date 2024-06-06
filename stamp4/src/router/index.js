@@ -5,6 +5,7 @@ import * as Admin from '@/views/AdminViews';
 import * as Produit from '@/views/ProduitViews';
 import * as Analyse from '@/views/AnalyseViews';
 import * as Station from '@/views/StationViews';
+import PDFArchitecture from '@/components/PDFArchitecture.vue';
 
 const routes = [
 	{
@@ -24,6 +25,7 @@ const routes = [
 			{ path: 'fonctions', name: 'Fonctions', component: Admin.FunctionPage },
 			{ path: 'organs', name: 'Organs', component: Admin.OrganPage },
 			{ path: 'actions', name: 'Actions', component: Admin.ActionPage },
+			{ path: 'test', name: 'TEST', component: PDFArchitecture },
 		],
 	},
 	{
@@ -51,6 +53,7 @@ const routes = [
 		name: 'Station',
 		children: [
 			{ path: '', name: 'Station', component: Views.StationPage },
+			{ path: 'plugins', name: 'Plugins', component: Station.PluginPage },
 			{ path: 'operateurs', name: 'Opérateurs', component: Station.OpPage },
 			{ path: 'ates', name: 'Testeurs', component: Station.ATEPage },
 			{ path: 'protocoles', name: 'Protocoles', component: Station.ProtocolPage },

@@ -22,9 +22,10 @@ export default {
 <style scoped>
 .empty {
 	position: absolute;
-	top: 120px;
-	left: 20%;
+	top: 140px;
+	left: 16%;
 	font-weight: 500;
+	font-size: 18px;
 }
 .empty span {
 	color: var(--green);

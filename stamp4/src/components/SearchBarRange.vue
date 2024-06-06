@@ -13,6 +13,9 @@ import vSelect from 'vue-select';
 import axios from 'axios';
 import ArrowIndication from '@/components/ArrowIndication.vue';
 import ArrowFilter from '@/components/ArrowFilter.vue';
+/*
+TO DO : Ajouter filtre CTRL, chiant de ofu
+*/
 
 export default {
 	props: {
@@ -57,7 +60,6 @@ export default {
 					this.gammeFilter = data;
 				});
 
-			console.log(`http://localhost:3000${this.route}`);
 			await axios
 				.get(`http://localhost:3000${this.route}`)
 				.then((reponse) => reponse.data)
@@ -78,7 +80,6 @@ export default {
 				.then((data) => {
 					this.options = data;
 				});
-			console.log('tests');
 		},
 	},
 	mounted() {
@@ -121,9 +122,9 @@ export default {
 <style scoped>
 @import 'vue-select/dist/vue-select.css';
 .search {
-	width: 340px;
+	min-width: 340px;
 	background: var(--white);
-	font-size: 0.8rem;
+	font-size: 1rem;
 
 	display: flex;
 	flex-direction: column;
@@ -131,9 +132,9 @@ export default {
 }
 
 .fleche {
-	top: 165px;
+	top: 190px;
 }
 .fleche_filtre {
-	left: 365px;
+	left: 385px;
 }
 </style>

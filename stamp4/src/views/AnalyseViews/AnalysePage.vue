@@ -42,7 +42,7 @@
 						</select>
 					</div>
 				</div>
-				<w-flex class="align-start xs6 dates" gap="3">
+				<w-flex class="align-end xs6 dates" gap="3">
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date début" type="date" v-model="props.datas.dateStart"> </w-input>
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date de fin" type="date" v-model="props.datas.dateEnd"> </w-input>
 				</w-flex>

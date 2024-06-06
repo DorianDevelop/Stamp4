@@ -195,7 +195,9 @@ const actionSchema = Joi.object({
 });
 
 exports.validateAction = (req, res, next) => {
+	console.log(req.body);
 	const { error } = actionSchema.validate(req.body);
+	console.log(error);
 	if (error) {
 		return res.status(400).json({ Error: 'Bad request, try to verify the datas format\n' });
 	}

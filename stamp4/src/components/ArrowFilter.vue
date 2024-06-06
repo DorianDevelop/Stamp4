@@ -25,8 +25,9 @@ export default {
 <style scoped>
 .empty {
 	position: absolute;
-	top: 50px;
+	top: 60px;
 	font-weight: 500;
+	font-size: 18px;
 }
 .empty span {
 	color: var(--darker-red);

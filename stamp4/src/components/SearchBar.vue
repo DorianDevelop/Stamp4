@@ -84,7 +84,7 @@ export default {
 <style scoped>
 @import 'vue-select/dist/vue-select.css';
 .search {
-	width: 340px;
+	min-width: 340px;
 	background: var(--white);
 	font-size: 0.8rem;
 

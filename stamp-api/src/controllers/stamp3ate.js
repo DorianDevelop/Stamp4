@@ -150,10 +150,10 @@ exports.deleteATE = (req, res) => {
 //#endregion
 //-----------------------------------//
 
-//#region ATE (Testeur)
+//#region Plugins
 
 exports.getAllPlug = (req, res) => {
-	const query = 'SELECT P.id, P.label FROM `plug` as P';
+	const query = 'SELECT P.id, P.label FROM `plug` as P ORDER BY 2';
 
 	stamp3ate.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
@@ -163,6 +163,24 @@ exports.getAllPlug = (req, res) => {
 exports.getPlugById = (req, res) => {
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `plug` as P WHERE P.id = ?';
+
+	stamp3ate.query(query, [requestId], (error, results) => {
+		handler.handleReponse(res, error, results);
+	});
+};
+
+exports.getDriversOfPlug = (req, res) => {
+	const requestId = req.params.id;
+	const query = 'SELECT * FROM `driver` where idATE = ? ORDER BY id';
+
+	stamp3ate.query(query, [requestId], (error, results) => {
+		handler.handleReponse(res, error, results);
+	});
+};
+
+exports.getActionsOfPlug = (req, res) => {
+	const requestId = req.params.id;
+	const query = 'SELECT * FROM `action` where idPlug = ? ORDER BY `order`';
 
 	stamp3ate.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);

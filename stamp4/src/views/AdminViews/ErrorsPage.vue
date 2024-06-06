@@ -10,13 +10,13 @@
 	>
 		<template #default="props">
 			<w-form class="editForm">
-				<w-flex class="py2 align-start">
+				<w-flex class="py2 align-end">
 					<w-input type="number" label-color="red" class="mb1 xs2 pa1" label="ApcNo" v-model="props.datas.apcNo"> </w-input>
 					<w-input ref="codeInput" type="number" label-color="red" class="mb1 xs2 pa1" label="Code" v-model="props.datas.code" :validators="[validators.required]"> </w-input>
 					<w-input ref="labelInput" label-color="red" class="mb1 xs5 pa1" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 				</w-flex>
 
-				<w-flex class="py2 align-start">
+				<w-flex class="py2 align-end">
 					<w-input label-color="red" class="mb1 xs3 pa1" label="Function" v-model="props.datas.function"> </w-input>
 					<w-input label-color="red" class="mb1 xs2 pa1" label="HelpF" v-model="props.datas.helpF"> </w-input>
 					<w-input label-color="red" class="mb1 xs2 pa1" label="HelpS" v-model="props.datas.helpS"> </w-input>
@@ -24,7 +24,7 @@
 					<w-input label-color="red" class="mb1 xs2 pa1" label="Module" v-model="props.datas.module"> </w-input>
 				</w-flex>
 
-				<w-flex class="py2 align-start">
+				<w-flex class="py2 align-end">
 					<w-textarea rows="5" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Message Français" v-model="props.datas.msgFR"> </w-textarea>
 					<w-textarea rows="5" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Message Anglais" v-model="props.datas.msgEN"> </w-textarea>
 				</w-flex>

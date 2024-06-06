@@ -5,7 +5,7 @@ const stamp3uut = createConnection('stamp3uut'); //Créer le lien vers la base d
 //#region Gamme
 
 exports.getAllGammeLabel = (req, res) => {
-	const query = 'SELECT R.id, R.label FROM `range` as R';
+	const query = 'SELECT R.id, R.label FROM `range` as R ORDER BY 2 ASC';
 
 	stamp3uut.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
@@ -255,7 +255,7 @@ exports.deleteUUT = (req, res) => {
 };
 
 exports.getAllUUTRelatedGamme = (req, res) => {
-	const param = req.params.id;
+	const param = [req.params.id];
 	const query =
 		'SELECT U.id, ' +
 		`CASE WHEN U.power IS NOT NULL AND U.power <> '' THEN CONCAT(U.refsku, "  [", U.power, " VA", "]") ELSE CONCAT(U.refsku, "  [0 VA]") END as label FROM uut as U ` +
@@ -266,6 +266,23 @@ exports.getAllUUTRelatedGamme = (req, res) => {
 	});
 };
 
+exports.getAllUUTRelatedGammeCtrl = (req, res) => {
+	const param = [req.params.ctrl, req.params.id];
+
+	const query = `SELECT U.id, CASE WHEN U.power IS NOT NULL AND U.power <> '' THEN CONCAT(U.refsku, " [", U.power, " VA]") ELSE CONCAT(U.refsku, " [0 VA]") END AS label, Q.Qualified AS quali FROM uut AS U LEFT JOIN qualified AS Q ON Q.idUut = U.id AND Q.idCtrlFlt = ? WHERE U.range = ? ORDER BY quali DESC, label ASC;`;
+	stamp3uut.query(query, param, (error, results) => {
+		handler.handleReponse(res, error, results);
+	});
+};
+
+exports.getAllUUTRelatedCtrl = (req, res) => {
+	const param = [req.params.ctrl];
+
+	const query = `SELECT U.id, CASE WHEN U.power IS NOT NULL AND U.power <> '' THEN CONCAT(U.refsku, " [", U.power, " VA]") ELSE CONCAT(U.refsku, " [0 VA]") END AS label, Q.Qualified AS quali FROM uut AS U LEFT JOIN qualified AS Q ON Q.idUut = U.id AND Q.idCtrlFlt = ? ORDER BY quali DESC, label ASC;`;
+	stamp3uut.query(query, [param], (error, results) => {
+		handler.handleReponse(res, error, results);
+	});
+};
 //#endregion
 
 //#region Spec
@@ -422,7 +439,7 @@ exports.getAllStepForASpec = (req, res) => {
 
 exports.getAllStepForAGamme = (req, res) => {
 	const requestId = req.params.id;
-	const query = 'SELECT ST.* FROM `step` as ST WHERE ST.range = ?;';
+	const query = 'SELECT ST.* FROM `step` as ST WHERE ST.range = ? ORDER BY ST.label ASC;';
 
 	stamp3uut.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);

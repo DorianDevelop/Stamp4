@@ -2,9 +2,17 @@
 	<div class="container">
 		<div class="topOptions">
 			<SearchBar v-if="searchBar === 0" :newItem="newItemCreated" :refreshSearch="refreshSearch" :route="routeAPI + 's'" @update:selected="getValueForOne" />
-			<UUTSearchBar
+			<SearchBarRange
 				:displayArrow="showArrow"
-				v-if="searchBar === 1"
+				v-else-if="searchBar === 1"
+				:newItem="newItemCreated"
+				:refreshSearch="refreshSearch"
+				:route="routeAPI + 's'"
+				@update:selected="getValueForOne"
+			/>
+			<SearchBarRangeCtrl
+				:displayArrow="showArrow"
+				v-else-if="searchBar === 2"
 				:newItem="newItemCreated"
 				:refreshSearch="refreshSearch"
 				:route="routeAPI + 's'"
@@ -31,8 +39,9 @@
 <script>
 import axios from 'axios';
 import SearchBar from '@/components/SearchBar.vue';
-import UUTSearchBar from '@/components/UUTSearchBar.vue';
+import SearchBarRange from '@/components/SearchBarRange.vue';
 import ButtonBar from '@/components/ButtonBar.vue';
+import SearchBarRangeCtrl from '@/components/SearchBarRangeCtrl.vue';
 
 export default {
 	props: {
@@ -44,7 +53,8 @@ export default {
 	},
 	name: 'ItemLayout',
 	components: {
-		UUTSearchBar,
+		SearchBarRangeCtrl,
+		SearchBarRange,
 		SearchBar,
 		ButtonBar,
 	},

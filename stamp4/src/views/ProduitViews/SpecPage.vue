@@ -10,7 +10,7 @@
 	>
 		<template #default="props">
 			<w-form class="editForm">
-				<w-flex class="py2 align-start mb1 px1" gap="3">
+				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input
 						@input="hasBeenSaved = false"
 						ref="labelInput"
@@ -29,7 +29,7 @@
 					</div>
 				</w-flex>
 
-				<w-flex class="py2 align-start mb1 px1" gap="3">
+				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
@@ -162,13 +162,12 @@ export default {
 			return true;
 		},
 		async addNewStep(idSpec) {
-			if (idSpec !== -1 && !idSpec && !this.newStep) {
+			if (idSpec !== -1 && idSpec && this.newStep) {
 				let datas = {
 					idMain: idSpec,
 					idLink: this.newStep.id,
 					No: this.newStepNumber,
 				};
-
 				await axios
 					.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
 					.then((response) => {

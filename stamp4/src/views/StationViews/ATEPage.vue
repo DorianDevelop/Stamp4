@@ -10,7 +10,7 @@
 	>
 		<template #default="props">
 			<w-form class="editForm">
-				<w-flex class="py2 align-start mb1 px1" gap="3">
+				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input ref="labelInput" label-color="green-dark1" class="xs3" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Nom" v-model="props.datas.name"> </w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Host (identifiant)" v-model="props.datas.host"> </w-input>
@@ -43,7 +43,7 @@
 					<div class="selects">
 						<p>Fonction</p>
 						<select v-model="props.datas.func">
-							<option v-for="item in testTypes" :key="item" :value="item.id">
+							<option v-for="item in ctrlTypes" :key="item" :value="item.id">
 								{{ item.label }}
 							</option>
 						</select>
@@ -58,7 +58,7 @@
 					</div>
 				</div>
 
-				<w-flex class="py2 align-start mb1 px1 mt4" gap="3">
+				<w-flex class="py2 align-end mb1 px1 mt4" gap="3">
 					<div class="selects smaller2">
 						<p>Sauvegarder</p>
 						<select v-model="props.datas.trace">
@@ -67,7 +67,7 @@
 					</div>
 					<w-input label-color="green-dark1" class="xs3" label="Chemin fichier log" v-model="props.datas.tPath"> </w-input>
 				</w-flex>
-				<w-flex class="py2 align-start mb4 px1 mt2" gap="3">
+				<w-flex class="py2 align-end mb4 px1 mt2" gap="3">
 					<div class="selects smaller2">
 						<p>Sauvegarder</p>
 						<select v-model="props.datas.quasar">
@@ -78,7 +78,7 @@
 					<w-input label-color="green-dark1" class="xs3" label="Chemin réseau Quasar" v-model="props.datas.nQuasar"> </w-input>
 				</w-flex>
 
-				<w-flex class="py2 align-start mb1 px1" gap="3">
+				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
@@ -112,7 +112,7 @@ export default {
 				{ value: 'RMA', label: 'RMA' },
 				{ value: 'CMA', label: 'CMA' },
 			],
-			testTypes: [
+			ctrlTypes: [
 				{ id: '000', label: 'Non défini !' },
 				{ id: '100', label: 'Optical Inspection' },
 				{ id: '110', label: 'In Circuit Test' },

@@ -18,7 +18,7 @@
 			<router-link to="/station" class="router-link">
 				Station
 				<div class="hoverLink">
-					<p>Plugins</p>
+					<router-link to="/station/plugins" class="sub-router-link">Plugins</router-link>
 					<router-link to="/station/ates" class="sub-router-link">Testeurs</router-link>
 					<router-link to="/station/protocoles" class="sub-router-link">Protocoles</router-link>
 					<router-link to="/station/operateurs" class="sub-router-link">Opérateurs</router-link>
@@ -28,7 +28,6 @@
 				Analyse
 				<div class="hoverLink">
 					<router-link to="/analyse/raports" class="sub-router-link">Raports</router-link>
-					<router-link to="/analyse/analyses" class="sub-router-link">Analyses</router-link>
 				</div>
 			</router-link>
 
@@ -67,9 +66,9 @@ nav {
 	top: 0;
 	left: 50%;
 
-	width: 1350px;
+	width: 1900px;
 	max-width: 100%;
-	height: 35px;
+	height: 45px;
 	transform: translateX(-50%);
 
 	display: flex;
@@ -84,12 +83,12 @@ nav {
 }
 
 .home {
-	width: 200px;
+	width: 250px;
 	height: 100%;
 
 	display: flex;
 	align-items: center;
-	margin-left: -0.5rem;
+	justify-content: flex-start;
 }
 
 .homeLink {
@@ -115,10 +114,15 @@ nav img {
 	display: flex;
 	align-items: center;
 
-	padding: 0 1rem;
+	padding: 0.5rem 2.5rem;
+	font-size: 1.2rem;
 	cursor: pointer;
 
 	transition: all 0.35s ease;
+}
+
+.home .homeLink {
+	padding: 0;
 }
 
 .homeLink:hover,
@@ -175,7 +179,7 @@ nav img {
 	border: 1px solid var(--black);
 	border-top: none;
 
-	font-size: 0.75rem;
+	font-size: 1rem;
 
 	display: none;
 }

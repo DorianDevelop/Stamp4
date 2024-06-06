@@ -43,6 +43,7 @@
 /* Apply a simple, elegant font to the entire page */
 body {
 	font-family: 'Montserrat', 'Raleway', 'Arial', sans-serif;
+	overflow-y: scroll;
 }
 
 /* Add a subtle background color and center content */
@@ -62,11 +63,11 @@ a {
 }
 
 .container {
-	width: 1300px;
+	width: 98vw;
 	max-width: 100%;
 	min-height: calc(100vh - 35px);
 	margin: 0 auto;
-	padding: 20px;
+	padding: 40px;
 
 	margin-top: 35px;
 
@@ -87,7 +88,7 @@ a {
 	flex-wrap: wrap;
 	gap: 2rem;
 
-	width: 900px;
+	width: 1200px;
 	height: calc(100vh - 35px);
 	margin-top: 35px;
 
@@ -95,19 +96,19 @@ a {
 }
 
 .card {
-	height: 270px;
-	width: 200px;
+	height: 300px;
+	width: 250px;
 	box-shadow: 0 0 2px rgba(90, 90, 90, 0.4);
 	border-radius: 25px;
-	font-size: 1.5rem;
+	font-size: 1.7rem;
 	text-align: center;
 
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	gap: 2rem;
+	gap: 3rem;
 	align-items: center;
-	padding-top: 3rem;
+	padding-top: 3.5rem;
 
 	cursor: pointer;
 	transition: all 0.1s ease;
@@ -142,7 +143,7 @@ a {
 .w-input,
 .w-textarea,
 .w-select__label {
-	font-size: 0.85rem !important;
+	font-size: 1.1rem !important;
 }
 .actionWarning {
 	position: absolute;
@@ -155,7 +156,7 @@ a {
 
 .selects {
 	color: #fa3317;
-	font-size: 0.85rem !important;
+	font-size: 0.9rem !important;
 }
 
 .selects p {
@@ -163,6 +164,7 @@ a {
 }
 
 .selects select {
+	font-size: 1rem;
 	margin-top: 4px;
 	border: none;
 	padding: 8px 16px;
@@ -172,7 +174,7 @@ a {
 
 .selects span {
 	display: block;
-	font-size: 0.8rem;
+	font-size: 0.9rem;
 	margin: 5px 2px;
 }
 
@@ -195,17 +197,17 @@ a {
 }
 
 .parameters p {
-	font-size: 0.8rem;
+	font-size: 0.9rem;
 	text-decoration: underline;
 }
 
 .label_param {
 	color: #fa3317;
-	font-size: 0.85rem !important;
+	font-size: 0.9rem !important;
 }
 
 .etendre_btn {
-	font-size: 0.8rem;
+	font-size: 0.9rem;
 	color: #fa3317;
 	border: 1px solid #fa3317;
 	padding: 0.1rem 1rem;
@@ -288,7 +290,7 @@ a {
 
 	margin: 0.3rem 0;
 
-	font-size: 0.9rem;
+	font-size: 1rem;
 }
 
 .steps .step span {
@@ -309,10 +311,10 @@ a {
 .addingLabel,
 .stepsLabel {
 	position: absolute;
-	top: -20px;
+	top: -26px;
 	left: 5px;
 	color: #1baf59;
-	font-size: 0.85rem !important;
+	font-size: 0.95rem !important;
 }
 
 .stepContainer .adding {
@@ -338,37 +340,39 @@ a {
 .stepContainer .adding .v-select {
 	width: 100% !important;
 	min-width: 230px !important;
-	font-size: 0.75rem !important;
+	font-size: 0.9rem !important;
 }
-
-.allActions,
-.action {
+/*
+.newVersion,
+.newVersion .action {
 	display: flex;
 	flex-direction: column;
 	gap: 0.75rem;
 }
-.allActions {
-	width: 60%;
+.newVersion {
+	width: 99%;
 	margin: 1rem auto 1.5rem auto;
 }
 
-.action {
+.newVersion .action {
 	box-shadow: 0 0 2px rgba(90, 90, 90, 0.877);
 	border-radius: 6px;
 	padding: 0rem 0.8rem;
 	gap: 1rem;
 	width: 100%;
+	padding-bottom: 40px;
 
-	font-size: 14px;
+	font-size: 15px;
+	position: relative;
 }
 
-.action .title {
+.newVersion .action .title {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-.action .icon {
+.newVersion .action .icon {
 	border: none;
 	background: none;
 	transition: all 0.3s ease;
@@ -377,14 +381,49 @@ a {
 	padding: 0 0.2rem;
 }
 
-.action .opened {
+.newVersion .action .opened {
 	transform: rotateZ(180deg);
+}
+*/
+.oldVersion,
+.oldVersion .action {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	font-size: 13px;
+
+	position: relative;
+}
+.oldVersion {
+	width: 99%;
+	margin: 1rem auto 1.5rem auto;
+}
+
+.oldVersion .w-input {
+	font-size: 0.9rem !important;
+	max-width: 200px;
+}
+
+.oldVersion .action {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	font-size: 13px;
+}
+.oldVersion .action .title {
+	width: 260px;
+}
+
+.oldVersion .w-button.size--md {
+	width: 41px !important;
+	margin-left: 10px;
 }
 
 .addAction {
 	width: 90%;
 	margin: 1rem auto;
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
 	justify-content: flex-start;
 	gap: 0.8rem;
 
@@ -418,11 +457,28 @@ a {
 	width: 72px !important;
 	margin: 20px 1px 12px 1px;
 }
-
-.allActions .w-button.size--md {
+/*
+.newVersion .w-button.size--md {
 	height: 28px !important;
-	width: 100% !important;
+	width: 8% !important;
 	margin: 20px 1px 12px 1px;
+	position: absolute;
+	bottom: -5px;
+	left: 50%;
+	transform: translateX(-50%);
+}*/
+
+.addParams {
+	width: 100%;
+	grid-area: 2 / 1 / 3 / 4;
+	padding: 0.2rem 0.1rem;
+
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	justify-content: center;
+	align-items: center;
+	row-gap: 1rem;
+	column-gap: 0.5rem;
 }
 
 .w-pagination__items-per-page {
@@ -433,11 +489,11 @@ a {
 	background: none !important;
 }
 .w-table__header {
-	font-size: 13px;
+	font-size: 14px;
 }
 
 .w-icon {
-	font-size: 1rem !important;
+	font-size: 0.9rem !important;
 }
 
 .w-table-wrap {

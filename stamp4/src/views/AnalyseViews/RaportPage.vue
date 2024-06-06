@@ -1,9 +1,10 @@
 <template>
 	<section id="report">
+		<!-- TODO : Tout, refaire la page find-->
 		<div class="topOptions">
-			<UUTSearchBar route="/stamp3uut/uuts" @update:selected="getValueForOne" :newItem="spaceTaker" :refreshSearch="spaceTaker" :displayArrow="spaceTaker" />
+			<SearchBarRange route="/stamp3uut/uuts" @update:selected="getValueForOne" :newItem="spaceTaker" :refreshSearch="spaceTaker" :displayArrow="spaceTaker" />
 		</div>
-		<div v-if="datas" class="infos">
+		<div v-if="datas" class="infos" id="page-to-pdf">
 			<p class="title">{{ datas.refsku }}</p>
 			<div class="details">
 				<div>
@@ -139,13 +140,18 @@
 				</div>
 			</div>
 			<div class="separator" v-if="allActions.length >= 1"></div>
-			<h1>TODO : PDF</h1>
+			<button @click="downloadPDF">Print Download</button>
+			<PDFArchitecture id="pdf" />
 		</div>
 	</section>
 </template>
 <script>
 import axios from 'axios';
-import UUTSearchBar from '@/components/UUTSearchBar.vue';
+import SearchBarRange from '@/components/SearchBarRange.vue';
+
+import html2pdf from 'html2pdf.js';
+
+import PDFArchitecture from '@/components/PDFArchitecture.vue';
 
 export default {
 	data() {
@@ -159,7 +165,8 @@ export default {
 		};
 	},
 	components: {
-		UUTSearchBar,
+		SearchBarRange,
+		PDFArchitecture,
 	},
 	methods: {
 		async getValueForOne(val) {
@@ -258,12 +265,26 @@ export default {
 					this.actionNames[datas.id] = data.label;
 				});
 		},
+		downloadPDF() {
+			var element = document.getElementById('pdf');
+			var opt = {
+				margin: 0,
+				filename: 'test.pdf',
+				image: { type: 'jpeg', quality: 0.98 },
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+			};
+
+			// New Promise-based usage:
+			html2pdf().set(opt).from(element).save();
+		},
 	},
 };
 </script>
 <style scoped>
 #report {
-	width: 1400px;
+	width: 98vw;
+	font-size: 15px;
 }
 .infos {
 	padding-left: 2rem;
@@ -274,9 +295,8 @@ export default {
 }
 .topOptions {
 	position: absolute;
-	top: 55px;
-	left: 170px;
-	width: 800px;
+	top: 75px;
+	left: 40px;
 }
 
 .topOptions .fl {
@@ -284,7 +304,7 @@ export default {
 }
 
 .title {
-	font-size: 2rem;
+	font-size: 1.5rem;
 	margin-bottom: 2rem;
 
 	text-align: center;
@@ -325,7 +345,7 @@ export default {
 
 	padding: 2.5rem 2rem 1.5rem 2rem;
 	position: relative;
-	font-size: 0.8rem;
+	font-size: 1.05rem;
 }
 
 .cat .nom {
@@ -333,7 +353,7 @@ export default {
 	top: 0;
 	left: 50%;
 	transform: translateX(-50%);
-	font-size: 1rem;
+	font-size: 0.9rem;
 }
 .cat .nom {
 	padding-bottom: 0.1rem;
@@ -355,7 +375,6 @@ export default {
 	word-break: break-all;
 	word-wrap: break-word;
 }
-
 .params {
 	display: flex;
 	align-items: flex-start;
@@ -363,7 +382,7 @@ export default {
 
 	padding: 0.2rem 0.5rem;
 	margin-top: 0.5rem;
-	font-size: 0.75rem;
+	font-size: 0.85rem;
 }
 
 .paramsContainer {
@@ -376,22 +395,22 @@ export default {
 }
 
 .stepAction .nom {
-	font-size: 0.9rem;
+	font-size: 1rem;
 	margin-right: 0.8rem;
 	border: none;
-	width: 270px;
+	width: 233px;
 	padding-bottom: 0.25rem;
 	color: #119146;
 }
 
 .bigKey {
-	font-size: 1.2rem;
+	font-size: 1.05rem;
 	font-weight: 600;
 	text-align: center;
 	color: #119146;
 }
 .smallKey {
-	font-size: 1rem;
+	font-size: 0.9rem;
 	margin: 0.5rem 0 0.4rem 0;
 	text-align: center;
 	text-decoration: underline;
