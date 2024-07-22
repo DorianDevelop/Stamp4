@@ -5,13 +5,24 @@ import * as Admin from '@/views/AdminViews';
 import * as Produit from '@/views/ProduitViews';
 import * as Analyse from '@/views/AnalyseViews';
 import * as Station from '@/views/StationViews';
-import PDFArchitecture from '@/components/PDFArchitecture.vue';
+
+import { getIfAdmin } from '@/helpers/utilities.js';
 
 const routes = [
 	{
 		path: '/',
 		name: 'Home',
 		component: Views.HomePage,
+	},
+	{
+		path: '/refused',
+		name: 'Refused',
+		component: Admin.RefusedPage,
+	},
+	{
+		path: '/personal',
+		name: 'Perso',
+		component: Views.PersonalPage,
 	},
 	{
 		path: '/admin',
@@ -25,8 +36,15 @@ const routes = [
 			{ path: 'fonctions', name: 'Fonctions', component: Admin.FunctionPage },
 			{ path: 'organs', name: 'Organs', component: Admin.OrganPage },
 			{ path: 'actions', name: 'Actions', component: Admin.ActionPage },
-			{ path: 'test', name: 'TEST', component: PDFArchitecture },
 		],
+		beforeEnter: async (to, from, next) => {
+			const isAdmin = await getIfAdmin();
+			if (!isAdmin) {
+				next({ path: '/refused' });
+			} else {
+				next();
+			}
+		},
 	},
 	{
 		path: '/produit',
@@ -44,7 +62,6 @@ const routes = [
 		name: 'Analyse',
 		children: [
 			{ path: '', name: 'Analyse', component: Views.AnalysePage },
-			{ path: 'analyses', name: 'Analyses', component: Analyse.AnalysePage },
 			{ path: 'raports', name: 'Raports', component: Analyse.RaportPage },
 		],
 	},

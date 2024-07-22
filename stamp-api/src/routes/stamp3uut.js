@@ -34,10 +34,12 @@ router.delete('/spec/:id', controller.deleteSpec);
 router.get('/steps', controller.getAllStepLabel);
 router.get('/step/:id', controller.getStepByID);
 router.get('/stepsFiltered/:id', controller.getAllStepForAGamme);
+router.get('/findNextSpecID', controller.findNextIdSpec);
 
 router.post('/step', validator.validateStep, controller.createStep);
 router.put('/step/:id', validator.validateStep, controller.modifyStep);
 router.delete('/step/:id', controller.deleteStep);
+router.get('/findNextStepID', controller.findNextIdStep);
 
 router.get('/stepForSpec/:id', controller.getAllStepForASpec);
 router.get('/stepForGamme/:id', controller.getAllStepForAGamme);
@@ -47,7 +49,7 @@ router.delete('/stepForSpec/:id', controller.deleteStepForSpec);
 
 //Action
 router.get('/actionForStep/:id', controller.getAllActionForAStep);
-router.get('/actionForUUT/:id', controller.getAllActionForUUT);
+router.get('/actionForUUTAndCtrl/:id/:ctrl', controller.getAllActionForUUT);
 
 router.post('/action', validator.validateAction, controller.createAction);
 router.put('/action/:id', validator.validateAction, controller.modifyAction);
@@ -55,5 +57,9 @@ router.delete('/action/:id', controller.deleteAction);
 router.delete('/actionByStep/:id', controller.deleteActionByStep);
 
 router.get('/findNextID', controller.findNextIdStep);
+router.get('/whereUutQualified/:id', controller.getWhereQualified);
+router.get('/uutQualified/:id/:ctrl', controller.getQualifiedResult);
+router.post('/uutQualification/:id/:ctrl', controller.qualifyUut);
+router.delete('/uutUnqualification/:id/:ctrl', controller.unqualifyUut);
 
 module.exports = router; //Export le router

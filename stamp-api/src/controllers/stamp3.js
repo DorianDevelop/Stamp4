@@ -1,54 +1,80 @@
 const handler = require('../services/handler.js');
 const createConnection = require('../configs/database.config.js'); //Import la fonction créer un lien vers un base de données
-const stamp3 = createConnection('stamp3'); //Créer le lien vers la base de donnée "stamp3"
+const os = require('os');
+
+exports.getUserHostname = (req, res) => {
+	const hostname = os.hostname();
+	res.json({ hostname: hostname });
+};
+
+exports.connectUser = (req, res) => {
+	const db = createConnection('stamp3');
+	const hostname = os.hostname();
+	const query = 'SELECT * FROM `te` as T WHERE T.host = ?';
+
+	db.query(query, [hostname], (error, results) => {
+		handler.handleReponse(res, error, results);
+	});
+	db.end();
+};
 
 //#region TE (Test Engineers)
 
 exports.getAllTeLabel = (req, res) => {
+	const db = createConnection('stamp3');
 	const query = 'SELECT T.id, T.label FROM `te` as T';
 
-	stamp3.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getTeByID = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `te` as T WHERE T.id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createTE = (req, res) => {
+	const db = createConnection('stamp3');
 	const datas = [req.body.label, req.body.host, req.body.email, req.body.service, req.body.date, req.body.who, req.body.comment];
 
 	const query = 'INSERT INTO `te`(`label`, `host`, `email`, `service`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyTE = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const datas = [req.body.label, req.body.host, req.body.email, req.body.service, req.body.date, req.body.who, req.body.comment, requestId];
 
 	const query = 'UPDATE te SET `label` = ?, `host` = ?, `email` = ?, `service` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteTE = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `te` WHERE id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 //#endregion
@@ -56,23 +82,28 @@ exports.deleteTE = (req, res) => {
 //#region Errors
 
 exports.getAllErrorsCodeAndLabel = (req, res) => {
+	const db = createConnection('stamp3');
 	const query = 'SELECT E.id, CONCAT("[", E.code,"] ", E.label) as label FROM `error` as E';
 
-	stamp3.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getErrorByID = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `error` as E WHERE E.id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createError = (req, res) => {
+	const db = createConnection('stamp3');
 	const datas = [
 		req.body.code,
 		req.body.module,
@@ -91,12 +122,14 @@ exports.createError = (req, res) => {
 	const query =
 		'INSERT INTO `error`(`code`, `module`, `function`, `label`, `apcNo`, `level`, `helpF`, `helpS`, `msgFR`, `msgEN`, `msgXX`, `comment`) ' + 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?);';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyError = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const datas = [
 		req.body.code,
@@ -119,18 +152,21 @@ exports.modifyError = (req, res) => {
 		'UPDATE `error` SET `code` = ?, `module` = ?, `function` = ?, `label` = ?, `apcNo` = ?, `level` = ?, `helpF` = ?, `helpS` = ?, `msgFR` = ?, `msgEN` = ?, `msgXX` = ?, `comment` = ?' +
 		' WHERE `id` = ?';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteError = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `error` WHERE `id` = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 //#endregion
@@ -138,50 +174,60 @@ exports.deleteError = (req, res) => {
 //#region Values
 
 exports.getAllValuesTypeAndLabel = (req, res) => {
+	const db = createConnection('stamp3');
 	const query = 'SELECT V.id, V.type, V.label FROM `value` as V';
 
-	stamp3.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getValueByID = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `value` as V WHERE V.id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createValue = (req, res) => {
+	const db = createConnection('stamp3');
 	const datas = [req.body.label, req.body.idFamily, req.body.type, req.body.value ? req.body.value : ''];
 
 	const query = 'INSERT INTO `value`(`label`, `idFamily`, `type`, `value`) VALUES (?, ?, ?, ?)';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyValue = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const datas = [req.body.label, req.body.idFamily, req.body.type, req.body.value, requestId];
 
 	const query = 'UPDATE `value` SET `label` = ?, `idFamily` = ?, `type` = ?, `value` = ? WHERE `id` = ?';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteValue = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `value` WHERE id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 //#endregion
@@ -189,23 +235,28 @@ exports.deleteValue = (req, res) => {
 //#region Targets
 
 exports.getAllTargetsLabel = (req, res) => {
+	const db = createConnection('stamp3');
 	const query = 'SELECT T.id, T.label FROM `target` as T ORDER BY T.label';
 
-	stamp3.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getTargetByID = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `target` as T WHERE T.id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createTarget = (req, res) => {
+	const db = createConnection('stamp3');
 	const datas = [
 		req.body.label,
 		req.body.label_fr ? req.body.label_fr : '',
@@ -218,12 +269,14 @@ exports.createTarget = (req, res) => {
 
 	const query = 'INSERT INTO `target`(`label`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyTarget = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const datas = [
 		req.body.label,
@@ -239,18 +292,21 @@ exports.modifyTarget = (req, res) => {
 
 	const query = 'UPDATE `target` SET `label` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteTarget = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `target` WHERE id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 //#endregion
@@ -258,32 +314,39 @@ exports.deleteTarget = (req, res) => {
 //#region Functs
 
 exports.getAllFunctsLabel = (req, res) => {
+	const db = createConnection('stamp3');
 	const query = 'SELECT F.id, CONCAT(T.label,":", F.label) as label ' + 'FROM `funct` as F ' + 'LEFT JOIN `target` as T ON F.idTarget=T.id ORDER BY label;';
 
-	stamp3.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getFunctByID = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `funct` as F WHERE F.id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllFunctOfTarget = (req, res) => {
+	const db = createConnection('stamp3');
 	const param = req.params.id;
 	const query = 'SELECT F.id, F.label as label ' + 'FROM `funct` as F ' + 'INNER JOIN `target` as T ON F.idTarget=T.id WHERE T.id = ? ORDER BY label;';
 
-	stamp3.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createFunct = (req, res) => {
+	const db = createConnection('stamp3');
 	const datas = [
 		req.body.label,
 		req.body.idTarget,
@@ -297,12 +360,14 @@ exports.createFunct = (req, res) => {
 
 	const query = 'INSERT INTO `funct`(`label`, `idTarget`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyFunct = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const datas = [
 		req.body.label,
@@ -319,18 +384,21 @@ exports.modifyFunct = (req, res) => {
 
 	const query = 'UPDATE `funct` SET `label` = ?, `idTarget` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteFunct = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `funct` WHERE id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 //#endregion
@@ -338,35 +406,42 @@ exports.deleteFunct = (req, res) => {
 //#region Organs
 
 exports.getAllOrgansLabel = (req, res) => {
+	const db = createConnection('stamp3');
 	const query =
 		'SELECT O.id, CONCAT(T.label,":", F.label,":", O.label) as label ' +
 		'FROM `organ` as O LEFT JOIN `funct` as F ON O.idFunc=F.id ' +
 		'LEFT JOIN `target` as T ON F.idTarget=T.id ORDER BY label;';
 
-	stamp3.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getOrganByID = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `organ` as O WHERE O.id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllOrgansByFunct = (req, res) => {
+	const db = createConnection('stamp3');
 	const param = req.params.id;
 	const query = 'SELECT O.id, O.label as label ' + 'FROM `organ` as O INNER JOIN `funct` as F ON O.idFunc=F.id ' + 'WHERE F.id = ? ORDER BY label;';
 
-	stamp3.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createOrgan = (req, res) => {
+	const db = createConnection('stamp3');
 	const datas = [
 		req.body.label,
 		req.body.idTarget,
@@ -381,12 +456,14 @@ exports.createOrgan = (req, res) => {
 
 	const query = 'INSERT INTO `organ`(`label`, `idTarget`, `idFunc`, `label_fr`, `label_en`, `label_xx`, `who`, `when`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyOrgan = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const datas = [
 		req.body.label,
@@ -404,18 +481,21 @@ exports.modifyOrgan = (req, res) => {
 
 	const query = 'UPDATE `organ` SET `label` = ?, `idTarget` = ?, `idFunc` = ?, `label_fr` = ?, `label_en` = ?, `label_xx` = ?, `who` = ?, `when` = ?, `comment` = ? WHERE `id` = ?';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteOrgan = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `organ` WHERE id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 //#endregion
@@ -423,6 +503,7 @@ exports.deleteOrgan = (req, res) => {
 //#region Action
 
 exports.getAllActionsLabel = (req, res) => {
+	const db = createConnection('stamp3');
 	//Query simple
 	//const query = 'SELECT A.id, A.label FROM action as A';
 
@@ -432,21 +513,25 @@ exports.getAllActionsLabel = (req, res) => {
 		' FROM `action` LEFT JOIN `organ` ON action.idOrgan=organ.id LEFT JOIN `funct` ON organ.idFunc=funct.id ' +
 		'LEFT JOIN `target` ON funct.idTarget=target.id ORDER BY label;';
 
-	stamp3.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getActionByID = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `action` as A WHERE A.id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createAction = (req, res) => {
+	const db = createConnection('stamp3');
 	const datas = [
 		req.body.label,
 		req.body.idTarget,
@@ -525,12 +610,14 @@ exports.createAction = (req, res) => {
 		'`type8`, `param8_fr`, `param8_en`, `param8_xx`, `purpose8`, `type9`, `param9_fr`, `param9_en`, `param9_xx`, `purpose9`' +
 		') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyAction = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const datas = [
 		req.body.label,
@@ -617,32 +704,38 @@ exports.modifyAction = (req, res) => {
 		'`type9`= ?, `param9_fr`= ?, `param9_en`= ?, `param9_xx`= ?, `purpose9`= ? ' +
 		' WHERE `id` = ?';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteAction = (req, res) => {
+	const db = createConnection('stamp3');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `action` WHERE id = ?';
 
-	stamp3.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 exports.getAllActionsFromOrgan = (req, res) => {
+	const db = createConnection('stamp3');
 	const param = req.params.id;
 	const query = 'SELECT A.id, A.label as label ' + 'FROM `action` as A INNER JOIN `organ` as O ON A.idOrgan=O.id ' + 'WHERE O.id = ? ORDER BY label;';
 
-	stamp3.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 //#endregion
 
 exports.getActionFullName = (req, res) => {
+	const db = createConnection('stamp3');
 	const datas = [
 		req.body.idTarget ? req.body.idTarget : 10,
 		req.body.idFunc ? req.body.idFunc : 1,
@@ -655,12 +748,14 @@ exports.getActionFullName = (req, res) => {
 		'FROM `target` as T, `funct` as F, `organ` as O, `action` as A ' +
 		'WHERE T.id = ? AND F.id = ? AND O.id = ? AND A.id = ?;';
 
-	stamp3.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllCategories = (req, res) => {
+	const db = createConnection('stamp3');
 	const query1 = 'SELECT T.label FROM `target` as T;';
 	const query2 = 'SELECT F.label FROM `funct` as F; ';
 	const query3 = 'SELECT O.label FROM `organ` as O; ';
@@ -668,29 +763,31 @@ exports.getAllCategories = (req, res) => {
 
 	allAnswer = [];
 
-	stamp3.query(query1, (error, results) => {
+	db.query(query1, (error, results) => {
 		if (error) {
 		} else {
 			allAnswer.push(results);
 		}
 	});
-	stamp3.query(query2, (error, results) => {
+	db.query(query2, (error, results) => {
 		if (error) {
 		} else {
 			allAnswer.push(results);
 		}
 	});
-	stamp3.query(query3, (error, results) => {
+	db.query(query3, (error, results) => {
 		if (error) {
 		} else {
 			allAnswer.push(results);
 		}
 	});
-	stamp3.query(query4, (error, results) => {
+	db.query(query4, (error, results) => {
 		if (error) {
 		} else {
 			allAnswer.push(results);
 			res.status(200).json(allAnswer);
 		}
 	});
+
+	db.end();
 };

@@ -15,21 +15,12 @@
 						@input="hasBeenSaved = false"
 						ref="labelInput"
 						label-color="green-dark1"
-						class="mb1 xs5 pa1"
+						class="xs4"
 						label="Label"
 						:validators="[validators.required]"
 						v-model="props.datas.label"
 					>
 					</w-input>
-					<div class="selects my1 ml5">
-						<p>Gammes</p>
-						<select @change="hasBeenSaved = false" v-model="props.datas.range">
-							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
-						</select>
-					</div>
-				</w-flex>
-
-				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
@@ -80,7 +71,7 @@
 			</w-form>
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
 			<div>
-				<div v-if="getAllStepOfSpec(props.datas.id ? props.datas.id : -1)"></div>
+				<div v-if="getAllStepOfSpec(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)"></div>
 				<div v-if="getAllStepOfRange(props.datas.range ? props.datas.range : -1)"></div>
 			</div>
 		</template>
@@ -90,6 +81,7 @@
 import vSelect from 'vue-select';
 import Layout from '@/views/ItemLayout.vue';
 import axios from 'axios';
+import VueCookies from 'vue-cookies';
 
 export default {
 	components: {
@@ -98,11 +90,12 @@ export default {
 	},
 	data() {
 		return {
+			creationId: null,
+
 			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},
-			allGammes: [],
 			allSelectedSteps: [],
 			allSteps: [],
 			newStep: null,
@@ -110,14 +103,6 @@ export default {
 
 			hasBeenSaved: true,
 		};
-	},
-	async mounted() {
-		await axios
-			.get('http://localhost:3000/stamp3uut/gammes')
-			.then((reponse) => reponse.data)
-			.then((data) => {
-				this.allGammes = data;
-			});
 	},
 	methods: {
 		truncatedString(str) {
@@ -130,13 +115,25 @@ export default {
 		createJSONItem(datas) {
 			return {
 				label: datas.label,
-				sName: datas.sName ? datas.sName : '',
-				when: datas.when ? datas.when : '1900-01-01',
+				range: VueCookies.get('gamme') ? VueCookies.get('gamme').id : 0,
+				ctrl: VueCookies.get('ctrl') ? VueCookies.get('ctrl').id : 0,
+				replay: datas.replay ? datas.replay : 0,
+				date: datas.when ? datas.when : '1900-01-01',
 				who: datas.who ? datas.who : '',
 				comment: datas.comment ? datas.comment : '',
 			};
 		},
-		async getAllStepOfSpec(id) {
+		async getAllStepOfSpec(selectedId, id) {
+			if (id !== -1) this.creationId = null;
+			if (selectedId === -1) {
+				axios
+					.get(`http://localhost:3000/stamp3uut/findNextSpecID`)
+					.then((reponse) => reponse.data)
+					.then((data) => {
+						this.creationId = data[0].AUTO_INCREMENT;
+						return false;
+					});
+			}
 			if (id !== -1) {
 				await axios
 					.get(`http://localhost:3000/stamp3uut/stepForSpec/${id}`)
@@ -145,10 +142,12 @@ export default {
 						this.allSelectedSteps = data;
 					});
 			}
-
 			return true;
 		},
 		async getAllStepOfRange(id) {
+			if (id === -1 && VueCookies.get('gamme')) {
+				id = VueCookies.get('gamme').id;
+			}
 			if (id !== -1) {
 				await axios
 					.get(`http://localhost:3000/stamp3uut/stepForGamme/${id}`)
@@ -162,6 +161,9 @@ export default {
 			return true;
 		},
 		async addNewStep(idSpec) {
+			if (!idSpec && this.creationId !== null) {
+				idSpec = this.creationId;
+			}
 			if (idSpec !== -1 && idSpec && this.newStep) {
 				let datas = {
 					idMain: idSpec,
@@ -172,7 +174,12 @@ export default {
 					.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
 					.then((response) => {
 						if (response.status === 200) {
-							this.getAllStepOfSpec(idSpec);
+							this.allSelectedSteps.push({
+								id: this.newStep.id,
+								No: this.newStepNumber,
+								label: this.newStep.label,
+							});
+							console.log('Success', response.status, response.data);
 						} else {
 							console.error('Error adding step:', response.status, response.data);
 						}
@@ -187,7 +194,7 @@ export default {
 				.delete('http://localhost:3000/stamp3uut/stepForSpec/' + idLink)
 				.then((response) => {
 					if (response.status === 200) {
-						this.getAllStepOfSpec(idSpec);
+						this.getAllStepOfSpec(this.creationId ? this.creationId : -1, idSpec);
 					} else {
 						console.error('Error adding step:', response.status, response.data);
 					}
@@ -198,11 +205,35 @@ export default {
 		},
 		validationBeforeSave(datas) {
 			if (!datas.label || datas.label === '' || datas.label === null) return false;
+			this.saveAllStep();
 			this.hasBeenSaved = true;
 			return true;
 		},
 		validateAll() {
 			this.$refs.labelInput.validate();
+		},
+		async saveAllStep() {
+			if (this.creationId !== null) {
+				await this.allSelectedSteps.forEach((step) => {
+					let datas = {
+						idMain: this.creationId,
+						idLink: step.id,
+						No: step.No,
+					};
+					axios
+						.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
+						.then((response) => {
+							if (response.status === 200) {
+								this.getAllStepOfSpec(this.creationId, -1);
+							} else {
+								console.error('Error adding step:', response.status, response.data);
+							}
+						})
+						.catch((error) => {
+							console.error('Unexpected error:', error);
+						});
+				});
+			}
 		},
 	},
 	async beforeRouteLeave(to, from, next) {

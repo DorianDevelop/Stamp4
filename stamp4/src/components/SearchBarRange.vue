@@ -13,6 +13,7 @@ import vSelect from 'vue-select';
 import axios from 'axios';
 import ArrowIndication from '@/components/ArrowIndication.vue';
 import ArrowFilter from '@/components/ArrowFilter.vue';
+import VueCookies from 'vue-cookies';
 /*
 TO DO : Ajouter filtre CTRL, chiant de ofu
 */
@@ -69,9 +70,16 @@ export default {
 		},
 
 		async filterChanged(val) {
-			if (!val) return;
+			this.showArrow = true;
+			if (!val) {
+				VueCookies.remove('gamme');
+
+				return;
+			}
 			this.selected = null;
 			this.choice = this.selected;
+
+			VueCookies.set('gamme', val, '3h');
 
 			const id = val.id;
 			await axios
@@ -80,6 +88,15 @@ export default {
 				.then((data) => {
 					this.options = data;
 				});
+		},
+
+		loadSearch() {
+			if (VueCookies.get('gamme') && VueCookies.get('gamme') !== 'null' && VueCookies.get('gamme') !== null) {
+				this.gammeChoice = VueCookies.get('gamme');
+				window.setTimeout(() => {
+					this.filterChanged(this.gammeChoice);
+				}, 700);
+			}
 		},
 	},
 	mounted() {
@@ -96,6 +113,7 @@ export default {
 		if (this.namePage.endsWith('s')) {
 			this.namePage = this.namePage.slice(0, -1);
 		}
+		this.loadSearch();
 	},
 	watch: {
 		choice(newVal) {
@@ -105,11 +123,9 @@ export default {
 			this.options = [];
 			this.selected = null;
 			this.choice = this.selected;
-			this.getGammeForFilter();
-			this.gammeFilter = [];
-			this.gammeChoice = this.selectedGammeFilter;
 
 			this.showArrow = true;
+			this.loadSearch();
 			this.refresh = newVal;
 		},
 		newItem(newVal) {

@@ -46,12 +46,13 @@ export default {
 				label: datas.label,
 				label_en: datas.label_en ? datas.label_en : '',
 				who: datas.who ? datas.who : '',
-				when: datas.when ? datas.when : '',
+				when: datas.when ? datas.when : '1900-01-01',
 				comment: datas.comment ? datas.comment : '',
 			};
 		},
 		validationBeforeSave(datas) {
 			if (!datas.label || datas.label === '' || datas.label === null) return false;
+			console.log(datas.when);
 			return true;
 		},
 		validateAll() {

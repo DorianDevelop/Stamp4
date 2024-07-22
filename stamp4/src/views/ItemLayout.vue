@@ -1,7 +1,14 @@
 <template>
 	<div class="container">
 		<div class="topOptions">
-			<SearchBar v-if="searchBar === 0" :newItem="newItemCreated" :refreshSearch="refreshSearch" :route="routeAPI + 's'" @update:selected="getValueForOne" />
+			<SearchBar
+				v-if="searchBar === 0"
+				:newItem="newItemCreated"
+				:refreshSearch="refreshSearch"
+				:route="routeAPI + 's'"
+				@update:selected="getValueForOne"
+				:displayArrow="showArrow"
+			/>
 			<SearchBarRange
 				:displayArrow="showArrow"
 				v-else-if="searchBar === 1"
@@ -29,9 +36,9 @@
 			/>
 		</div>
 		<w-alert v-model="duplicationAlerte.show" class="actionWarning" info> Pensez bien à sauvegarder pour terminer la duplication. </w-alert>
-		<w-alert v-model="creationAlerte.show" class="actionWarning" warning> Pensez bien à sauvegarder pour terminer la création. </w-alert>
+		<w-alert v-model="creationAlerte.show" class="actionWarning" warning> Sauvegarder les informations principales, afin de pouvoir ajouter des paramètres. </w-alert>
 		<div class="infos" v-if="selectedId !== null">
-			<slot :datas="datas"></slot>
+			<slot :datas="datas" :selectedId="selectedId"></slot>
 		</div>
 	</div>
 </template>
@@ -118,7 +125,9 @@ export default {
 			}
 		},
 		saveSelection() {
-			if (!this.validation(this.datas)) {
+			let valid = this.validation(this.datas);
+			if (valid === false || valid === 'Pas les droits') {
+				if (valid === 'Pas les droits') return;
 				this.$emit('update:validators');
 				this.$waveui.notify({
 					message: 'Tout les champs obligatoires ne sont pas remplies',

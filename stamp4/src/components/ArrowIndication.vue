@@ -23,7 +23,7 @@ export default {
 .empty {
 	position: absolute;
 	top: 140px;
-	left: 16%;
+	left: 355px;
 	font-weight: 500;
 	font-size: 18px;
 }

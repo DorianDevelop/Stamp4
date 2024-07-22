@@ -4,4 +4,6 @@ import AnalysePage from '@/views/AnalysePage.vue';
 import ProduitPage from '@/views/ProduitPage.vue';
 import StationPage from '@/views/StationPage.vue';
 
-export { HomePage, AdminPage, AnalysePage, ProduitPage, StationPage };
+import PersonalPage from './PersonalPage.vue';
+
+export { HomePage, AdminPage, AnalysePage, ProduitPage, StationPage, PersonalPage };

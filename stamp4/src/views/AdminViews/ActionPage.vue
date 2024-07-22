@@ -178,7 +178,7 @@ export default {
 				ident: datas.ident ? datas.ident : 0,
 				label_en: datas.label_en ? datas.label_en : '',
 				who: datas.who ? datas.who : '',
-				when: datas.when ? datas.when : '',
+				when: datas.when ? datas.when : '1900-01-01',
 				comment: datas.comment ? datas.comment : '',
 
 				type0: datas.type0 ? datas.type0 : '',

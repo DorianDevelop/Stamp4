@@ -8,6 +8,7 @@
 
 <script>
 import vSelect from 'vue-select';
+import VueCookies from 'vue-cookies';
 import axios from 'axios';
 import ArrowIndication from '@/components/ArrowIndication.vue';
 
@@ -16,6 +17,7 @@ export default {
 		route: String,
 		refreshSearch: Boolean,
 		newItem: Boolean,
+		displayArrow: Boolean,
 	},
 	components: {
 		vSelect,
@@ -23,7 +25,7 @@ export default {
 	},
 	data() {
 		return {
-			showArrow: true,
+			showArrow: this.displayArrow,
 			options: [],
 			selected: null,
 			choice: this.selected,
@@ -61,9 +63,21 @@ export default {
 		if (this.namePage.endsWith('s')) {
 			this.namePage = this.namePage.slice(0, -1);
 		}
+
+		if (VueCookies.get('gamme') && VueCookies.get('gamme') !== 'null' && VueCookies.get('gamme') !== null && this.namePage === 'Gamme') {
+			this.choice = VueCookies.get('gamme');
+			this.showArrow = false;
+		}
 	},
 	watch: {
 		choice(newVal) {
+			if (this.namePage === 'Gamme') {
+				VueCookies.set('gamme', newVal, '3h');
+
+				if (newVal === null) {
+					VueCookies.remove('gamme');
+				}
+			}
 			this.$emit('update:selected', newVal);
 		},
 		refreshSearch(newVal) {
@@ -86,7 +100,7 @@ export default {
 .search {
 	min-width: 340px;
 	background: var(--white);
-	font-size: 0.8rem;
+	font-size: 1rem;
 
 	height: 32px;
 }

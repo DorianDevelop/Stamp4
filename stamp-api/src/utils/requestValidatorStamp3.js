@@ -5,10 +5,7 @@ const teSchema = Joi.object({
 	id: Joi.number(),
 	label: Joi.string().max(64).required(),
 	host: Joi.string().max(64).allow(null, '').default(''),
-	email: Joi.string()
-		.email({ tlds: { allow: false } })
-		.allow(null, '')
-		.default(''),
+	email: Joi.string().max(64).allow(null, '').default(''),
 	service: Joi.string().max(64).allow(null, '').default(''),
 	date: Joi.date().allow(null).default('1900-01-01'),
 	who: Joi.string().max(64).allow(null, '').default(''),
@@ -54,6 +51,7 @@ exports.validateError = (req, res, next) => {
 
 //#region Value
 const valueSchema = Joi.object({
+	id: Joi.number(),
 	label: Joi.string().max(64).required(),
 	idFamily: Joi.number().allow(null).default(0),
 	type: Joi.string().max(16).allow(null, '').default(''),

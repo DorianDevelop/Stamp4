@@ -161,7 +161,7 @@ export default {
 				index: datas.index || '',
 				trace: datas.trace || 0,
 				tPath: datas.tPath || '',
-				quasar: datas.quasar || '',
+				quasar: datas.quasar || 0,
 				lQuasar: datas.lQuasar || '',
 				nQuasar: datas.nQuasar || '',
 				when: datas.when || '1900-01-01',

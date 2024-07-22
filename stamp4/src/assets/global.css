@@ -499,3 +499,16 @@ a {
 .w-table-wrap {
 	border: none;
 }
+
+.qualifiedSwitch .w-flex {
+	align-self: flex-end;
+}
+
+.qualifiedSwitch label {
+	order: 0;
+	margin-left: 8px;
+}
+
+.qualifiedSwitch input {
+	order: 1;
+}

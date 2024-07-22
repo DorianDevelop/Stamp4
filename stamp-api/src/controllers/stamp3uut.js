@@ -1,54 +1,63 @@
 const handler = require('../services/handler.js');
 const createConnection = require('../configs/database.config.js'); //Import la fonction créer un lien vers un base de données
-const stamp3uut = createConnection('stamp3uut'); //Créer le lien vers la base de donnée "stamp3uut"
 
 //#region Gamme
 
 exports.getAllGammeLabel = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const query = 'SELECT R.id, R.label FROM `range` as R ORDER BY 2 ASC';
 
-	stamp3uut.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getGammeByID = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `range` as R WHERE R.id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createGamme = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const datas = [req.body.label, req.body.sName, req.body.when, req.body.who, req.body.comment];
 
 	const query = 'INSERT INTO `range`(`label`, `sName`, `when`, `who`, `comment`) VALUES (?, ?, ?, ?, ?)';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyGamme = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const datas = [req.body.label, req.body.sName, req.body.when, req.body.who, req.body.comment, requestId];
 
-	const query = 'UPDATE range SET `label` = ?, `sName` = ?, `when` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
+	const query = 'UPDATE `range` SET `label` = ?, `sName` = ?, `when` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteGamme = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `range` WHERE id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 //#endregion
@@ -56,25 +65,30 @@ exports.deleteGamme = (req, res) => {
 //#region UUT
 
 exports.getAllUUTLabel = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const query =
 		'SELECT U.id, ' +
 		`CASE WHEN U.power IS NOT NULL AND U.power <> '' THEN CONCAT(U.refsku, "  [", U.power, " VA", "]") ELSE CONCAT(U.refsku, "  [0 VA]") END as label FROM uut as U ORDER BY label;`;
 
-	stamp3uut.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getUUTByID = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `uut` as U WHERE U.id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createUUT = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const datas = [
 		req.body.refsku,
 		req.body.qualified,
@@ -153,12 +167,14 @@ exports.createUUT = (req, res) => {
 	const query =
 		'INSERT INTO `uut` (`refsku`, `qualified`, `range`, `dateStart`, `dateEnd`, `date`, `who`, `comment`, `reference`, `serial`, `topo`, `design`, `power`, `backup`, `volt`, `freq`, `model`, `pnp`, `firm`, `sku`, `hiVolt`, `hiAmps`, `hiTime`, `hiRamp`, `hisVolt`, `hisAmps`, `hisTime`, `hisRamp`, `hifVolt`, `hifAmps`, `hifTime`, `hifRamp`, `gndAmps`, `gndOhms`, `gndTime`, `contAmps`, `contOhms`, `contTime`, `main1U`, `main1Umaxi`, `main1Umini`, `main1Yield`, `main1Imaxi`, `main1Thdi`, `main2U`, `main2Umaxi`, `main2Umini`, `main2Yield`, `main2Imaxi`, `main2Thdi`, `outU`, `outUtol`, `outThdu`, `outUdc`, `outF`, `outFtol`, `outVA`, `outW`, `outPhi`, `batU`, `batUmaxi`, `batUmini`, `batAH`, `batLife`, `batBranch`, `batConst1`, `batConst2`, `batConst3`, `batConst4`, `chrgU`, `chrgI`, `chrgTemp`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyUUT = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const datas = [
 		req.body.refsku,
@@ -238,108 +254,197 @@ exports.modifyUUT = (req, res) => {
 	];
 
 	const query =
-		'UPDATE `uut` SET `label` = ?, `refsku` = ?, `qualified` = ?, `range` = ?, `dateStart` = ?, `dateEnd` = ?, `date` = ?, `who` = ?, `comment` = ?, `reference` = ?, `serial` = ?, `topo` = ?, `design` = ?, `power` = ?, `backup` = ?, `volt` = ?, `freq` = ?, `model` = ?, `pnp` = ?, `firm` = ?, `sku` = ?, `hiVolt` = ?, `hiAmps` = ?, `hiTime` = ?, `hiRamp` = ?, `hisVolt` = ?, `hisAmps` = ?, `hisTime` = ?, `hisRamp` = ?, `hifVolt` = ?, `hifAmps` = ?, `hifTime` = ?, `hifRamp` = ?, `gndAmps` = ?, `gndOhms` = ?, `gndTime` = ?, `contAmps` = ?, `contOhms` = ?, `contTime` = ?, `main1U` = ?, `main1Umaxi` = ?, `main1Umini` = ?, `main1Yield` = ?, `main1Imaxi` = ?, `main1Thdi` = ?, `main2U` = ?, `main2Umaxi` = ?, `main2Umini` = ?, `main2Yield` = ?, `main2Imaxi` = ?, `main2Thdi` = ?, `outU` = ?, `outUtol` = ? WHERE id = ?';
+		'UPDATE `uut` SET `refsku` = ?, `qualified` = ?, `range` = ?, `dateStart` = ?, `dateEnd` = ?, `date` = ?, `who` = ?, `comment` = ?, `reference` = ?, `serial` = ?, `topo` = ?, `design` = ?, `power` = ?, `backup` = ?, `volt` = ?, `freq` = ?, `model` = ?, `pnp` = ?, `firm` = ?, `sku` = ?, `hiVolt` = ?, `hiAmps` = ?, `hiTime` = ?, `hiRamp` = ?, `hisVolt` = ?, `hisAmps` = ?, `hisTime` = ?, `hisRamp` = ?, `hifVolt` = ?, `hifAmps` = ?, `hifTime` = ?, `hifRamp` = ?, `gndAmps` = ?, `gndOhms` = ?, `gndTime` = ?, `contAmps` = ?, `contOhms` = ?, `contTime` = ?, `main1U` = ?, `main1Umaxi` = ?, `main1Umini` = ?, `main1Yield` = ?, `main1Imaxi` = ?, `main1Thdi` = ?, `main2U` = ?, `main2Umaxi` = ?, `main2Umini` = ?, `main2Yield` = ?, `main2Imaxi` = ?, `main2Thdi` = ?, `outU` = ?, `outUtol` = ?, `outThdu` = ?, `outUdc` = ?, `outF` = ?, `outFtol` = ?, `outVA` = ?, `outW` = ?, `outPhi` = ?, `batU` = ?, `batUmaxi` = ?, `batUmini` = ?, `batAH` = ?, `batLife` = ?, `batBranch` = ?, `batConst1` = ?, `batConst2` = ?, `batConst3` = ?, `batConst4` = ?, `chrgU` = ?, `chrgI` = ?, `chrgTemp` = ? WHERE id = ?';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteUUT = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `uut` WHERE id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 exports.getAllUUTRelatedGamme = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const param = [req.params.id];
 	const query =
 		'SELECT U.id, ' +
 		`CASE WHEN U.power IS NOT NULL AND U.power <> '' THEN CONCAT(U.refsku, "  [", U.power, " VA", "]") ELSE CONCAT(U.refsku, "  [0 VA]") END as label FROM uut as U ` +
 		'WHERE U.range = ? ORDER BY label';
 
-	stamp3uut.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllUUTRelatedGammeCtrl = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const param = [req.params.ctrl, req.params.id];
 
 	const query = `SELECT U.id, CASE WHEN U.power IS NOT NULL AND U.power <> '' THEN CONCAT(U.refsku, " [", U.power, " VA]") ELSE CONCAT(U.refsku, " [0 VA]") END AS label, Q.Qualified AS quali FROM uut AS U LEFT JOIN qualified AS Q ON Q.idUut = U.id AND Q.idCtrlFlt = ? WHERE U.range = ? ORDER BY quali DESC, label ASC;`;
-	stamp3uut.query(query, param, (error, results) => {
+	db.query(query, param, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllUUTRelatedCtrl = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const param = [req.params.ctrl];
 
 	const query = `SELECT U.id, CASE WHEN U.power IS NOT NULL AND U.power <> '' THEN CONCAT(U.refsku, " [", U.power, " VA]") ELSE CONCAT(U.refsku, " [0 VA]") END AS label, Q.Qualified AS quali FROM uut AS U LEFT JOIN qualified AS Q ON Q.idUut = U.id AND Q.idCtrlFlt = ? ORDER BY quali DESC, label ASC;`;
-	stamp3uut.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
+
+exports.getWhereQualified = (req, res) => {
+	const db = createConnection('stamp3uut');
+	const id = [req.params.id];
+
+	const query = `SELECT Q.idCtrlFlt FROM qualified as Q  WHERE Q.idUut = ?;`;
+	db.query(query, id, (error, results) => {
+		handler.handleReponse(res, error, results);
+	});
+	db.end();
+};
+
+exports.getQualifiedResult = (req, res) => {
+	const db = createConnection('stamp3uut');
+	const param = [req.params.id, req.params.ctrl];
+
+	const query = `SELECT CASE WHEN COUNT(Q.id) = 0 THEN False WHEN COUNT(Q.id) = 1 THEN True ELSE 'Error' END as "Result" FROM qualified as Q  WHERE Q.idUut = ? AND Q.idCtrlFlt = ?;`;
+	db.query(query, param, (error, results) => {
+		handler.handleReponse(res, error, results);
+	});
+	db.end();
+};
+
+exports.qualifyUut = (req, res) => {
+	const db = createConnection('stamp3uut');
+	const param = [req.params.id, req.params.ctrl];
+
+	const query = `INSERT INTO qualified(idUut, idCtrlFlt, Qualified) VALUES(?, ?, 1);`;
+
+	db.query(query, param, (error, results) => {
+		handler.handleReponse(res, error, null, 'Creation succeed!');
+	});
+	db.end();
+};
+
+exports.unqualifyUut = (req, res) => {
+	const db = createConnection('stamp3uut');
+	const param = [req.params.id, req.params.ctrl];
+
+	const query = `DELETE FROM qualified  WHERE idUut = ? AND idCtrlFlt = ?;`;
+	db.query(query, param, (error, results) => {
+		handler.handleReponse(res, error, null, 'Delete succeed!');
+	});
+	db.end();
+};
+
 //#endregion
 
 //#region Spec
 
 exports.getAllSpecLabel = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const query = 'SELECT S.id, S.label FROM `spec` as S';
 
-	stamp3uut.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getSpecByID = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `spec` as S WHERE S.id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createSpec = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const datas = [req.body.label, req.body.range, req.body.ctrl, req.body.replay, req.body.date, req.body.who, req.body.comment];
 
 	const query = 'INSERT INTO `spec`(`label`, `range`, `ctrl`, `replay`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifySpec = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const datas = [req.body.label, req.body.range, req.body.ctrl, req.body.replay, req.body.date, req.body.who, req.body.comment, requestId];
 
 	const query = 'UPDATE spec SET `label` = ?, `range` = ?, `ctrl` = ?, `replay` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteSpec = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `spec` WHERE id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 exports.getAllSpecRelatedGamme = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const param = req.params.id;
 	const query = 'SELECT S.id, S.label FROM `spec` as S ' + 'WHERE S.range = ? ORDER BY label';
 
-	stamp3uut.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
+	});
+	db.end();
+};
+
+exports.findNextIdSpec = (req, res) => {
+	const db = createConnection('stamp3uut');
+	const queryID = 'SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = "spec" AND table_schema = "stamp3uut";';
+
+	const queryHelp = 'SET information_schema_stats_expiry = 0;';
+	db.query(queryHelp, (error, results) => {
+		if (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			db.query(queryID, (error, results) => {
+				if (error) {
+					res.status(500).json({ error: 'An error occurred \n' + error });
+				} else {
+					res.status(200).json(results);
+				}
+			});
+		}
+		db.end();
 	});
 };
 
@@ -348,58 +453,69 @@ exports.getAllSpecRelatedGamme = (req, res) => {
 //#region STEP
 
 exports.getAllStepLabel = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const query = 'SELECT S.id, S.label FROM `step` as S';
 
-	stamp3uut.query(query, (error, results) => {
+	db.query(query, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllStepRelatedGamme = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const param = req.params.id;
 	const query = 'SELECT S.id, S.label FROM `step` as S ' + 'WHERE S.range = ? ORDER BY label';
 
-	stamp3uut.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getStepByID = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'SELECT * FROM `step` as S WHERE S.id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createStep = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const datas = [req.body.label, req.body.tstFunc, req.body.range, req.body.date, req.body.who, req.body.comment];
 
 	const query = 'INSERT INTO `step`(`label`, `tstFunc`, `range`, `date`, `who`, `comment`) VALUES (?, ?, ?, ?, ?, ?)';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyStep = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const datas = [req.body.label, req.body.tstFunc, req.body.range, req.body.date, req.body.who, req.body.comment, requestId];
 
 	const query = 'UPDATE step SET `label` = ?, `tstFunc` = ?, `range` = ?, `date` = ?, `who` = ?, `comment` = ? WHERE `id` = ?';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteStep = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `step` WHERE id = ?';
 	const query2 = 'DELETE FROM `action` WHERE idStep = ?';
 
-	stamp3uut.query(query2, [requestId], (error, results) => {
+	db.query(query2, [requestId], (error, results) => {
 		if (error) {
 			console.error(error);
 			res.status(500).json({ error: 'An error occurred \n' + error });
@@ -408,23 +524,49 @@ exports.deleteStep = (req, res) => {
 		}
 	});
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
+	});
+	db.end();
+};
+
+exports.findNextIdStep = (req, res) => {
+	const db = createConnection('stamp3uut');
+	const queryID = 'SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = "step" AND table_schema = "stamp3uut";';
+
+	const queryHelp = 'SET information_schema_stats_expiry = 0;';
+	db.query(queryHelp, (error, results) => {
+		if (error) {
+			console.error(error);
+			res.status(500).json({ error: 'An error occurred \n' + error });
+		} else {
+			db.query(queryID, (error, results) => {
+				if (error) {
+					res.status(500).json({ error: 'An error occurred \n' + error });
+				} else {
+					res.status(200).json(results);
+				}
+			});
+		}
+		db.end();
 	});
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
 exports.getAllSpecRelatedGamme = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const param = req.params.id;
 	const query = 'SELECT S.id, S.label FROM `spec` as S ' + 'WHERE S.range = ? ORDER BY label';
 
-	stamp3uut.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllStepForASpec = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query =
 		'SELECT ST.*, LSS.No, LSS.id as linkId FROM `spec` as SP ' +
@@ -432,37 +574,44 @@ exports.getAllStepForASpec = (req, res) => {
 		'INNER JOIN `step` as ST on ST.id = LSS.idLink ' +
 		'WHERE SP.id = ?;';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllStepForAGamme = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'SELECT ST.* FROM `step` as ST WHERE ST.range = ? ORDER BY ST.label ASC;';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 //Ajoute une Step à une SPEC
 exports.addStepToSpec = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const datas = [req.body.idMain, req.body.idLink, req.body.No ? req.body.No : null];
 	const query = 'INSERT INTO `link_spec_step`(`idMain`,`idLink`,`No`) VALUES (?, ?, ?);';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.deleteStepForSpec = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `link_spec_step` WHERE id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 //#endregion
@@ -470,25 +619,30 @@ exports.deleteStepForSpec = (req, res) => {
 //#region Action
 
 exports.getAllActionForAStep = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const param = req.params.id;
 	const query = 'SELECT A.* FROM `action` as A WHERE A.idStep = ? ORDER BY A.order';
 
-	stamp3uut.query(query, [param], (error, results) => {
+	db.query(query, [param], (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.getAllActionForUUT = (req, res) => {
-	const param = req.params.id;
+	const db = createConnection('stamp3uut');
+	const param = [req.params.ctrl, req.params.id];
 	const query =
 		'SELECT DISTINCT S.label as bigKey, ST.label as smallKey, A.* from `link_uut_spec` as LUS JOIN `spec` as S on S.id = LUS.idLink JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain ' +
-		'JOIN `action` as A on A.idStep = LSS.idLink JOIN `step` as ST on ST.id = LSS.idLink WHERE A.id IN (SELECT A.id from `link_uut_spec` as LUS JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain JOIN `action` as A on A.idStep = LSS.idLink WHERE LUS.idMain = ?) ORDER BY A.order ASC;';
-	stamp3uut.query(query, [param], (error, results) => {
+		'JOIN `action` as A on A.idStep = LSS.idLink JOIN `step` as ST on ST.id = LSS.idLink WHERE LUS.idCtrl = ? AND A.id IN (SELECT A.id from `link_uut_spec` as LUS JOIN `link_spec_step` as LSS on LUS.idLink = LSS.idMain JOIN `action` as A on A.idStep = LSS.idLink WHERE LUS.idMain = ?) ORDER BY A.order ASC;';
+	db.query(query, param, (error, results) => {
 		handler.handleReponse(res, error, results);
 	});
+	db.end();
 };
 
 exports.createAction = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const datas = [
 		req.body.idStep,
 		req.body.range || null,
@@ -517,12 +671,14 @@ exports.createAction = (req, res) => {
 	const query =
 		'INSERT INTO `action` (`idStep`, `range`, `order`, `track`, `errStamp`, `errApc`, `idTarget`, `idFunc`, `idOrgan`, `idAction`, `ident`, `pattern`, `param0`, `param1`, `param2`, `param3`, `param4`, `param5`, `param6`, `param7`, `param8`, `param9`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Creation succeed!');
 	});
+	db.end();
 };
 
 exports.modifyAction = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const datas = [
 		req.body.idStep || null,
@@ -554,40 +710,46 @@ exports.modifyAction = (req, res) => {
 	const query =
 		'UPDATE `action`  SET `idStep` = ?, `range` = ?, `order` = ?, `track` = ?, `errStamp` = ?, `errApc` = ?, `idTarget` = ?, `idFunc` = ?, `idOrgan` = ?, `idAction` = ?, `ident` = ?, `pattern` = ?, `param0` = ?, `param1` = ?, `param2` = ?, `param3` = ?, `param4` = ?, `param5` = ?, `param6` = ?, `param7` = ?, `param8` = ?, `param9` = ? WHERE `id` = ?;';
 
-	stamp3uut.query(query, datas, (error, results) => {
+	db.query(query, datas, (error, results) => {
 		handler.handleReponse(res, error, null, 'Modification succeed!');
 	});
+	db.end();
 };
 
 exports.deleteAction = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `action` WHERE id = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 
 exports.deleteActionByStep = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const requestId = req.params.id;
 	const query = 'DELETE FROM `action` WHERE idStep = ?';
 
-	stamp3uut.query(query, [requestId], (error, results) => {
+	db.query(query, [requestId], (error, results) => {
 		handler.handleReponse(res, error, null, 'Delete succeed!');
 	});
+	db.end();
 };
 //#endregion
 
 exports.findNextIdStep = (req, res) => {
+	const db = createConnection('stamp3uut');
 	const queryID = 'SELECT AUTO_INCREMENT FROM information_schema.tables ' + 'WHERE table_name = "step" AND table_schema = "stamp3uut";';
 
 	const queryHelp = 'SET information_schema_stats_expiry = 0;';
-	stamp3uut.query(queryHelp, (error, results) => {
+	db.query(queryHelp, (error, results) => {
 		if (error) {
 			console.error(error);
 			res.status(500).json({ error: 'An error occurred \n' + error });
 		} else {
-			stamp3uut.query(queryID, (error, results) => {
+			db.query(queryID, (error, results) => {
 				if (error) {
 					res.status(500).json({ error: 'An error occurred \n' + error });
 				} else {
@@ -595,5 +757,6 @@ exports.findNextIdStep = (req, res) => {
 				}
 			});
 		}
+		db.end();
 	});
 };

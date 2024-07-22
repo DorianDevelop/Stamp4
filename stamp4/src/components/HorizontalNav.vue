@@ -45,17 +45,26 @@
 			</router-link>
 		</div>
 		<div class="account">
-			<p>Dorian Faure</p>
+			<router-link to="/personal" class="sub-router-link">{{ username }}</router-link>
 		</div>
 	</nav>
 </template>
 
 <script>
+import VueCookies from 'vue-cookies';
+import { getIfAdmin } from '@/helpers/utilities.js';
 export default {
 	data() {
 		return {
-			isAdmin: true,
+			isAdmin: false,
+			username: 'Unknown',
 		};
+	},
+	async mounted() {
+		let isAdmin = await getIfAdmin();
+		this.isAdmin = isAdmin;
+
+		this.username = VueCookies.get('user').label;
 	},
 };
 </script>
@@ -97,7 +106,7 @@ nav {
 }
 
 nav img {
-	max-height: 80%;
+	max-height: 120%;
 }
 
 .links {

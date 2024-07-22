@@ -10,6 +10,7 @@
 	>
 		<template #default="props">
 			<w-form class="editForm">
+				<w-switch class="mr4 qualifiedSwitch" v-model="qualified" color="green" label="Qualifié" label-color="green-dark1" @change="changeQualify"></w-switch>
 				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input ref="labelInput" label-color="green-dark1" class="xs5" label="Référence SKU" :validators="[validators.required]" v-model="props.datas.refsku"> </w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
@@ -206,12 +207,14 @@
 				</div>
 				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
+			<div v-if="getIfUUTIsQualified(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)"></div>
 		</template>
 	</Layout>
 </template>
 <script>
 import axios from 'axios';
 import Layout from '@/views/ItemLayout.vue';
+import VueCookies from 'vue-cookies';
 
 export default {
 	components: {
@@ -228,6 +231,10 @@ export default {
 			openReseau: false,
 			openUtilisation: false,
 			openBatt: false,
+
+			qualified: false,
+			creationId: null,
+			selectedId: null,
 
 			showBtn: true,
 			validators: {
@@ -327,6 +334,86 @@ export default {
 		},
 		validateAll() {
 			this.$refs.labelInput.validate();
+		},
+		changeQualify() {
+			if (this.qualified) {
+				this.qualify();
+			} else {
+				this.unqualify();
+			}
+		},
+		qualify() {
+			let id = this.selectedId;
+			let ctrl = VueCookies.get('ctrl');
+			if (id !== -1 && ctrl) {
+				axios
+					.post(`http://localhost:3000/stamp3uut/uutQualification/${id}/${ctrl.id}`)
+					.then((response) => {
+						if (response.status === 200) {
+							this.$waveui.notify({
+								message: 'Qualification reussite',
+								timeout: 2000,
+								bgColor: 'success',
+								color: 'warning',
+								dismiss: false,
+								shadow: true,
+								round: true,
+								sm: true,
+								icon: 'wi-check',
+							});
+						} else {
+							console.error('Error qualifing:', response.status, response.data);
+						}
+					})
+					.catch((error) => {
+						console.error('Unexpected error:', error);
+					});
+			}
+		},
+		unqualify() {
+			let id = this.selectedId;
+			let ctrl = VueCookies.get('ctrl');
+			if (id !== -1 && ctrl) {
+				axios
+					.delete(`http://localhost:3000/stamp3uut/uutUnqualification/${id}/${ctrl.id}`)
+					.then((response) => {
+						if (response.status === 200) {
+							this.$waveui.notify({
+								message: 'Déqualification reussite',
+								timeout: 2000,
+								bgColor: 'success',
+								color: 'warning',
+								dismiss: false,
+								shadow: true,
+								round: true,
+								sm: true,
+								icon: 'wi-check',
+							});
+						} else {
+							console.error('Error unqualifing:', response.status, response.data);
+						}
+					})
+					.catch((error) => {
+						console.error('Unexpected error:', error);
+					});
+			}
+		},
+		getIfUUTIsQualified(selectedId, id) {
+			if (id !== -1) this.creationId = null;
+			else this.creationId = selectedId;
+			this.selectedId = id;
+			let ctrl = VueCookies.get('ctrl');
+			if (id !== -1 && ctrl) {
+				axios
+					.get(`http://localhost:3000/stamp3uut/uutQualified/${id}/${ctrl.id}`)
+					.then((reponse) => reponse.data)
+					.then((data) => {
+						let result = data[0].Result;
+						this.qualified = result == 1 ? true : false;
+						console.log(this.qualified);
+					});
+			}
+			return true;
 		},
 	},
 };

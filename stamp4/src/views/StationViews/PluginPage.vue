@@ -16,7 +16,7 @@
 					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
 
-				<div class="controllerHeads">
+				<div class="controllerHeads" v-if="loadedId !== -1">
 					<div class="Heads" :class="{ selected: controllerChoice === 1 }" @click="controllerChoice = 1">
 						<p>Drivers</p>
 					</div>
@@ -24,8 +24,7 @@
 						<p>Actions</p>
 					</div>
 				</div>
-				<p>{{ allChanged }}</p>
-				<div class="controllerContainer" v-if="controllerChoice === 1">
+				<div class="controllerContainer" v-if="controllerChoice === 1 && loadedId !== -1">
 					<div class="controllerAdding">
 						<w-flex class="py2 mt2 align-end mb1 px1" gap="3">
 							<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="newDriver.order"> </w-input>
@@ -53,20 +52,20 @@
 						<div class="btns">
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button v-on="on" bg-color="success" icon="wi-check"></w-button>
+									<w-button v-on="on" bg-color="success" icon="wi-check" @click="saveActionOrDriver(newDriver, -1, 1)"></w-button>
 								</template>
 								Ajouter
 							</w-tooltip>
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button v-on="on" bg-color="error" icon="wi-cross"></w-button>
+									<w-button v-on="on" bg-color="error" icon="wi-cross" @click="cancelAdding(1)"></w-button>
 								</template>
 								Annuler
 							</w-tooltip>
 						</div>
 					</div>
 					<div class="separator"></div>
-					<div class="controllerContent" v-if="IdsToLoad.length > 0">
+					<div class="controllerContent">
 						<div v-for="driver in allDrivers" :key="driver.id" class="driver_action">
 							<w-flex class="py2 mt2 align-end mb1 px1" gap="3">
 								<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="driver.order" @change="addInChangedList(driver.id)"> </w-input>
@@ -91,10 +90,17 @@
 								<w-input label-color="green-dark1" class="xs3" label="Initialization" v-model="driver.init" @change="addInChangedList(driver.id)"> </w-input>
 								<w-input label-color="green-dark1" class="xs3" label="C++ plug-in" v-model="driver.driverDll" @change="addInChangedList(driver.id)"> </w-input>
 							</w-flex>
+
+							<w-tooltip>
+								<template #activator="{ on }">
+									<w-button class="deleteBTN" v-on="on" bg-color="error" icon="wi-cross" @click="deleteActionOrDriver(driver.id, 1)"></w-button>
+								</template>
+								Supprimer
+							</w-tooltip>
 						</div>
 					</div>
 				</div>
-				<div class="controllerContainer" v-if="controllerChoice === 0">
+				<div class="controllerContainer" v-if="controllerChoice === 0 && loadedId !== -1">
 					<div class="controllerAdding">
 						<w-flex class="py2 align-end mb1 px1" gap="3">
 							<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="newAction.order"> </w-input>
@@ -115,13 +121,13 @@
 						<div class="btns">
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button v-on="on" bg-color="success" icon="wi-check"></w-button>
+									<w-button v-on="on" bg-color="success" icon="wi-check" @click="saveActionOrDriver(newAction, -1, 0)"></w-button>
 								</template>
 								Ajouter
 							</w-tooltip>
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button v-on="on" bg-color="error" icon="wi-cross"></w-button>
+									<w-button v-on="on" bg-color="error" icon="wi-cross" @click="cancelAdding(0)"></w-button>
 								</template>
 								Annuler
 							</w-tooltip>
@@ -158,7 +164,7 @@
 						</div>
 						<div class="Category actions" v-if="selected.organ !== null">
 							<div
-								class="Heads actionsHead"
+								class="Heads ActionsHead"
 								v-for="head in allHeaders[selected.target.id].functs[selected.funct.id].organs[selected.organ.id].actions"
 								:key="head.id"
 								@click="resetNext(3, head)"
@@ -171,28 +177,39 @@
 					<div class="controllerContent" v-if="IdsToLoad.length > 0">
 						<div v-for="act in filteredActions" :key="act.id" class="driver_action">
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="act.order"> </w-input>
-								<w-input label-color="green-dark1" class="xs4" label="Label" v-model="act.label"> </w-input>
+								<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="act.order" @change="addInActChangedList(act.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs4" label="Label" v-model="act.label" @change="addInActChangedList(act.id)"> </w-input>
 								<div class="selects">
 									<p>Driver</p>
-									<select v-model="act.idDriver">
+									<select v-model="act.idDriver" @change="addInActChangedList(act.id)">
 										<option v-for="driver in allDrivers" :key="driver.id" :value="driver.id">
 											{{ driver.label }}
 										</option>
 									</select>
 								</div>
-								<w-input label-color="green-dark1" class="xs4" label="Information" v-model="act.info"> </w-input>
+								<w-input label-color="green-dark1" class="xs4" label="Information" v-model="act.info" @change="addInActChangedList(act.id)"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb2 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs6" label="Commande SCPI" v-model="act.scpi"> </w-input>
+								<w-input label-color="green-dark1" class="xs6" label="Commande SCPI" v-model="act.scpi" @change="addInActChangedList(act.id)"> </w-input>
 							</w-flex>
+
+							<w-tooltip>
+								<template #activator="{ on }">
+									<w-button class="deleteBTN" v-on="on" bg-color="error" icon="wi-cross" @click="deleteActionOrDriver(act.id, 0)"></w-button>
+								</template>
+								Supprimer
+							</w-tooltip>
 						</div>
 					</div>
 				</div>
 				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 			<div>
-				<div v-if="getAllDriversAndActionOfPlugins(props.datas.id ? props.datas.id : -1)"></div>
+				<div v-if="getAllDriversAndActionOfPlugins(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)"></div>
+			</div>
+			<div class="saveAll" v-if="loadedId !== null && loadedId !== -1">
+				<p>Activer la sauvegarde générale</p>
+				<w-switch class="saveAllSwitch" v-model="saveAll" color="red"></w-switch>
 			</div>
 		</template>
 	</Layout>
@@ -206,12 +223,15 @@ export default {
 	},
 	data() {
 		return {
+			loadedId: null,
+			duppId: null,
+			creationId: null,
 			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},
 
-			controllerChoice: 0,
+			controllerChoice: 1,
 
 			allDrivers: [],
 			allActions: [],
@@ -248,7 +268,8 @@ export default {
 				init: '',
 			},
 
-			allChanged: [],
+			allDrvChanged: [],
+			allActChanged: [],
 
 			allHeaders: [
 				{
@@ -601,6 +622,7 @@ export default {
 					],
 				},
 			],
+			saveAll: true,
 		};
 	},
 	computed: {
@@ -619,16 +641,40 @@ export default {
 		},
 		validationBeforeSave(datas) {
 			if (!datas.label || datas.label === '' || datas.label === null) return false;
+			if (this.saveAll) this.saveAllDatas();
+
+			if (this.creationId !== null) {
+				this.createDefaultDriver();
+			}
 			return true;
 		},
-		//TODO? TOUT FINIR, TU PEUX LE FAIRE, TU DOIS LE FAIRE, TU ES UN DIEU DE LA PROG PUTAIN ALORS ARRÊTE DE PROCRASTINER
-		//
 		validateAll() {
 			this.$refs.labelInput.validate();
 		},
-		async getAllDriversAndActionOfPlugins(id) {
-			if (id === null || id === -1) return true;
-			this.allDatas = [];
+		async getAllDriversAndActionOfPlugins(selectedId, id) {
+			this.loadedId = id;
+			this.allActChanged = [];
+			this.allDrvChanged = [];
+			this.allDrivers = [];
+			this.allActions = [];
+			this.cancelAdding(0);
+			this.cancelAdding(1);
+
+			this.duppId = null;
+			this.creationId = null;
+
+			if (selectedId === -1 && id === -1) {
+				axios
+					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
+					.then((reponse) => reponse.data)
+					.then((data) => {
+						this.creationId = data[0].AUTO_INCREMENT;
+						return false;
+					});
+			}
+
+			if (id === null || id === -1) return false;
+
 			await axios
 				.get(`http://localhost:3000/stamp3ate/driversForPlug/${id}`)
 				.then((reponse) => reponse.data)
@@ -648,7 +694,17 @@ export default {
 					this.findIdActionToLoad();
 				});
 
-			return false;
+			if (selectedId === -1 && id !== -1 && id !== null) {
+				axios
+					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
+					.then((reponse) => reponse.data)
+					.then((data) => {
+						this.duppId = data[0].AUTO_INCREMENT;
+						return true;
+					});
+			} else {
+				return true;
+			}
 		},
 		resetNext(index, head) {
 			switch (index) {
@@ -683,116 +739,209 @@ export default {
 			this.IdsToLoad = [];
 			let lastOrder = 0;
 			allActToLoad.forEach((e) => {
-				console.log(e);
 				if (e.order > lastOrder) lastOrder = e.order;
 				this.IdsToLoad.push(e.id);
 			});
 			this.newAction.order = parseInt(lastOrder) + 1;
 		},
 		addInChangedList(id) {
-			if (!this.allChanged.includes(id)) {
-				this.allChanged.push(id);
+			if (!this.allDrvChanged.includes(id)) {
+				this.allDrvChanged.push(id);
 			}
-		} /*
-		saveAction(act, i, reload) {
-			let datas = {
-				order: act.order || 0,
-				valid: act.valid || 1,
-				label: act.label || '',
-				instID: act.instID || '',
-				protocol: act.protocol || '',
-				driver: act.driver || '',
-				driverDll: act.driverDll || '',
-				wizard: act.wizard || '',
-				init: act.init || '',
-			};
+		},
+		addInActChangedList(id) {
+			if (!this.allActChanged.includes(id)) {
+				this.allActChanged.push(id);
+			}
+		},
+		saveActionOrDriver(obj, i, type) {
+			if (this.loadedId === undefined || this.loadedId === null || i === undefined || i === null) return;
 
+			let create = false;
+			if (this.duppId !== null || i === -1) create = true;
+
+			let datas;
 			let queryString = '';
-			if (row.id !== undefined && row.id !== null) {
-				switch (i) {
-					case 0:
-					case 1:
-						datas['complement'] = row.complement;
-						queryString = `http://localhost:3000/stamp3drv/protocolBoolean/${row.id}`;
-						break;
-					case 2:
-					case 3:
-						datas['type'] = row.type;
-						queryString = `http://localhost:3000/stamp3drv/protocolData/${row.id}`;
-						break;
-					case 4:
-					case 5:
-						queryString = `http://localhost:3000/stamp3drv/protocolString/${row.id}`;
-						break;
-				}
+			switch (type) {
+				case 0:
+					datas = {
+						idPlug: this.loadedId,
+						target: obj.target || this.selected.target.code,
+						funct: obj.funct || this.selected.funct.code,
+						organ: obj.organ || this.selected.organ.code,
+						action: obj.action || this.selected.action.code,
+						order: obj.order || 0,
+						label: obj.label || '',
+						idDriver: obj.idDriver,
+						scpi: obj.scpi || '',
+						info: obj.info || '',
+					};
+					if (this.duppId !== null) {
+						datas.idPlug = this.duppId;
+					}
+					if (create) queryString = `http://localhost:3000/stamp3ate/actionsForPlug/`;
+					else queryString = `http://localhost:3000/stamp3ate/actionsForPlug/${i}`;
+					break;
+				case 1:
+					datas = {
+						idATE: this.loadedId,
+						order: obj.order || 0,
+						valid: obj.valid || 1,
+						label: obj.label || '',
+						instID: obj.instID || '',
+						protocol: obj.protocol || '',
+						driver: obj.driver || '',
+						driverDll: obj.driverDll || '',
+						wizard: obj.wizard || '',
+						init: obj.init || '',
+					};
+					if (this.duppId !== null) {
+						datas.idATE = this.duppId;
+					}
+
+					if (create) queryString = `http://localhost:3000/stamp3ate/driversForPlug/`;
+					else queryString = `http://localhost:3000/stamp3ate/driversForPlug/${i}`;
+					break;
+				default:
+					break;
+			}
+			if (create) {
 				axios
-					.put(queryString, datas)
+					.post(queryString, datas)
 					.then((response) => {
 						if (response.status === 200) {
-							if (reload) {
-								this.$waveui.notify({
-									message: 'Modification reussit',
-									timeout: 2000,
-									bgColor: 'success',
-									color: 'warning',
-									dismiss: false,
-									shadow: true,
-									round: true,
-									sm: true,
-									icon: 'wi-check',
-								});
-								this.updateDatas(i);
-							}
+							console.log('Creation succeed');
+
+							if (this.duppId === null) this.getAllDriversAndActionOfPlugins(this.loadedId);
 						} else {
-							console.error('Error adding step:', response.status, response.data);
+							console.error('Error saving:', response.status, response.data);
 						}
 					})
 					.catch((error) => {
 						console.error('Unexpected error:', error);
 					});
 			} else {
-				switch (i) {
-					case 0:
-					case 1:
-						datas['complement'] = row.complement;
-						queryString = `http://localhost:3000/stamp3drv/protocolBoolean`;
-						break;
-					case 2:
-					case 3:
-						datas['type'] = row.type;
-						queryString = `http://localhost:3000/stamp3drv/protocolData`;
-						break;
-					case 4:
-					case 5:
-						queryString = `http://localhost:3000/stamp3drv/protocolString`;
-						break;
-				}
 				axios
-					.post(queryString, datas)
+					.put(queryString, datas)
 					.then((response) => {
 						if (response.status === 200) {
-							this.$waveui.notify({
-								message: 'Création reussit',
-								timeout: 2000,
-								bgColor: 'success',
-								color: 'warning',
-								dismiss: false,
-								shadow: true,
-								round: true,
-								sm: true,
-								icon: 'wi-check',
-							});
-
-							this.updateDatas(i);
+							console.log('Save succeed');
 						} else {
-							console.error('Error adding step:', response.status, response.data);
+							console.error('Error saving:', response.status, response.data);
 						}
 					})
 					.catch((error) => {
 						console.error('Unexpected error:', error);
 					});
 			}
-		},*/,
+		},
+		createDefaultDriver() {
+			console.log('TESTS CREATE DEFAULT');
+			if (this.creationId === null) return;
+			console.log('TESTS CREATE DEFAULT2');
+			axios
+				.post(`http://localhost:3000/stamp3ate/defaultDriver/${this.creationId}`)
+				.then((response) => {
+					if (response.status === 200) {
+						console.log('Creation succeed');
+						console.log('OUI');
+					} else {
+						console.error('Error saving:', response.status, response.data);
+					}
+				})
+				.catch((error) => {
+					console.error('Unexpected error:', error);
+				});
+		},
+
+		async saveAllDatas() {
+			let actToSave = this.allActions.filter((act) => this.allActChanged.includes(act.id));
+			let drvToSave = this.allDrivers.filter((drv) => this.allDrvChanged.includes(drv.id));
+			if (this.duppId !== null) {
+				actToSave = this.allActions;
+				drvToSave = this.allDrivers;
+			}
+			actToSave.forEach((act) => {
+				this.saveActionOrDriver(act, act.id, 0);
+			});
+			drvToSave.forEach((drv) => {
+				this.saveActionOrDriver(drv, drv.id, 1);
+			});
+		},
+
+		cancelAdding(type) {
+			switch (type) {
+				case 0:
+					this.newAction = {
+						target: '',
+						funct: '',
+						organ: '',
+						action: '',
+						order: 0,
+						label: '',
+						idDriver: null,
+						info: '',
+						scpi: '',
+					};
+					break;
+				case 1:
+					this.newDriver = {
+						order: 0,
+						valid: 1,
+						label: '',
+						instID: '',
+						protocol: '',
+						driver: '',
+						driverDll: '',
+						wizard: '',
+						init: '',
+					};
+					break;
+				default:
+					break;
+			}
+		},
+
+		deleteActionOrDriver(id, type) {
+			if (id == undefined || id == null) return;
+			console.log(id, type, 'delete');
+			let queryString = '';
+			switch (type) {
+				case 0:
+					queryString = `http://localhost:3000/stamp3ate/actionsForPlug/${id}`;
+					break;
+				case 1:
+					queryString = `http://localhost:3000/stamp3ate/driversForPlug/${id}`;
+					break;
+				default:
+					break;
+			}
+
+			axios
+				.delete(queryString)
+				.then((response) => {
+					if (response.status === 200) {
+						this.$waveui.notify({
+							message: 'Suppréssion reussit',
+							timeout: 2000,
+							bgColor: 'error',
+							color: 'warning',
+							dismiss: false,
+							shadow: true,
+							round: true,
+							sm: true,
+							icon: 'wi-cross',
+						});
+
+						this.getAllDriversAndActionOfPlugins(this.loadedId);
+					} else {
+						console.error('Error deleting', response.status, response.data);
+					}
+				})
+				.catch((error) => {
+					console.error('Unexpected error:', error);
+				});
+		},
 	},
 };
 </script>
@@ -803,10 +952,13 @@ export default {
 	grid-template-columns: repeat(2, 1fr);
 	grid-template-rows: repeat(2, 1fr);
 	gap: 0.3rem;
+
+	width: 75%;
+	margin: auto;
 }
 
 .Heads {
-	border: 1px solid black;
+	border: 1px solid rgba(0, 0, 0, 0.202);
 	border-radius: 5px;
 
 	padding: 0.3rem 0.8rem;
@@ -828,6 +980,18 @@ export default {
 
 .Heads.selected {
 	background: #54b946;
+	color: white;
+}
+.FunctsHead.selected {
+	background: #20aaf4;
+	color: white;
+}
+.OrgansHead.selected {
+	background: #bf19d8;
+	color: white;
+}
+.ActionsHead.selected {
+	background: #f6550a;
 	color: white;
 }
 
@@ -886,5 +1050,22 @@ export default {
 	height: 0px;
 	border-bottom: 1px solid #1baf59;
 	margin: 2.5rem auto;
+}
+.saveAll {
+	position: absolute;
+	top: 136px;
+	right: 42px;
+	display: flex;
+	gap: 1rem;
+}
+
+.saveAll p {
+	opacity: 0.7;
+}
+
+.deleteBTN {
+	width: 100px;
+	display: block;
+	margin: 0.5rem auto;
 }
 </style>

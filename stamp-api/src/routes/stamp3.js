@@ -2,6 +2,9 @@ const router = require('express').Router(); //Créer le router
 const controller = require('../controllers/stamp3.js'); //Import toutes les fonctions / queries SQL
 const validator = require('../utils/requestValidatorStamp3.js'); //Import checking received datas
 
+router.get('/hostname', controller.getUserHostname);
+router.get('/connect', controller.connectUser);
+
 //TE
 router.get('/tes', controller.getAllTeLabel);
 router.get('/te/:id', controller.getTeByID);

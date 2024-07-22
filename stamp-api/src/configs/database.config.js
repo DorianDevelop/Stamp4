@@ -14,13 +14,9 @@ const createConnection = (dbName) => {
 		if (error) {
 			console.error('Error connecting to the database:', error);
 		}
-		/* //Message de réussite, obsolète mais peut être utile pour débug
-        else {
-			console.log('Connected to the database');
-		}*/
 	});
 
-	return connection; //Renvoie la conneciton créer
+	return connection;
 };
 
 module.exports = createConnection; //Exporte la fonction permettant la création de la fonction

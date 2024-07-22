@@ -15,6 +15,7 @@ import vSelect from 'vue-select';
 import axios from 'axios';
 import ArrowIndication from '@/components/ArrowIndication.vue';
 import ArrowFilter from '@/components/ArrowFilter.vue';
+import VueCookies from 'vue-cookies';
 /*
 TO DO : Ajouter filtre CTRL, chiant de ofu
 */
@@ -109,6 +110,17 @@ export default {
 			let query = '';
 			let showQuali = false;
 
+			if (this.ctrlChoice !== null && this.ctrlChoice !== undefined) {
+				VueCookies.set('ctrl', this.ctrlChoice, '3h');
+			} else {
+				VueCookies.remove('ctrl');
+			}
+			if (this.gammeChoice !== null && this.gammeChoice !== undefined) {
+				VueCookies.set('gamme', this.gammeChoice, '3h');
+			} else {
+				VueCookies.remove('gamme');
+			}
+
 			if (this.gammeChoice !== null && this.gammeChoice !== undefined && (this.ctrlChoice === null || this.ctrlChoice === undefined)) {
 				const id = this.gammeChoice.id;
 				query = `http://localhost:3000${this.route}Filtered/${id}`;
@@ -142,6 +154,19 @@ export default {
 				}
 			}
 		},
+
+		loadSearch() {
+			if (VueCookies.get('gamme') && VueCookies.get('gamme') !== 'null' && VueCookies.get('gamme') !== null) {
+				this.gammeChoice = VueCookies.get('gamme');
+			}
+			if (VueCookies.get('ctrl') && VueCookies.get('ctrl') !== 'null' && VueCookies.get('ctrl') !== null) {
+				this.ctrlChoice = VueCookies.get('ctrl');
+			}
+
+			window.setTimeout(() => {
+				this.filterChanged();
+			}, 700);
+		},
 	},
 	mounted() {
 		const route = this.$router.currentRoute.value.matched;
@@ -157,6 +182,8 @@ export default {
 		if (this.namePage.endsWith('s')) {
 			this.namePage = this.namePage.slice(0, -1);
 		}
+
+		this.loadSearch();
 	},
 	watch: {
 		choice(newVal) {
@@ -166,11 +193,9 @@ export default {
 			this.options = [];
 			this.selected = null;
 			this.choice = this.selected;
-			this.getGammeForFilter();
-			this.gammeFilter = [];
-			this.gammeChoice = this.selectedGammeFilter;
 
 			this.showArrow = true;
+			this.loadSearch();
 			this.refresh = newVal;
 		},
 		newItem(newVal) {

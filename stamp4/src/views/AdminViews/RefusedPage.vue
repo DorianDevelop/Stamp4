@@ -1,10 +1,9 @@
 <template>
 	<div class="container">
-		<img src="@/assets/icons/home.svg" alt="home icon" />
 		<h1>
-			Bienvenue <span>{{ name }}</span> !
+			Désolé <span>{{ name }}</span> mais vous n'avez pas les droits d'accès à cette page.
 		</h1>
-		<p>Si vous rencontrer un seul problème, n'hésitez pas à contacter <span>Christophe Daffos</span>.</p>
+		<h2>Si vous pensez que c'est une erreur alors contacter <span>Christophe Daffos</span>.</h2>
 	</div>
 </template>
 
@@ -12,7 +11,7 @@
 import VueCookies from 'vue-cookies';
 
 export default {
-	name: 'HomePage',
+	name: 'RefusedPage',
 	data() {
 		return {
 			name: '',
@@ -32,25 +31,15 @@ export default {
 	text-align: center;
 
 	font-size: 1.2rem;
-	gap: 2rem;
-
-	position: relative;
+	gap: 1rem;
+}
+h1 {
+	margin-top: -5rem;
+}
+h2 span {
+	color: #23ce6b;
 }
 h1 span {
-	color: #23ce6b;
-}
-p {
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-	bottom: 2rem;
-}
-p span {
-	color: #23ce6b;
-}
-
-img {
-	margin-top: -10rem;
-	width: 170px;
+	color: #ce2d2d;
 }
 </style>

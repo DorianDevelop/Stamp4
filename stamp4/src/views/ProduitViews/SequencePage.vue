@@ -11,17 +11,7 @@
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input label-color="green-dark1" class="mb1 xs5 pa1" label="Label" @input="hasBeenSaved = false" :validators="[validators.required]" v-model="props.datas.label">
-					</w-input>
-					<div class="selects my1 ml5">
-						<p>Gammes</p>
-						<select @change="hasBeenSaved = false" v-model="props.datas.range">
-							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
-						</select>
-					</div>
-				</w-flex>
-
-				<w-flex class="py2 align-end mb1 px1" gap="3">
+					<w-input label-color="green-dark1" class="xs4" label="Label" @input="hasBeenSaved = false" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
@@ -77,16 +67,16 @@
 						</w-tooltip>
 					</div>
 					<div class="addParams" v-if="NewAction.idAction && addingAction">
-						<w-input label-color="green-dark1" :label="addingAction.param0_en" v-model="NewAction.param0" v-if="addingAction.type0 != null && addingAction.type0 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param1_en" v-model="NewAction.param1" v-if="addingAction.type1 != null && addingAction.type1 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param2_en" v-model="NewAction.param2" v-if="addingAction.type2 != null && addingAction.type2 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param3_en" v-model="NewAction.param3" v-if="addingAction.type3 != null && addingAction.type3 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param4_en" v-model="NewAction.param4" v-if="addingAction.type4 != null && addingAction.type4 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param5_en" v-model="NewAction.param5" v-if="addingAction.type5 != null && addingAction.type5 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param6_en" v-model="NewAction.param6" v-if="addingAction.type6 != null && addingAction.type6 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param7_en" v-model="NewAction.param7" v-if="addingAction.type7 != null && addingAction.type7 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param8_en" v-model="NewAction.param8" v-if="addingAction.type8 != null && addingAction.type8 != ''"> </w-input>
-						<w-input label-color="green-dark1" :label="addingAction.param9_en" v-model="NewAction.param9" v-if="addingAction.type9 != null && addingAction.type9 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param0_fr" v-model="NewAction.param0" v-if="addingAction.type0 != null && addingAction.type0 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param1_fr" v-model="NewAction.param1" v-if="addingAction.type1 != null && addingAction.type1 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param2_fr" v-model="NewAction.param2" v-if="addingAction.type2 != null && addingAction.type2 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param3_fr" v-model="NewAction.param3" v-if="addingAction.type3 != null && addingAction.type3 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param4_fr" v-model="NewAction.param4" v-if="addingAction.type4 != null && addingAction.type4 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param5_fr" v-model="NewAction.param5" v-if="addingAction.type5 != null && addingAction.type5 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param6_fr" v-model="NewAction.param6" v-if="addingAction.type6 != null && addingAction.type6 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param7_fr" v-model="NewAction.param7" v-if="addingAction.type7 != null && addingAction.type7 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param8_fr" v-model="NewAction.param8" v-if="addingAction.type8 != null && addingAction.type8 != ''"> </w-input>
+						<w-input label-color="green-dark1" :label="addingAction.param9_fr" v-model="NewAction.param9" v-if="addingAction.type9 != null && addingAction.type9 != ''"> </w-input>
 					</div>
 				</div>
 				<w-switch color="green" v-model="newVersion" class="text-sync" label="Nouvelle affichage" v-if="false"></w-switch>
@@ -103,14 +93,14 @@
 								</svg>
 							</button>
 						</div>
-						<div v-if="allActionsState[item.id] && item.infos" class="listParams">
+						<div v-if="item.infos" class="listParams">
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
 									<div class="selectParam" @click="openModalParam(item.id, 0)" v-if="item.param0 && item.param0 !== ''" v-on="on">
 										<p>{{ item.param0 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param0_en }}
+								{{ item.infos.param0_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -118,7 +108,7 @@
 										<p>{{ item.param1 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param1_en }}
+								{{ item.infos.param1_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -126,7 +116,7 @@
 										<p>{{ item.param2 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param2_en }}
+								{{ item.infos.param2_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -134,7 +124,7 @@
 										<p>{{ item.param3 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param3_en }}
+								{{ item.infos.param3_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -142,7 +132,7 @@
 										<p>{{ item.param4 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param4_en }}
+								{{ item.infos.param4_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -150,7 +140,7 @@
 										<p>{{ item.param5 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param5_en }}
+								{{ item.infos.param5_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -158,7 +148,7 @@
 										<p>{{ item.param6 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param6_en }}
+								{{ item.infos.param6_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -166,7 +156,7 @@
 										<p>{{ item.param7 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param7_en }}
+								{{ item.infos.param7_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -174,7 +164,7 @@
 										<p>{{ item.param8 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param8_en }}
+								{{ item.infos.param8_fr }}
 							</w-tooltip>
 							<w-tooltip top color="white" bg-color="green">
 								<template #activator="{ on }">
@@ -182,7 +172,7 @@
 										<p>{{ item.param0 }}</p>
 									</div>
 								</template>
-								{{ item.infos.param9_en }}
+								{{ item.infos.param9_fr }}
 							</w-tooltip>
 							<w-tooltip>
 								<template #activator="{ on }">
@@ -196,7 +186,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param0_en"
+								:label="item.infos.param0_fr"
 								v-model="item.param0"
 								v-if="item.param0 && item.param0 !== ''"
 							></w-input>
@@ -204,7 +194,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param1_en"
+								:label="item.infos.param1_fr"
 								v-model="item.param1"
 								v-if="item.param1 && item.param1 !== ''"
 							></w-input>
@@ -212,7 +202,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param2_en"
+								:label="item.infos.param2_fr"
 								v-model="item.param2"
 								v-if="item.param2 && item.param2 !== ''"
 							></w-input>
@@ -220,7 +210,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param3_en"
+								:label="item.infos.param3_fr"
 								v-model="item.param3"
 								v-if="item.param3 && item.param3 !== ''"
 							></w-input>
@@ -228,7 +218,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param4_en"
+								:label="item.infos.param4_fr"
 								v-model="item.param4"
 								v-if="item.param4 && item.param4 !== ''"
 							></w-input>
@@ -236,7 +226,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param5_en"
+								:label="item.infos.param5_fr"
 								v-model="item.param5"
 								v-if="item.param5 && item.param5 !== ''"
 							></w-input>
@@ -244,7 +234,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param6_en"
+								:label="item.infos.param6_fr"
 								v-model="item.param6"
 								v-if="item.param6 && item.param6 !== ''"
 							></w-input>
@@ -252,7 +242,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param7_en"
+								:label="item.infos.param7_fr"
 								v-model="item.param7"
 								v-if="item.param7 && item.param7 !== ''"
 							></w-input>
@@ -260,7 +250,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb1 px1"
-								:label="item.infos.param8_en"
+								:label="item.infos.param8_fr"
 								v-model="item.param8"
 								v-if="item.param8 && item.param8 !== ''"
 							></w-input>
@@ -268,7 +258,7 @@
 								@input="hasBeenSaved = false"
 								label-color="green-dark1"
 								class="xs12 mb4 px1"
-								:label="item.infos.param9_en"
+								:label="item.infos.param9_fr"
 								v-model="item.param9"
 								v-if="item.param9 && item.param9 !== ''"
 							></w-input>
@@ -285,15 +275,18 @@
 
 				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" @input="hasBeenSaved = false" v-model="props.datas.comment">
 				</w-textarea>
-				<w-overlay v-model="showInput" class="modalComposant">
+				<div v-if="showInput" class="modalBackground" @click="closeModal()"></div>
+				<div v-if="showInput" class="modalComposant">
+					<h1 class="modalTitle">{{ selectedTitle }}</h1>
+					<p class="modalSubtitle">({{ selectedSubtitle }})</p>
 					<textarea type="text" v-model="selectedParam"></textarea>
 					<w-button bg-color="green-dark2" lg dark @click="closeModal()"> Fermer </w-button>
-				</w-overlay>
+				</div>
 			</w-form>
 			<!-- TODO : Refaire tout ? -->
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
 			<div>
-				<div v-if="getAllActions(props.datas.id ? props.datas.id : -1)"></div>
+				<div v-if="getAllActions(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)"></div>
 				<div v-if="getAllFunctionsRelatedToTarget(NewAction.idTarget ? NewAction.idTarget : -1)"></div>
 				<div v-if="getAllOrgansRelatedToFunction(NewAction.idFunc ? NewAction.idFunc : -1)"></div>
 				<div v-if="getAllActionsRelatedToOrgan(NewAction.idOrgan ? NewAction.idOrgan : -1)"></div>
@@ -312,6 +305,7 @@ export default {
 	},
 	data() {
 		return {
+			creationId: null,
 			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
@@ -345,9 +339,13 @@ export default {
 			},
 
 			selectedParam: null,
+			selectedTitle: null,
+			selectedSubtitle: null,
 			selectedItem: null,
 			selectedParamNumber: null,
 			showInput: false,
+
+			loadIsFinished: false,
 
 			addingAction: [],
 
@@ -392,24 +390,49 @@ export default {
 			return true;
 		},
 		validateAll() {
-			console.log('R');
+			this.$refs.labelInput.validate();
 		},
 		async saveAllActions() {
 			await this.allActions.forEach((action) => {
 				delete action.infos;
-				axios
-					.put('http://localhost:3000/stamp3uut/action/' + action.id, action)
-					.then((response) => {
-						if (response.status !== 200) {
-							console.error('Error getting Name:', response.status, response.data);
-						}
-					})
-					.catch((error) => {
-						console.error('Unexpected error:', error);
-					});
+				if (this.creationId !== null) {
+					action.idStep = this.creationId;
+					axios
+						.post('http://localhost:3000/stamp3uut/action/', action)
+						.then((response) => {
+							if (response.status !== 200) {
+								console.error('Error getting Name:', response.status, response.data);
+							}
+						})
+						.catch((error) => {
+							console.error('Unexpected error:', error);
+						});
+				} else {
+					axios
+						.put('http://localhost:3000/stamp3uut/action/' + action.id, action)
+						.then((response) => {
+							if (response.status !== 200) {
+								console.error('Error getting Name:', response.status, response.data);
+							}
+							this.getAllActions(this.currentID ? this.currentID : -1, this.currentID);
+						})
+						.catch((error) => {
+							console.error('Unexpected error:', error);
+						});
+				}
 			});
 		},
-		async getAllActions(id) {
+		async getAllActions(selectedId, id) {
+			if (id !== -1) this.creationId = null;
+			if (selectedId === -1) {
+				axios
+					.get(`http://localhost:3000/stamp3uut/findNextStepID`)
+					.then((reponse) => reponse.data)
+					.then((data) => {
+						this.creationId = data[0].AUTO_INCREMENT;
+						return false;
+					});
+			}
 			this.currentID = id;
 			this.allActionsState = [];
 			await axios
@@ -552,7 +575,7 @@ export default {
 					.post('http://localhost:3000/stamp3uut/action', datas)
 					.then((response) => {
 						if (response.status === 200) {
-							this.getAllActions(this.currentID);
+							this.getAllActions(this.currentID ? this.currentID : -1, this.currentID);
 						} else {
 							console.error('Error adding step:', response.status, response.data);
 						}
@@ -567,7 +590,7 @@ export default {
 				.delete('http://localhost:3000/stamp3uut/action/' + id)
 				.then((response) => {
 					if (response.status === 200) {
-						this.getAllActions(this.currentID);
+						this.getAllActions(this.currentID ? this.currentID : -1, this.currentID);
 					} else {
 						console.error('Error adding step:', response.status, response.data);
 					}
@@ -586,10 +609,13 @@ export default {
 			};
 		},
 		openModalParam(i, j) {
+			this.showInput = true;
 			this.selectedItem = i;
 			this.selectedParamNumber = j;
 			this.selectedParam = this.allActions.find((item) => item.id === this.selectedItem)['param' + this.selectedParamNumber];
-			this.showInput = true;
+			let temp = this.allActions.find((item) => item.id === this.selectedItem).infos;
+			this.selectedTitle = temp['param' + this.selectedParamNumber + '_fr'];
+			this.selectedSubtitle = temp['param' + this.selectedParamNumber + '_en'];
 		},
 		closeModal() {
 			this.allActions.find((item) => item.id === this.selectedItem)['param' + this.selectedParamNumber] = this.selectedParam;
@@ -658,24 +684,53 @@ export default {
 
 .oldVersion .listParams {
 	display: flex;
-	gap: 0.5rem;
+	gap: 0.3rem;
 	width: 80%;
 }
 
 .selectParam {
 	border: 1px solid black;
-	border-radius: 5px;
-	padding: 0.1rem 0.3rem;
-	max-width: 200px;
-	text-wrap: nowrap;
+	border-radius: 3px;
+	padding: 0.1rem 0.4rem;
+	max-width: 300px;
 	overflow-x: hidden;
 	cursor: pointer;
+}
+
+.modalBackground {
+	z-index: 500;
+	background: rgba(0, 0, 0, 0.307);
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
 }
 
 .modalComposant {
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	z-index: 505;
 	gap: 1rem;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.modalComposant .modalTitle {
+	color: white;
+	text-shadow: black 0 0 12px;
+	font-size: 2.5rem;
+}
+
+.modalComposant .modalSubtitle {
+	color: white;
+	text-shadow: black 0 0 12px;
+	font-size: 1.5rem;
+	margin-top: -1rem;
 }
 
 .modalComposant textarea {

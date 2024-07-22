@@ -39,7 +39,7 @@
 					</w-flex>
 				</div>
 
-				<div class="windowsContainer">
+				<div class="windowsContainer" v-if="props.selectedId !== -1">
 					<div class="window" v-for="(valeurs, i) in allDatas" :key="i">
 						<div class="windowTitle" @click="opens[i] = !opens[i]">
 							<p>{{ names[i] }}</p>
@@ -90,11 +90,9 @@
 				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
-			<div v-if="loadedId !== props.datas.id">
-				<div v-if="getAllDatasOfProtocol(props.datas.id ? props.datas.id : -1)"></div>
-			</div>
+			<div v-if="getAllDatasOfProtocol(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)"></div>
 
-			<div class="saveAll" v-if="loadedId !== null">
+			<div class="saveAll" v-if="loadedId !== null && loadedId !== -1">
 				<p>Activer la sauvegarde générale</p>
 				<w-switch class="saveAllSwitch" v-model="saveAll" color="red"></w-switch>
 			</div>
@@ -112,12 +110,13 @@ export default {
 	data() {
 		return {
 			loadedId: null,
+			duppId: null,
 
 			opens: [false, false, false, false, false, false],
 			names: ['Ordre - Write', 'État - Read', 'Paramètre - Write', 'Valeur - Read', 'Texte - Write', 'Texte - Read'],
 
 			allDatas: [],
-			saveAll: false,
+			saveAll: true,
 
 			showBtn: true,
 			validators: {
@@ -198,11 +197,11 @@ export default {
 			return {
 				label: datas.label || '',
 				shortName: datas.shortName || '',
-				repeatOrder: datas.repeatOrder || 0,
-				fieldSlave: datas.fieldSlave || 0,
-				fieldAddPrim: datas.fieldAddPrim || 0,
-				fieldAddSecond: datas.fieldAddSecond || 0,
-				fieldCmdString: datas.fieldCmdString || 0,
+				repeatOrder: datas.repeatOrder ? 1 : 0,
+				fieldSlave: datas.fieldSlave ? 1 : 0,
+				fieldAddPrim: datas.fieldAddPrim ? 1 : 0,
+				fieldAddSecond: datas.fieldAddSecond ? 1 : 0,
+				fieldCmdString: datas.fieldCmdString ? 1 : 0,
 				when: datas.when || '1900-01-01',
 				who: datas.who || '',
 				comment: datas.comment || '',
@@ -218,9 +217,11 @@ export default {
 			this.$refs.labelInput.validate();
 			return;
 		},
-		async getAllDatasOfProtocol(id) {
+		async getAllDatasOfProtocol(selectedId, id) {
+			console.log(selectedId, id);
+			this.duppId = null;
 			this.loadedId = id;
-			if (this.loadedId === null || this.loadedId === -1) return true;
+			if (this.loadedId === null || this.loadedId === -1) return false;
 			this.allDatas = [];
 			await axios
 				.get(`http://localhost:3000/stamp3drv/protocolDatas/${this.loadedId}`)
@@ -229,7 +230,17 @@ export default {
 					this.allDatas = data;
 				});
 
-			return false;
+			if (selectedId === -1 && id !== -1 && id !== null) {
+				axios
+					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
+					.then((reponse) => reponse.data)
+					.then((data) => {
+						this.duppId = data[0].AUTO_INCREMENT;
+						return true;
+					});
+			} else {
+				return true;
+			}
 		},
 		shouldBeDisabled(header, datas, answerEx) {
 			if (header === 'slave' && !datas.fieldSlave) return true;
@@ -255,6 +266,11 @@ export default {
 			this.table.sorts[id] = '+id';
 		},
 		saveRow(row, i, reload) {
+			let create = false;
+			if ((row.id !== undefined && row.id !== null) || this.duppId !== null) {
+				create = true;
+			}
+
 			let datas = {
 				idProtocol: row.idProtocol || this.loadedId,
 				label: row.label || '',
@@ -270,7 +286,7 @@ export default {
 			};
 
 			let queryString = '';
-			if (row.id !== undefined && row.id !== null) {
+			if (create) {
 				switch (i) {
 					case 0:
 					case 1:
@@ -445,21 +461,16 @@ export default {
 		},
 		async saveAllDatas() {
 			let index = 0;
-			let next_index = -1;
-			await axios
-				.get(`http://localhost:3000/stamp3drv/findNextProtocolID`)
-				.then((reponse) => reponse.data)
-				.then((data) => {
-					next_index = data[0]['AUTO_INCREMENT'];
-					this.allDatas.forEach((all) => {
-						all.forEach((e) => {
-							e.idProtocol = next_index;
-							e.id = null;
-							this.saveRow(e, index, false);
-						});
-						index++;
-					});
+			this.allDatas.forEach((all) => {
+				all.forEach((e) => {
+					e.idProtocol = this.loadedId;
+					if (this.duppId !== null) {
+						e.idProtocol = this.duppId;
+					}
+					this.saveRow(e, index, true);
 				});
+				index++;
+			});
 		},
 	},
 };
