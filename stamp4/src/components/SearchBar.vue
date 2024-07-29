@@ -42,7 +42,7 @@ export default {
 	methods: {
 		async getValueForSelect() {
 			await axios
-				.get('http://localhost:3000' + this.route)
+				.get('http://localhost:3001' + this.route)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;
@@ -97,6 +97,7 @@ export default {
 
 <style scoped>
 @import 'vue-select/dist/vue-select.css';
+
 .search {
 	min-width: 340px;
 	background: var(--white);

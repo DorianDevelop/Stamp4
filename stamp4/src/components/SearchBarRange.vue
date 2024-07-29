@@ -55,14 +55,14 @@ export default {
 	methods: {
 		async getGammeForFilter() {
 			await axios
-				.get('http://localhost:3000/stamp3uut/gammes')
+				.get('http://localhost:3001/stamp3uut/gammes')
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.gammeFilter = data;
 				});
 
 			await axios
-				.get(`http://localhost:3000${this.route}`)
+				.get(`http://localhost:3001${this.route}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;
@@ -83,7 +83,7 @@ export default {
 
 			const id = val.id;
 			await axios
-				.get(`http://localhost:3000${this.route}Filtered/${id}`)
+				.get(`http://localhost:3001${this.route}Filtered/${id}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;
@@ -137,6 +137,7 @@ export default {
 
 <style scoped>
 @import 'vue-select/dist/vue-select.css';
+
 .search {
 	min-width: 340px;
 	background: var(--white);
@@ -150,6 +151,7 @@ export default {
 .fleche {
 	top: 190px;
 }
+
 .fleche_filtre {
 	left: 385px;
 }

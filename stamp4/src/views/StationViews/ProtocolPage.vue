@@ -1,40 +1,42 @@
 <template>
-	<Layout
-		class="layout"
-		routeAPI="/stamp3drv/protocol"
-		:searchType="0"
-		:formating="createJSONItem"
-		:validation="validationBeforeSave"
-		@update:validators="validateAll"
-		:showBtns="showBtn"
-	>
+	<Layout class="layout" routeAPI="/stamp3drv/protocol" :searchType="0" :formating="createJSONItem"
+		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input ref="labelInput" label-color="green-dark1" class="xs5" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Nom court" v-model="props.datas.shortName"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.date"> </w-input>
+					<w-input ref="labelInput" label-color="green-dark1" class="xs5" label="Label"
+						:validators="[validators.required]" v-model="props.datas.label"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Nom court" v-model="props.datas.shortName">
+					</w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who">
+					</w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.date">
+					</w-input>
 				</w-flex>
 				<div class="switchDetails">
 					<w-flex class="column py1 align-center mb1 px1" gap="3">
 						<p class="detailsTitle">Synchronisation</p>
 						<div class="wrapper">
-							<w-switch class="mr4" v-model="props.datas.repeatOrder" color="green" label="Répétition de l'ordre" label-color="green-dark1"></w-switch>
+							<w-switch class="mr4" v-model="props.datas.repeatOrder" color="green"
+								label="Répétition de l'ordre" label-color="green-dark1"></w-switch>
 						</div>
 					</w-flex>
 					<w-flex class="column py1 align-center mb1 px1" gap="3">
 						<p class="detailsTitle">Adressabilité</p>
 						<div class="wrapper">
-							<w-switch class="mr4" v-model="props.datas.fieldSlave" color="green" label="Numéro slave" label-color="green-dark1"></w-switch>
-							<w-switch class="mr4" v-model="props.datas.fieldAddPrim" color="green" label="Adresse primaire" label-color="green-dark1"></w-switch>
-							<w-switch class="mr4" v-model="props.datas.fieldAddSecond" color="green" label="Adresse secondaire" label-color="green-dark1"></w-switch>
+							<w-switch class="mr4" v-model="props.datas.fieldSlave" color="green" label="Numéro slave"
+								label-color="green-dark1"></w-switch>
+							<w-switch class="mr4" v-model="props.datas.fieldAddPrim" color="green"
+								label="Adresse primaire" label-color="green-dark1"></w-switch>
+							<w-switch class="mr4" v-model="props.datas.fieldAddSecond" color="green"
+								label="Adresse secondaire" label-color="green-dark1"></w-switch>
 						</div>
 					</w-flex>
 					<w-flex class="column py1 align-center mb1 px1" gap="3">
 						<p class="detailsTitle">Divers</p>
 						<div class="wrapper">
-							<w-switch class="mr4" v-model="props.datas.fieldCmdString" color="green" label="Chaîne de commande" label-color="green-dark1"></w-switch>
+							<w-switch class="mr4" v-model="props.datas.fieldCmdString" color="green"
+								label="Chaîne de commande" label-color="green-dark1"></w-switch>
 						</div>
 					</w-flex>
 				</div>
@@ -44,40 +46,51 @@
 						<div class="windowTitle" @click="opens[i] = !opens[i]">
 							<p>{{ names[i] }}</p>
 							<button class="icon" :class="{ opened: opens[i] }">
-								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); transform: ; msfilter: ">
-									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+									style="fill: rgba(0, 0, 0, 1); transform: ; msfilter: ">
+									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z">
+									</path>
 								</svg>
 							</button>
 						</div>
 						<div class="windowContent" v-if="opens[i]">
-							<div class="parameter" v-if="definePagination(table.paginations[i], valeurs.length) && refreshTable">
-								<w-button class="mb3" bg-color="green-dark1" color="white" @click="addEmptyRow(valeurs, i)">
+							<div class="parameter"
+								v-if="definePagination(table.paginations[i], valeurs.length) && refreshTable">
+								<w-button class="mb3" bg-color="green-dark1" color="white"
+									@click="addEmptyRow(valeurs, i)">
 									<w-icon class="mr1">wi-plus</w-icon>
 									Ajout d'une ligne
 								</w-button>
-								<w-table :headers="i == 2 || i == 3 ? table.header_two : table.header_one" :items="valeurs" fixed-headers :pagination="table.paginations[i]" :sort="table.sorts[i]">
+								<w-table :headers="i == 2 || i == 3 ? table.header_two : table.header_one"
+									:items="valeurs" fixed-headers :pagination="table.paginations[i]"
+									:sort="table.sorts[i]">
 									<template #item="{ item }">
 										<tr>
-											<td v-for="(header, x) in i == 2 || i == 3 ? table.header_two : table.header_one" :key="x" class="inputTable" :class="`text-${header.key}`">
+											<td v-for="(header, x) in i == 2 || i == 3 ? table.header_two : table.header_one"
+												:key="x" class="inputTable" :class="`text-${header.key}`">
 												<w-input
 													v-if="header.key !== 'access' && header.key !== 'answerExpected' && header.key !== 'type'"
 													v-model="item[header.key]"
-													:disabled="shouldBeDisabled(header.key, props.datas, item.answerExpected)"
-												>
+													:disabled="shouldBeDisabled(header.key, props.datas, item.answerExpected)">
 												</w-input>
 												<select v-else-if="header.key === 'access'" v-model="item[header.key]">
 													<option value="WR">Write</option>
 													<option value="RD">Read</option>
 												</select>
-												<select v-else-if="header.key === 'type'" v-model="item[header.key]" :class="`text-${header.key}`">
-													<option v-for="t in types" :key="t.value" :value="t.value">{{ t.label }}</option>
+												<select v-else-if="header.key === 'type'" v-model="item[header.key]"
+													:class="`text-${header.key}`">
+													<option v-for="t in types" :key="t.value" :value="t.value">{{
+														t.label }}</option>
 												</select>
-												<w-switch v-else v-model="item[header.key]" color="green" class="text-sync"></w-switch>
+												<w-switch v-else v-model="item[header.key]" color="green"
+													class="text-sync"></w-switch>
 											</td>
 											<td>
 												<w-flex>
-													<w-button class="btnRow" bg-color="error" icon="wi-cross" @click="deleteRow(i, item.id)"></w-button>
-													<w-button class="btnRow" bg-color="success" icon="wi-check" @click="saveRow(item, i, true)"></w-button>
+													<w-button class="btnRow" bg-color="error" icon="wi-cross"
+														@click="deleteRow(i, item.id)"></w-button>
+													<w-button class="btnRow" bg-color="success" icon="wi-check"
+														@click="saveRow(item, i, true)"></w-button>
 												</w-flex>
 											</td>
 										</tr>
@@ -87,10 +100,13 @@
 						</div>
 					</div>
 				</div>
-				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
+				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm"
+					label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
-			<div v-if="getAllDatasOfProtocol(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)"></div>
+			<div
+				v-if="getAllDatasOfProtocol(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)">
+			</div>
 
 			<div class="saveAll" v-if="loadedId !== null && loadedId !== -1">
 				<p>Activer la sauvegarde générale</p>
@@ -224,7 +240,7 @@ export default {
 			if (this.loadedId === null || this.loadedId === -1) return false;
 			this.allDatas = [];
 			await axios
-				.get(`http://localhost:3000/stamp3drv/protocolDatas/${this.loadedId}`)
+				.get(`http://localhost:3001/stamp3drv/protocolDatas/${this.loadedId}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allDatas = data;
@@ -232,7 +248,7 @@ export default {
 
 			if (selectedId === -1 && id !== -1 && id !== null) {
 				axios
-					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
+					.get(`http://localhost:3001/stamp3ate/findNextPlugID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.duppId = data[0].AUTO_INCREMENT;
@@ -291,16 +307,16 @@ export default {
 					case 0:
 					case 1:
 						datas['complement'] = row.complement;
-						queryString = `http://localhost:3000/stamp3drv/protocolBoolean/${row.id}`;
+						queryString = `http://localhost:3001/stamp3drv/protocolBoolean/${row.id}`;
 						break;
 					case 2:
 					case 3:
 						datas['type'] = row.type;
-						queryString = `http://localhost:3000/stamp3drv/protocolData/${row.id}`;
+						queryString = `http://localhost:3001/stamp3drv/protocolData/${row.id}`;
 						break;
 					case 4:
 					case 5:
-						queryString = `http://localhost:3000/stamp3drv/protocolString/${row.id}`;
+						queryString = `http://localhost:3001/stamp3drv/protocolString/${row.id}`;
 						break;
 				}
 				axios
@@ -333,16 +349,16 @@ export default {
 					case 0:
 					case 1:
 						datas['complement'] = row.complement;
-						queryString = `http://localhost:3000/stamp3drv/protocolBoolean`;
+						queryString = `http://localhost:3001/stamp3drv/protocolBoolean`;
 						break;
 					case 2:
 					case 3:
 						datas['type'] = row.type;
-						queryString = `http://localhost:3000/stamp3drv/protocolData`;
+						queryString = `http://localhost:3001/stamp3drv/protocolData`;
 						break;
 					case 4:
 					case 5:
-						queryString = `http://localhost:3000/stamp3drv/protocolString`;
+						queryString = `http://localhost:3001/stamp3drv/protocolString`;
 						break;
 				}
 				axios
@@ -381,15 +397,15 @@ export default {
 			switch (i) {
 				case 0:
 				case 1:
-					queryString = `http://localhost:3000/stamp3drv/protocolBoolean/${id}`;
+					queryString = `http://localhost:3001/stamp3drv/protocolBoolean/${id}`;
 					break;
 				case 2:
 				case 3:
-					queryString = `http://localhost:3000/stamp3drv/protocolData/${id}`;
+					queryString = `http://localhost:3001/stamp3drv/protocolData/${id}`;
 					break;
 				case 4:
 				case 5:
-					queryString = `http://localhost:3000/stamp3drv/protocolString/${id}`;
+					queryString = `http://localhost:3001/stamp3drv/protocolString/${id}`;
 					break;
 			}
 
@@ -424,15 +440,15 @@ export default {
 			switch (i) {
 				case 0:
 				case 1:
-					queryString = `http://localhost:3000/stamp3drv/protocolBooleans/${id}`;
+					queryString = `http://localhost:3001/stamp3drv/protocolBooleans/${id}`;
 					break;
 				case 2:
 				case 3:
-					queryString = `http://localhost:3000/stamp3drv/protocolDatas/${id}`;
+					queryString = `http://localhost:3001/stamp3drv/protocolDatas/${id}`;
 					break;
 				case 4:
 				case 5:
-					queryString = `http://localhost:3000/stamp3drv/protocolStrings/${id}`;
+					queryString = `http://localhost:3001/stamp3drv/protocolStrings/${id}`;
 					break;
 			}
 			axios
@@ -534,9 +550,11 @@ td {
 .text-label {
 	min-width: 170px;
 }
+
 .text-cmdString {
 	min-width: 130px;
 }
+
 .text-loop,
 .text-time {
 	width: 85px;
@@ -545,6 +563,7 @@ td {
 .text-type {
 	width: 60px;
 }
+
 .text-answerValue {
 	width: 100px;
 }
@@ -567,6 +586,7 @@ td {
 .w-input--disabled {
 	position: relative;
 }
+
 .w-input--disabled::after {
 	content: 'X';
 	position: absolute;
@@ -592,6 +612,7 @@ td {
 	margin: 0 2px;
 	padding: 2px 4px;
 }
+
 .saveAll {
 	position: absolute;
 	top: 136px;

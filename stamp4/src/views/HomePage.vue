@@ -4,7 +4,7 @@
 		<h1>
 			Bienvenue <span>{{ name }}</span> !
 		</h1>
-		<p>Si vous rencontrer un seul problème, n'hésitez pas à contacter <span>Christophe Daffos</span>.</p>
+		<p>Si vous rencontrer un seul problème, n'hésitez pas à contacter <br /><span>Christophe Daffos</span>.</p>
 	</div>
 </template>
 
@@ -36,15 +36,18 @@ export default {
 
 	position: relative;
 }
+
 h1 span {
 	color: #23ce6b;
 }
+
 p {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
 	bottom: 2rem;
 }
+
 p span {
 	color: #23ce6b;
 }

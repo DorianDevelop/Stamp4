@@ -1,19 +1,15 @@
 <template>
-	<Layout
-		class="layout"
-		routeAPI="/stamp3ate/plug"
-		:searchType="0"
-		:formating="createJSONItem"
-		:validation="validationBeforeSave"
-		@update:validators="validateAll"
-		:showBtns="showBtn"
-	>
+	<Layout class="layout" routeAPI="/stamp3ate/plug" :searchType="0" :formating="createJSONItem"
+		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input ref="labelInput" label-color="green-dark1" class="xs3" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
+					<w-input ref="labelInput" label-color="green-dark1" class="xs3" label="Label"
+						:validators="[validators.required]" v-model="props.datas.label"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who">
+					</w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when">
+					</w-input>
 				</w-flex>
 
 				<div class="controllerHeads" v-if="loadedId !== -1">
@@ -27,7 +23,8 @@
 				<div class="controllerContainer" v-if="controllerChoice === 1 && loadedId !== -1">
 					<div class="controllerAdding">
 						<w-flex class="py2 mt2 align-end mb1 px1" gap="3">
-							<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="newDriver.order"> </w-input>
+							<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="newDriver.order">
+							</w-input>
 
 							<div class="selects_valid">
 								<p>Validate</p>
@@ -36,29 +33,38 @@
 									<option :value="0">No</option>
 								</select>
 							</div>
-							<w-input label-color="green-dark1" class="xs3" label="Plug-in ID" v-model="newDriver.label"> </w-input>
+							<w-input label-color="green-dark1" class="xs3" label="Plug-in ID" v-model="newDriver.label">
+							</w-input>
 
-							<w-input label-color="green-dark1" class="xs3" label="Inst ID" v-model="newDriver.instID"> </w-input>
-							<w-input label-color="green-dark1" class="xs3" label="Protocol" v-model="newDriver.protocol"> </w-input>
+							<w-input label-color="green-dark1" class="xs3" label="Inst ID" v-model="newDriver.instID">
+							</w-input>
+							<w-input label-color="green-dark1" class="xs3" label="Protocol"
+								v-model="newDriver.protocol"> </w-input>
 						</w-flex>
 						<w-flex class="py2 align-end mb1 px1" gap="3">
-							<w-input label-color="green-dark1" class="xs3" label="LabVIEW plug-in" v-model="newDriver.driver"> </w-input>
-							<w-input label-color="green-dark1" class="xs3" label="Wizard" v-model="newDriver.wizard"> </w-input>
+							<w-input label-color="green-dark1" class="xs3" label="LabVIEW plug-in"
+								v-model="newDriver.driver"> </w-input>
+							<w-input label-color="green-dark1" class="xs3" label="Wizard" v-model="newDriver.wizard">
+							</w-input>
 						</w-flex>
 						<w-flex class="py2 align-end mb1 px1" gap="3">
-							<w-input label-color="green-dark1" class="xs3" label="Initialization" v-model="newDriver.init"> </w-input>
-							<w-input label-color="green-dark1" class="xs3" label="C++ plug-in" v-model="newDriver.driverDll"> </w-input>
+							<w-input label-color="green-dark1" class="xs3" label="Initialization"
+								v-model="newDriver.init"> </w-input>
+							<w-input label-color="green-dark1" class="xs3" label="C++ plug-in"
+								v-model="newDriver.driverDll"> </w-input>
 						</w-flex>
 						<div class="btns">
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button v-on="on" bg-color="success" icon="wi-check" @click="saveActionOrDriver(newDriver, -1, 1)"></w-button>
+									<w-button v-on="on" bg-color="success" icon="wi-check"
+										@click="saveActionOrDriver(newDriver, -1, 1)"></w-button>
 								</template>
 								Ajouter
 							</w-tooltip>
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button v-on="on" bg-color="error" icon="wi-cross" @click="cancelAdding(1)"></w-button>
+									<w-button v-on="on" bg-color="error" icon="wi-cross"
+										@click="cancelAdding(1)"></w-button>
 								</template>
 								Annuler
 							</w-tooltip>
@@ -68,7 +74,8 @@
 					<div class="controllerContent">
 						<div v-for="driver in allDrivers" :key="driver.id" class="driver_action">
 							<w-flex class="py2 mt2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="driver.order" @change="addInChangedList(driver.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="driver.order"
+									@change="addInChangedList(driver.id)"> </w-input>
 
 								<div class="selects_valid">
 									<p>Validate</p>
@@ -77,23 +84,31 @@
 										<option :value="0">No</option>
 									</select>
 								</div>
-								<w-input label-color="green-dark1" class="xs4" label="Plug-in ID" v-model="driver.label" @change="addInChangedList(driver.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs4" label="Plug-in ID" v-model="driver.label"
+									@change="addInChangedList(driver.id)"> </w-input>
 
-								<w-input label-color="green-dark1" class="xs4" label="Inst ID" v-model="driver.instID" @change="addInChangedList(driver.id)"> </w-input>
-								<w-input label-color="green-dark1" class="xs4" label="Protocol" v-model="driver.protocol" @change="addInChangedList(driver.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs4" label="Inst ID" v-model="driver.instID"
+									@change="addInChangedList(driver.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs4" label="Protocol"
+									v-model="driver.protocol" @change="addInChangedList(driver.id)"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="LabVIEW plug-in" v-model="driver.driver" @change="addInChangedList(driver.id)"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="Wizard" v-model="driver.wizard" @change="addInChangedList(driver.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="LabVIEW plug-in"
+									v-model="driver.driver" @change="addInChangedList(driver.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="Wizard" v-model="driver.wizard"
+									@change="addInChangedList(driver.id)"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="Initialization" v-model="driver.init" @change="addInChangedList(driver.id)"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="C++ plug-in" v-model="driver.driverDll" @change="addInChangedList(driver.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="Initialization"
+									v-model="driver.init" @change="addInChangedList(driver.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="C++ plug-in"
+									v-model="driver.driverDll" @change="addInChangedList(driver.id)"> </w-input>
 							</w-flex>
 
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button class="deleteBTN" v-on="on" bg-color="error" icon="wi-cross" @click="deleteActionOrDriver(driver.id, 1)"></w-button>
+									<w-button class="deleteBTN" v-on="on" bg-color="error" icon="wi-cross"
+										@click="deleteActionOrDriver(driver.id, 1)"></w-button>
 								</template>
 								Supprimer
 							</w-tooltip>
@@ -103,8 +118,10 @@
 				<div class="controllerContainer" v-if="controllerChoice === 0 && loadedId !== -1">
 					<div class="controllerAdding">
 						<w-flex class="py2 align-end mb1 px1" gap="3">
-							<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="newAction.order"> </w-input>
-							<w-input label-color="green-dark1" class="xs4" label="Label" v-model="newAction.label"> </w-input>
+							<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="newAction.order">
+							</w-input>
+							<w-input label-color="green-dark1" class="xs4" label="Label" v-model="newAction.label">
+							</w-input>
 							<div class="selects">
 								<p>Driver</p>
 								<select v-model="newAction.idDriver">
@@ -113,21 +130,25 @@
 									</option>
 								</select>
 							</div>
-							<w-input label-color="green-dark1" class="xs4" label="Information" v-model="newAction.info"> </w-input>
+							<w-input label-color="green-dark1" class="xs4" label="Information" v-model="newAction.info">
+							</w-input>
 						</w-flex>
 						<w-flex class="py2 align-end mb2 px1" gap="3">
-							<w-input label-color="green-dark1" class="xs6" label="Commande SCPI" v-model="newAction.scpi"> </w-input>
+							<w-input label-color="green-dark1" class="xs6" label="Commande SCPI"
+								v-model="newAction.scpi"> </w-input>
 						</w-flex>
 						<div class="btns">
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button v-on="on" bg-color="success" icon="wi-check" @click="saveActionOrDriver(newAction, -1, 0)"></w-button>
+									<w-button v-on="on" bg-color="success" icon="wi-check"
+										@click="saveActionOrDriver(newAction, -1, 0)"></w-button>
 								</template>
 								Ajouter
 							</w-tooltip>
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button v-on="on" bg-color="error" icon="wi-cross" @click="cancelAdding(0)"></w-button>
+									<w-button v-on="on" bg-color="error" icon="wi-cross"
+										@click="cancelAdding(0)"></w-button>
 								</template>
 								Annuler
 							</w-tooltip>
@@ -136,40 +157,31 @@
 					<div class="separator"></div>
 					<div class="controllerHeaders">
 						<div class="Category targets">
-							<div class="Heads" v-for="head in allHeaders" :key="head.id" @click="resetNext(0, head)" :class="{ selected: selected.target.id === head.id }">
+							<div class="Heads" v-for="head in allHeaders" :key="head.id" @click="resetNext(0, head)"
+								:class="{ selected: selected.target.id === head.id }">
 								<p>{{ head.label }}</p>
 							</div>
 						</div>
 						<div class="Category functs" v-if="selected.target !== null">
-							<div
-								class="Heads FunctsHead"
-								v-for="head in allHeaders[selected.target.id].functs"
-								:key="head.id"
-								@click="resetNext(1, head)"
-								:class="{ selected: selected.funct.id === head.id }"
-							>
+							<div class="Heads FunctsHead" v-for="head in allHeaders[selected.target.id].functs"
+								:key="head.id" @click="resetNext(1, head)"
+								:class="{ selected: selected.funct.id === head.id }">
 								<p>{{ head.label }}</p>
 							</div>
 						</div>
 						<div class="Category organs" v-if="selected.funct !== null">
-							<div
-								class="Heads OrgansHead"
+							<div class="Heads OrgansHead"
 								v-for="head in allHeaders[selected.target.id].functs[selected.funct.id].organs"
-								:key="head.id"
-								@click="resetNext(2, head)"
-								:class="{ selected: selected.organ.id === head.id }"
-							>
+								:key="head.id" @click="resetNext(2, head)"
+								:class="{ selected: selected.organ.id === head.id }">
 								<p>{{ head.label }}</p>
 							</div>
 						</div>
 						<div class="Category actions" v-if="selected.organ !== null">
-							<div
-								class="Heads ActionsHead"
+							<div class="Heads ActionsHead"
 								v-for="head in allHeaders[selected.target.id].functs[selected.funct.id].organs[selected.organ.id].actions"
-								:key="head.id"
-								@click="resetNext(3, head)"
-								:class="{ selected: selected.action.id === head.id }"
-							>
+								:key="head.id" @click="resetNext(3, head)"
+								:class="{ selected: selected.action.id === head.id }">
 								<p>{{ head.label }}</p>
 							</div>
 						</div>
@@ -177,8 +189,10 @@
 					<div class="controllerContent" v-if="IdsToLoad.length > 0">
 						<div v-for="act in filteredActions" :key="act.id" class="driver_action">
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="act.order" @change="addInActChangedList(act.id)"> </w-input>
-								<w-input label-color="green-dark1" class="xs4" label="Label" v-model="act.label" @change="addInActChangedList(act.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs1" label="Ordre" v-model="act.order"
+									@change="addInActChangedList(act.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs4" label="Label" v-model="act.label"
+									@change="addInActChangedList(act.id)"> </w-input>
 								<div class="selects">
 									<p>Driver</p>
 									<select v-model="act.idDriver" @change="addInActChangedList(act.id)">
@@ -187,25 +201,31 @@
 										</option>
 									</select>
 								</div>
-								<w-input label-color="green-dark1" class="xs4" label="Information" v-model="act.info" @change="addInActChangedList(act.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs4" label="Information" v-model="act.info"
+									@change="addInActChangedList(act.id)"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb2 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs6" label="Commande SCPI" v-model="act.scpi" @change="addInActChangedList(act.id)"> </w-input>
+								<w-input label-color="green-dark1" class="xs6" label="Commande SCPI" v-model="act.scpi"
+									@change="addInActChangedList(act.id)"> </w-input>
 							</w-flex>
 
 							<w-tooltip>
 								<template #activator="{ on }">
-									<w-button class="deleteBTN" v-on="on" bg-color="error" icon="wi-cross" @click="deleteActionOrDriver(act.id, 0)"></w-button>
+									<w-button class="deleteBTN" v-on="on" bg-color="error" icon="wi-cross"
+										@click="deleteActionOrDriver(act.id, 0)"></w-button>
 								</template>
 								Supprimer
 							</w-tooltip>
 						</div>
 					</div>
 				</div>
-				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
+				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm"
+					label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 			<div>
-				<div v-if="getAllDriversAndActionOfPlugins(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)"></div>
+				<div
+					v-if="getAllDriversAndActionOfPlugins(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)">
+				</div>
 			</div>
 			<div class="saveAll" v-if="loadedId !== null && loadedId !== -1">
 				<p>Activer la sauvegarde générale</p>
@@ -665,7 +685,7 @@ export default {
 
 			if (selectedId === -1 && id === -1) {
 				axios
-					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
+					.get(`http://localhost:3001/stamp3ate/findNextPlugID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.creationId = data[0].AUTO_INCREMENT;
@@ -676,7 +696,7 @@ export default {
 			if (id === null || id === -1) return false;
 
 			await axios
-				.get(`http://localhost:3000/stamp3ate/driversForPlug/${id}`)
+				.get(`http://localhost:3001/stamp3ate/driversForPlug/${id}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allDrivers = data;
@@ -687,7 +707,7 @@ export default {
 					this.newDriver.order = lastOrder + 1;
 				});
 			await axios
-				.get(`http://localhost:3000/stamp3ate/actionsForPlug/${id}`)
+				.get(`http://localhost:3001/stamp3ate/actionsForPlug/${id}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allActions = data;
@@ -696,7 +716,7 @@ export default {
 
 			if (selectedId === -1 && id !== -1 && id !== null) {
 				axios
-					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
+					.get(`http://localhost:3001/stamp3ate/findNextPlugID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.duppId = data[0].AUTO_INCREMENT;
@@ -779,8 +799,8 @@ export default {
 					if (this.duppId !== null) {
 						datas.idPlug = this.duppId;
 					}
-					if (create) queryString = `http://localhost:3000/stamp3ate/actionsForPlug/`;
-					else queryString = `http://localhost:3000/stamp3ate/actionsForPlug/${i}`;
+					if (create) queryString = `http://localhost:3001/stamp3ate/actionsForPlug/`;
+					else queryString = `http://localhost:3001/stamp3ate/actionsForPlug/${i}`;
 					break;
 				case 1:
 					datas = {
@@ -799,8 +819,8 @@ export default {
 						datas.idATE = this.duppId;
 					}
 
-					if (create) queryString = `http://localhost:3000/stamp3ate/driversForPlug/`;
-					else queryString = `http://localhost:3000/stamp3ate/driversForPlug/${i}`;
+					if (create) queryString = `http://localhost:3001/stamp3ate/driversForPlug/`;
+					else queryString = `http://localhost:3001/stamp3ate/driversForPlug/${i}`;
 					break;
 				default:
 					break;
@@ -840,7 +860,7 @@ export default {
 			if (this.creationId === null) return;
 			console.log('TESTS CREATE DEFAULT2');
 			axios
-				.post(`http://localhost:3000/stamp3ate/defaultDriver/${this.creationId}`)
+				.post(`http://localhost:3001/stamp3ate/defaultDriver/${this.creationId}`)
 				.then((response) => {
 					if (response.status === 200) {
 						console.log('Creation succeed');
@@ -908,10 +928,10 @@ export default {
 			let queryString = '';
 			switch (type) {
 				case 0:
-					queryString = `http://localhost:3000/stamp3ate/actionsForPlug/${id}`;
+					queryString = `http://localhost:3001/stamp3ate/actionsForPlug/${id}`;
 					break;
 				case 1:
-					queryString = `http://localhost:3000/stamp3ate/driversForPlug/${id}`;
+					queryString = `http://localhost:3001/stamp3ate/driversForPlug/${id}`;
 					break;
 				default:
 					break;
@@ -966,6 +986,7 @@ export default {
 
 	transition: all 0.2s ease;
 }
+
 .Category {
 	display: flex;
 	justify-content: flex-start;
@@ -982,14 +1003,17 @@ export default {
 	background: #54b946;
 	color: white;
 }
+
 .FunctsHead.selected {
 	background: #20aaf4;
 	color: white;
 }
+
 .OrgansHead.selected {
 	background: #bf19d8;
 	color: white;
 }
+
 .ActionsHead.selected {
 	background: #f6550a;
 	color: white;
@@ -1011,6 +1035,7 @@ export default {
 	color: #54b946;
 	width: 300px;
 }
+
 .selects select {
 	width: 100%;
 }
@@ -1051,6 +1076,7 @@ export default {
 	border-bottom: 1px solid #1baf59;
 	margin: 2.5rem auto;
 }
+
 .saveAll {
 	position: absolute;
 	top: 136px;

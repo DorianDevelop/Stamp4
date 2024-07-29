@@ -1,26 +1,24 @@
 <template>
-	<Layout
-		class="layout"
-		routeAPI="/stamp3uut/gamme"
-		:searchType="0"
-		:formating="createJSONItem"
-		:validation="validationBeforeSave"
-		@update:validators="validateAll"
-		:showBtns="showBtn"
-	>
+	<Layout class="layout" routeAPI="/stamp3uut/gamme" :searchType="0" :formating="createJSONItem"
+		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input ref="labelInput" label-color="green-dark1" class="xs3" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Service" v-model="props.datas.sName"> </w-input>
+					<w-input ref="labelInput" label-color="green-dark1" class="xs3" label="Label"
+						:validators="[validators.required]" v-model="props.datas.label"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Service" v-model="props.datas.sName">
+					</w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who">
+					</w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when">
+					</w-input>
 				</w-flex>
 
-				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
+				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm"
+					label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 		</template>
 	</Layout>
