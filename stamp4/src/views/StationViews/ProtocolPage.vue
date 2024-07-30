@@ -240,7 +240,7 @@ export default {
 			if (this.loadedId === null || this.loadedId === -1) return false;
 			this.allDatas = [];
 			await axios
-				.get(`http://localhost:3001/stamp3drv/protocolDatas/${this.loadedId}`)
+				.get(`http://localhost:3000/stamp3drv/protocolDatas/${this.loadedId}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allDatas = data;
@@ -248,7 +248,7 @@ export default {
 
 			if (selectedId === -1 && id !== -1 && id !== null) {
 				axios
-					.get(`http://localhost:3001/stamp3ate/findNextPlugID`)
+					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.duppId = data[0].AUTO_INCREMENT;
@@ -307,16 +307,16 @@ export default {
 					case 0:
 					case 1:
 						datas['complement'] = row.complement;
-						queryString = `http://localhost:3001/stamp3drv/protocolBoolean/${row.id}`;
+						queryString = `http://localhost:3000/stamp3drv/protocolBoolean/${row.id}`;
 						break;
 					case 2:
 					case 3:
 						datas['type'] = row.type;
-						queryString = `http://localhost:3001/stamp3drv/protocolData/${row.id}`;
+						queryString = `http://localhost:3000/stamp3drv/protocolData/${row.id}`;
 						break;
 					case 4:
 					case 5:
-						queryString = `http://localhost:3001/stamp3drv/protocolString/${row.id}`;
+						queryString = `http://localhost:3000/stamp3drv/protocolString/${row.id}`;
 						break;
 				}
 				axios
@@ -349,16 +349,16 @@ export default {
 					case 0:
 					case 1:
 						datas['complement'] = row.complement;
-						queryString = `http://localhost:3001/stamp3drv/protocolBoolean`;
+						queryString = `http://localhost:3000/stamp3drv/protocolBoolean`;
 						break;
 					case 2:
 					case 3:
 						datas['type'] = row.type;
-						queryString = `http://localhost:3001/stamp3drv/protocolData`;
+						queryString = `http://localhost:3000/stamp3drv/protocolData`;
 						break;
 					case 4:
 					case 5:
-						queryString = `http://localhost:3001/stamp3drv/protocolString`;
+						queryString = `http://localhost:3000/stamp3drv/protocolString`;
 						break;
 				}
 				axios
@@ -397,15 +397,15 @@ export default {
 			switch (i) {
 				case 0:
 				case 1:
-					queryString = `http://localhost:3001/stamp3drv/protocolBoolean/${id}`;
+					queryString = `http://localhost:3000/stamp3drv/protocolBoolean/${id}`;
 					break;
 				case 2:
 				case 3:
-					queryString = `http://localhost:3001/stamp3drv/protocolData/${id}`;
+					queryString = `http://localhost:3000/stamp3drv/protocolData/${id}`;
 					break;
 				case 4:
 				case 5:
-					queryString = `http://localhost:3001/stamp3drv/protocolString/${id}`;
+					queryString = `http://localhost:3000/stamp3drv/protocolString/${id}`;
 					break;
 			}
 
@@ -440,15 +440,15 @@ export default {
 			switch (i) {
 				case 0:
 				case 1:
-					queryString = `http://localhost:3001/stamp3drv/protocolBooleans/${id}`;
+					queryString = `http://localhost:3000/stamp3drv/protocolBooleans/${id}`;
 					break;
 				case 2:
 				case 3:
-					queryString = `http://localhost:3001/stamp3drv/protocolDatas/${id}`;
+					queryString = `http://localhost:3000/stamp3drv/protocolDatas/${id}`;
 					break;
 				case 4:
 				case 5:
-					queryString = `http://localhost:3001/stamp3drv/protocolStrings/${id}`;
+					queryString = `http://localhost:3000/stamp3drv/protocolStrings/${id}`;
 					break;
 			}
 			axios

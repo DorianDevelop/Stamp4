@@ -3,9 +3,6 @@
 		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
 		<template #default="props">
 			<w-form class="editForm">
-				<!--<w-switch class="mr4 " v-model="qualified" color="green" label="Qualifié" label-color="green-dark1"
-					@change="changeQualify"></w-switch>-->
-
 				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input ref="labelInput" label-color="green-dark1" class="xs5" label="Référence SKU"
 						:validators="[validators.required]" v-model="props.datas.refsku"> </w-input>
@@ -20,10 +17,58 @@
 						v-model="props.datas.dateStart"></w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Date fin" type="date"
 						v-model="props.datas.dateEnd"></w-input>
+
+					<div class="selects my1 ml5">
+						<p>Gammes</p>
+						<select v-model="props.datas.range">
+							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
+						</select>
+					</div>
 				</w-flex>
-				<w-button :bg-color="qualified ? 'green' : 'red'" color="white" @click="openQualification()">
+				<w-button :bg-color="qualified ? 'green' : 'red'" color="white"
+					@click="openQualification(props.datas.range)">
 					Qualifier
 				</w-button>
+				<div v-if="openQualif" class="qualification">
+					<div class="bg" @click="closeQualification()"></div>
+					<div class="contains">
+
+						<w-button class="close" bg-color="error" @click="closeQualification"> Close
+						</w-button>
+
+						<div class="selects my1 ml5">
+							<p>Choissisez un controle</p>
+							<select v-model="selectedCtrl" @change="getSpecFromRangeAndCtrl()">
+								<option v-for="item in ctrls" :key="item.id" :value="item.id">{{ item.label }}
+								</option>
+							</select>
+						</div>
+						<w-input label-color="green-dark1" class="xs3" label="Prochain numéro" v-model="nextNo">
+						</w-input>
+						<div class="spec_area">
+							<div class="choose" v-if="chooseSpec.length > 0">
+								<p v-for="choix in chooseSpec" :key="choix.id" @click="addSpec(choix.id)">{{ choix.label
+									}}</p>
+							</div>
+							<div class="choose notfound" v-else>
+								<p>Aucune spec trouvé.</p>
+							</div>
+							<div class="separator"></div>
+							<div class="selected" v-if="linkedSpec.length > 0">
+								<p v-for="selected in linkedSpec" :key="selected.id" @click="removeSpec(selected.id)">
+									<span>{{ selected.No }} </span> {{
+										selected.label
+									}}
+								</p>
+							</div>
+							<div class="selected notfound" v-else>
+								<p>Aucune spec selectionné.</p>
+							</div>
+						</div>
+						<w-switch class="mr4 qualifiedSwitch" v-model="qualified" color="green" label="Qualifié"
+							label-color="green-dark1" @change="changeQualify"></w-switch>
+					</div>
+				</div>
 
 				<div class="windowsContainer">
 					<div class="window">
@@ -304,9 +349,48 @@ export default {
 			openUtilisation: false,
 			openBatt: false,
 
+			openQualif: false,
 			qualified: false,
 			creationId: null,
 			selectedId: null,
+
+			ctrls: [
+				{ id: '000', label: 'Non défini !' },
+				{ id: '100', label: 'Optical Inspection' },
+				{ id: '110', label: 'In Circuit Test' },
+				{ id: '130', label: 'PCB Functional Test' },
+				{ id: '175', label: 'Pressure/Leak Test' },
+				{ id: '190', label: 'Electrical Safety Test' },
+				{ id: '210', label: 'Unit Hypot Functional Test' },
+				{ id: '230', label: 'Battery Test' },
+				{ id: '240', label: 'Charge' },
+				{ id: '250', label: 'Discharge Test' },
+				{ id: '252', label: 'AQL Discharge Test' },
+				{ id: '260', label: 'Battery Charge Test' },
+				{ id: '280', label: 'Discharge Retest' },
+				{ id: '285', label: 'Pre-Cover Inspection' },
+				{ id: '300', label: 'Recharge' },
+				{ id: '310', label: 'Final Test' },
+				{ id: '320', label: 'Final Electrical Safety Test' },
+				{ id: '340', label: 'System Config' },
+				{ id: '360', label: 'Sys Final Diag Test' },
+				{ id: '370', label: 'Sys Acoustic Test' },
+				{ id: '390', label: 'Sys Acoustic Diag Test' },
+				{ id: '400', label: 'Sys Burn-in Test' },
+				{ id: '420', label: 'Sys Burn-in Diag Test' },
+				{ id: '430', label: 'Pre-Box Inspection' },
+				{ id: '500', label: 'Finished Product Audit' },
+				{ id: '510', label: 'Japan Pre-Inspection' },
+				{ id: '951', label: 'REP Clear Customer Data' },
+				{ id: '952', label: 'REP Flash new revision' },
+				{ id: '953', label: 'REP RIN test specifique' },
+				{ id: '999', label: 'Station de dévelopement' },
+			],
+
+			selectedCtrl: '000',
+			chooseSpec: [],
+			linkedSpec: [],
+			nextNo: "10|00",
 
 			showBtn: true,
 			validators: {
@@ -317,7 +401,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://localhost:3001/stamp3uut/gammes')
+			.get('http://localhost:3000/stamp3uut/gammes')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allGammes = data;
@@ -328,7 +412,7 @@ export default {
 			return {
 				refsku: datas.refsku,
 				qualified: datas.qualified || null,
-				range: VueCookies.get('gamme') ? VueCookies.get('gamme').id : 0,
+				range: datas.range || null,
 				dateStart: datas.dateStart || null,
 				dateEnd: datas.dateEnd || null,
 				date: datas.date || '1900-01-01',
@@ -407,19 +491,12 @@ export default {
 		validateAll() {
 			this.$refs.labelInput.validate();
 		},
-		changeQualify() {
-			if (this.qualified) {
-				this.qualify();
-			} else {
-				this.unqualify();
-			}
-		},
 		qualify() {
 			let id = this.selectedId;
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.post(`http://localhost:3001/stamp3uut/uutQualification/${id}/${ctrl.id}`)
+					.post(`http://localhost:3000/stamp3uut/uutQualification/${id}/${ctrl.id}`)
 					.then((response) => {
 						if (response.status === 200) {
 							this.$waveui.notify({
@@ -436,6 +513,7 @@ export default {
 						} else {
 							console.error('Error qualifing:', response.status, response.data);
 						}
+						this.closeQualification()
 					})
 					.catch((error) => {
 						console.error('Unexpected error:', error);
@@ -447,7 +525,7 @@ export default {
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.delete(`http://localhost:3001/stamp3uut/uutUnqualification/${id}/${ctrl.id}`)
+					.delete(`http://localhost:3000/stamp3uut/uutUnqualification/${id}/${ctrl.id}`)
 					.then((response) => {
 						if (response.status === 200) {
 							this.$waveui.notify({
@@ -464,6 +542,7 @@ export default {
 						} else {
 							console.error('Error unqualifing:', response.status, response.data);
 						}
+						this.closeQualification()
 					})
 					.catch((error) => {
 						console.error('Unexpected error:', error);
@@ -477,15 +556,109 @@ export default {
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.get(`http://localhost:3001/stamp3uut/uutQualified/${id}/${ctrl.id}`)
+					.get(`http://localhost:3000/stamp3uut/uutQualified/${id}/${ctrl.id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						let result = data[0].Result;
 						this.qualified = result == 1 ? true : false;
-						console.log(this.qualified);
 					});
 			}
 			return true;
+		},
+		openQualification(range) {
+			this.selectedRange = range;
+			this.openQualif = true;
+			this.getSpecFromRangeAndCtrl(range)
+			this.getLinkedSpec()
+		},
+		closeQualification() {
+			this.openQualif = false;
+		},
+		getSpecFromRangeAndCtrl() {
+			let ctrl = parseInt(this.selectedCtrl)
+			axios
+				.get(`http://localhost:3000/stamp3uut/specFromRangeAndCtrl/${this.selectedRange}/${ctrl}`)
+				.then((reponse) => reponse.data)
+				.then((data) => {
+					this.chooseSpec = data
+				});
+		},
+		addSpec(specId) {
+			if (this.selectedId === null || this.selectedId === -1 || specId === null || specId === -1) return;
+			let datas = {
+				idMain: this.selectedId,
+				idLink: specId,
+				idCtrl: parseInt(this.selectedCtrl),
+				No: this.nextNo
+			}
+			axios
+				.post(`http://localhost:3000/stamp3uut/linkSpecToUUT`, datas)
+				.then((response) => {
+					if (response.status === 200) {
+						this.$waveui.notify({
+							message: 'Ajout de la Spec reussite',
+							timeout: 2000,
+							bgColor: 'success',
+							color: 'warning',
+							dismiss: false,
+							shadow: true,
+							round: true,
+							sm: true,
+							icon: 'wi-check',
+						});
+					} else {
+						console.error('Error adding:', response.status, response.data);
+					}
+					this.getSpecFromRangeAndCtrl(this.selectedRange)
+					this.getLinkedSpec()
+				})
+				.catch((error) => {
+					console.error('Unexpected error:', error);
+				});
+		},
+		removeSpec(specId) {
+			if (this.selectedId === null || this.selectedId === -1 || specId === null || specId === -1) return;
+			axios
+				.delete(`http://localhost:3000/stamp3uut/unlinkSpecToUUT/${specId}`)
+				.then((response) => {
+					if (response.status === 200) {
+						this.$waveui.notify({
+							message: 'Suppréssion de la Spec reussite',
+							timeout: 2000,
+							bgColor: 'success',
+							color: 'warning',
+							dismiss: false,
+							shadow: true,
+							round: true,
+							sm: true,
+							icon: 'wi-check',
+						});
+					} else {
+						console.error('Error deleting:', response.status, response.data);
+					}
+					this.getSpecFromRangeAndCtrl(this.selectedRange)
+					this.getLinkedSpec()
+				})
+				.catch((error) => {
+					console.error('Unexpected error:', error);
+				});
+		},
+		getLinkedSpec() {
+			if (this.selectedId === null || this.selectedId === -1) return;
+			axios
+				.get(`http://localhost:3000/stamp3uut/allLinkedSpec/${this.selectedId}`)
+				.then((reponse) => reponse.data)
+				.then((data) => {
+					this.linkedSpec = data
+					this.nextNo = ((this.linkedSpec.length + 1) * 10).toString().padStart(3, '0') + "|00";
+				});
+		},
+		changeQualify() {
+			if (this.qualified) {
+				this.qualify();
+			} else {
+				this.unqualify();
+			}
 		},
 	},
 };
@@ -498,5 +671,87 @@ export default {
 
 .selects select {
 	width: 100%;
+}
+
+.qualification .bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.213);
+
+	z-index: 501;
+}
+
+.qualification .contains {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 70vw;
+	height: 60vh;
+	transform: translateX(-50%) translateY(-50%);
+	background: rgb(255, 255, 255);
+
+	z-index: 502;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 1rem 0;
+}
+
+.contains .selects {
+	width: 250px;
+}
+
+.contains .spec_area {
+	height: 220px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1.5rem;
+}
+
+.contains .spec_area .choose,
+.contains .spec_area .selected {
+	width: 250px;
+	height: 220px;
+	overflow-y: auto;
+	overflow-x: auto;
+}
+
+.contains .spec_area .choose:not(.notfound) p,
+.contains .spec_area .selected:not(.notfound) p {
+	cursor: pointer;
+	padding: 5px 10px;
+}
+
+.contains .spec_area .choose:not(.notfound) p:hover,
+.contains .spec_area .selected:not(.notfound) p:hover {
+	background: rgba(128, 128, 128, 0.153);
+}
+
+.notfound {
+	color: red;
+}
+
+.selected span {
+	color: green;
+}
+
+.contains .spec_area .separator {
+	width: 1px;
+	background: rgba(38, 38, 38, 0.226);
+	height: 100%;
+}
+
+.contains .close {
+	position: fixed;
+	left: 10px;
+	top: 10px;
 }
 </style>

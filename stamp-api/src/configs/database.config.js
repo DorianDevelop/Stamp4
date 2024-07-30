@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const createConnection = (dbName) => {
   const connection = mysql.createConnection({
-    host: "db",
+    host: "localhost",
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: dbName, //Nom de la base de donnée passé en paramètre dans la fonction

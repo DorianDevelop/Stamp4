@@ -10,6 +10,13 @@
 						v-model="props.datas.who"> </w-input>
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date"
 						type="date" v-model="props.datas.when"> </w-input>
+
+					<div class="selects my1 ml5">
+						<p>Gammes</p>
+						<select v-model="props.datas.range">
+							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
+						</select>
+					</div>
 				</w-flex>
 
 				<div class="addAction">
@@ -86,6 +93,17 @@
 							v-if="addingAction.type8 != null && addingAction.type8 != ''"> </w-input>
 						<w-input label-color="green-dark1" :label="addingAction.param9_fr" v-model="NewAction.param9"
 							v-if="addingAction.type9 != null && addingAction.type9 != ''"> </w-input>
+
+						<div v-if="addingAction.ident === 1 && addingAction.idents.length" class="addIdent">
+							<div class="selects my1 ml5">
+								<p>Ident</p>
+								<select v-model="NewAction.ident">
+									<option v-for="i in addingAction.idents" :key="i.ident" :value="i.ident">{{ i.ident
+										}}
+									</option>
+								</select>
+							</div>
+						</div>
 					</div>
 				</div>
 				<w-switch color="green" v-model="newVersion" class="text-sync" label="Nouvelle affichage"
@@ -215,6 +233,12 @@
 								</template>
 								{{ item.infos.param9_fr }}
 							</w-tooltip>
+							<div v-if="item.idents" class="identSelect">
+								<select v-model="item.ident">
+									<option v-for="i in item.idents" :key="i.ident" :value="i.ident">{{ i.ident }}
+									</option>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -241,8 +265,6 @@
 <script>
 import Layout from '@/views/ItemLayout.vue';
 import axios from 'axios';
-
-import VueCookies from 'vue-cookies';
 export default {
 	components: {
 		Layout,
@@ -280,6 +302,7 @@ export default {
 				param7: null,
 				param8: null,
 				param9: null,
+				ident: null,
 			},
 
 			selectedParam: null,
@@ -292,6 +315,7 @@ export default {
 			loadIsFinished: false,
 
 			addingAction: [],
+			addingIdents: [],
 
 			currentID: null,
 
@@ -305,14 +329,14 @@ export default {
 	async mounted() {
 		this.cancelAction();
 		await axios
-			.get('http://localhost:3001/stamp3uut/gammes')
+			.get('http://localhost:3000/stamp3uut/gammes')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allGammes = data;
 			});
 
 		await axios
-			.get('http://localhost:3001/stamp3/targets')
+			.get('http://localhost:3000/stamp3/targets')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allTargets = data;
@@ -337,7 +361,7 @@ export default {
 			return {
 				tstFunc: datas.tstFunc ? datas.tstFunc : '',
 				label: datas.label,
-				range: VueCookies.get('gamme') ? VueCookies.get('gamme').id : 0,
+				range: datas.range || null,
 				date: datas.date ? datas.date : '1900-01-01',
 				who: datas.who ? datas.who : '',
 				comment: datas.comment ? datas.comment : '',
@@ -358,7 +382,7 @@ export default {
 				if (this.creationId !== null) {
 					action.idStep = this.creationId;
 					axios
-						.post('http://localhost:3001/stamp3uut/action/', action)
+						.post('http://localhost:3000/stamp3uut/action/', action)
 						.then((response) => {
 							if (response.status !== 200) {
 								console.error('Error getting Name:', response.status, response.data);
@@ -369,7 +393,7 @@ export default {
 						});
 				} else {
 					axios
-						.put('http://localhost:3001/stamp3uut/action/' + action.id, action)
+						.put('http://localhost:3000/stamp3uut/action/' + action.id, action)
 						.then((response) => {
 							if (response.status !== 200) {
 								console.error('Error getting Name:', response.status, response.data);
@@ -386,7 +410,7 @@ export default {
 			if (id !== -1) this.creationId = null;
 			if (selectedId === -1) {
 				axios
-					.get(`http://localhost:3001/stamp3uut/findNextStepID`)
+					.get(`http://localhost:3000/stamp3uut/findNextStepID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.creationId = data[0].AUTO_INCREMENT;
@@ -396,7 +420,7 @@ export default {
 			this.currentID = id;
 			this.allActionsState = [];
 			await axios
-				.get('http://localhost:3001/stamp3uut/actionForStep/' + id)
+				.get('http://localhost:3000/stamp3uut/actionForStep/' + id)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allActions = data;
@@ -417,10 +441,18 @@ export default {
 				if (action.param8 !== null) if (maxSizeParams[8] < action.param8.length) maxSizeParams[8] = action.param8.length
 				if (action.param9 !== null) if (maxSizeParams[9] < action.param9.length) maxSizeParams[9] = action.param9.length
 
+				if (action.ident !== null && action.ident !== "") {
+					axios
+						.get(`http://localhost:3000/stamp3uut/allIdents/${action.idTarget}/${action.idFunc}/${action.idOrgan}/${action.idAction}`)
+						.then((reponse) => reponse.data)
+						.then((data) => {
+							action['idents'] = data;
+						});
+				}
 
 				if (action.order > order) order = action.order;
 				axios
-					.get(`http://localhost:3001/stamp3/action/${action.idAction}`)
+					.get(`http://localhost:3000/stamp3/action/${action.idAction}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						action['infos'] = data[0];
@@ -443,7 +475,7 @@ export default {
 			};
 
 			await axios
-				.post('http://localhost:3001/stamp3/actionFullName', datas)
+				.post('http://localhost:3000/stamp3/actionFullName', datas)
 				.then((response) => {
 					if (response.status === 200) {
 						this.allActionsName[action.id] = response.data[0].label;
@@ -465,7 +497,7 @@ export default {
 		async getAllFunctionsRelatedToTarget(id) {
 			if (id !== -1) {
 				try {
-					const response = await axios.get(`http://localhost:3001/stamp3/functsWithTarget/${id}`);
+					const response = await axios.get(`http://localhost:3000/stamp3/functsWithTarget/${id}`);
 					this.allFunctions = response.data;
 				} catch (error) {
 					console.error('Error fetching functions:', error);
@@ -477,7 +509,7 @@ export default {
 		async getAllOrgansRelatedToFunction(id) {
 			if (id !== -1) {
 				try {
-					const response = await axios.get(`http://localhost:3001/stamp3/organsWithFunct/${id}`);
+					const response = await axios.get(`http://localhost:3000/stamp3/organsWithFunct/${id}`);
 					this.allOrgans = response.data;
 				} catch (error) {
 					console.error('Error fetching organs:', error);
@@ -489,7 +521,7 @@ export default {
 		async getAllActionsRelatedToOrgan(id) {
 			if (id !== -1) {
 				try {
-					const response = await axios.get(`http://localhost:3001/stamp3/actionsWithOrgan/${id}`);
+					const response = await axios.get(`http://localhost:3000/stamp3/actionsWithOrgan/${id}`);
 					this.allActs = response.data;
 				} catch (error) {
 					console.error('Error fetching actions:', error);
@@ -498,11 +530,15 @@ export default {
 				this.allActs = [];
 			}
 		},
-		async getAllParamsNecessary(id) {
+		async getAllParamsNecessary(id) { //addingIdents
 			if (id !== -1) {
 				try {
-					const response = await axios.get(`http://localhost:3001/stamp3/action/${id}`);
+					const response = await axios.get(`http://localhost:3000/stamp3/action/${id}`);
 					this.addingAction = response.data[0];
+					if (this.addingAction.ident === 1) {
+						const response2 = await axios.get(`http://localhost:3000/stamp3uut/allIdents/${this.addingAction.idTarget}/${this.addingAction.idFunc}/${this.addingAction.idOrgan}/${this.addingAction.id}`);
+						this.addingAction['idents'] = response2.data;
+					}
 				} catch (error) {
 					console.error('Error fetching action parameters:', error);
 				}
@@ -515,7 +551,7 @@ export default {
 			if (this.NewAction.idAction != null && this.NewAction.idOrgan != null && this.NewAction.idFunc != null) {
 				if (id == null || id === undefined) {
 					await axios
-						.get(`http://localhost:3001/stamp3uut/findNextID/`)
+						.get(`http://localhost:3000/stamp3uut/findNextID/`)
 						.then((reponse) => reponse.data)
 						.then((data) => {
 							this.currentID = data[0].AUTO_INCREMENT;
@@ -547,7 +583,7 @@ export default {
 				};
 
 				await axios
-					.post('http://localhost:3001/stamp3uut/action', datas)
+					.post('http://localhost:3000/stamp3uut/action', datas)
 					.then((response) => {
 						if (response.status === 200) {
 							this.getAllActions(this.currentID ? this.currentID : -1, this.currentID);
@@ -562,7 +598,7 @@ export default {
 		},
 		async deleteAction(id) {
 			await axios
-				.delete('http://localhost:3001/stamp3uut/action/' + id)
+				.delete('http://localhost:3000/stamp3uut/action/' + id)
 				.then((response) => {
 					if (response.status === 200) {
 						this.getAllActions(this.currentID ? this.currentID : -1, this.currentID);
@@ -602,7 +638,7 @@ export default {
 		if (!this.hasBeenSaved) {
 			if (confirm('Es-tu sur de vouloir quitter la page sans sauvegarder ?')) {
 				if (this.notYetCreatedSequence) {
-					await axios.delete('http://localhost:3001/stamp3uut/actionByStep/' + this.currentID).catch((error) => {
+					await axios.delete('http://localhost:3000/stamp3uut/actionByStep/' + this.currentID).catch((error) => {
 						console.error('Unexpected error:', error);
 					});
 				}
@@ -671,6 +707,7 @@ export default {
 	border-radius: 3px;
 	padding: 0.1rem 0.4rem;
 	max-width: 200px;
+	min-width: 50px;
 	text-wrap: nowrap;
 	overflow-x: hidden;
 	cursor: pointer;
@@ -722,5 +759,14 @@ export default {
 .dltBtn {
 	align-self: start;
 	margin-top: -5px;
+}
+
+.identSelect select,
+.addIdent select {
+	padding: 3px 5px;
+	width: 180px;
+	border-radius: 3px;
+
+	color: rgb(205, 62, 1);
 }
 </style>

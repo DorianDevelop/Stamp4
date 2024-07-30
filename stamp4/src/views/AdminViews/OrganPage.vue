@@ -68,7 +68,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://localhost:3001/stamp3/targets')
+			.get('http://localhost:3000/stamp3/targets')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allTargets = data;
@@ -101,7 +101,7 @@ export default {
 		async getAllFunctionsRelatedToTarget(id) {
 			if (id !== -1) {
 				await axios
-					.get(`http://localhost:3001/stamp3/functsWithTarget/${id}`)
+					.get(`http://localhost:3000/stamp3/functsWithTarget/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allFunctions = data;

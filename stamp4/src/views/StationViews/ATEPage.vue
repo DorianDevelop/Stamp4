@@ -182,7 +182,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://localhost:3001/stamp3ate/plugs')
+			.get('http://localhost:3000/stamp3ate/plugs')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.plugs = data;

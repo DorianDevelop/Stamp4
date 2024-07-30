@@ -685,7 +685,7 @@ export default {
 
 			if (selectedId === -1 && id === -1) {
 				axios
-					.get(`http://localhost:3001/stamp3ate/findNextPlugID`)
+					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.creationId = data[0].AUTO_INCREMENT;
@@ -696,7 +696,7 @@ export default {
 			if (id === null || id === -1) return false;
 
 			await axios
-				.get(`http://localhost:3001/stamp3ate/driversForPlug/${id}`)
+				.get(`http://localhost:3000/stamp3ate/driversForPlug/${id}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allDrivers = data;
@@ -707,7 +707,7 @@ export default {
 					this.newDriver.order = lastOrder + 1;
 				});
 			await axios
-				.get(`http://localhost:3001/stamp3ate/actionsForPlug/${id}`)
+				.get(`http://localhost:3000/stamp3ate/actionsForPlug/${id}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allActions = data;
@@ -716,7 +716,7 @@ export default {
 
 			if (selectedId === -1 && id !== -1 && id !== null) {
 				axios
-					.get(`http://localhost:3001/stamp3ate/findNextPlugID`)
+					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.duppId = data[0].AUTO_INCREMENT;
@@ -799,8 +799,8 @@ export default {
 					if (this.duppId !== null) {
 						datas.idPlug = this.duppId;
 					}
-					if (create) queryString = `http://localhost:3001/stamp3ate/actionsForPlug/`;
-					else queryString = `http://localhost:3001/stamp3ate/actionsForPlug/${i}`;
+					if (create) queryString = `http://localhost:3000/stamp3ate/actionsForPlug/`;
+					else queryString = `http://localhost:3000/stamp3ate/actionsForPlug/${i}`;
 					break;
 				case 1:
 					datas = {
@@ -819,8 +819,8 @@ export default {
 						datas.idATE = this.duppId;
 					}
 
-					if (create) queryString = `http://localhost:3001/stamp3ate/driversForPlug/`;
-					else queryString = `http://localhost:3001/stamp3ate/driversForPlug/${i}`;
+					if (create) queryString = `http://localhost:3000/stamp3ate/driversForPlug/`;
+					else queryString = `http://localhost:3000/stamp3ate/driversForPlug/${i}`;
 					break;
 				default:
 					break;
@@ -860,7 +860,7 @@ export default {
 			if (this.creationId === null) return;
 			console.log('TESTS CREATE DEFAULT2');
 			axios
-				.post(`http://localhost:3001/stamp3ate/defaultDriver/${this.creationId}`)
+				.post(`http://localhost:3000/stamp3ate/defaultDriver/${this.creationId}`)
 				.then((response) => {
 					if (response.status === 200) {
 						console.log('Creation succeed');
@@ -928,10 +928,10 @@ export default {
 			let queryString = '';
 			switch (type) {
 				case 0:
-					queryString = `http://localhost:3001/stamp3ate/actionsForPlug/${id}`;
+					queryString = `http://localhost:3000/stamp3ate/actionsForPlug/${id}`;
 					break;
 				case 1:
-					queryString = `http://localhost:3001/stamp3ate/driversForPlug/${id}`;
+					queryString = `http://localhost:3000/stamp3ate/driversForPlug/${id}`;
 					break;
 				default:
 					break;

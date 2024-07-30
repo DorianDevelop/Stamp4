@@ -11,6 +11,12 @@
 						v-model="props.datas.who"> </w-input>
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date"
 						type="date" v-model="props.datas.when"> </w-input>
+					<div class="selects my1 ml5">
+						<p>Gammes</p>
+						<select v-model="props.datas.range">
+							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
+						</select>
+					</div>
 				</w-flex>
 
 				<div class="stepContainer">
@@ -89,9 +95,18 @@ export default {
 			allSteps: [],
 			newStep: null,
 			newStepNumber: 0,
+			allGammes: [],
 
 			hasBeenSaved: true,
 		};
+	},
+	async mounted() {
+		await axios
+			.get('http://localhost:3000/stamp3uut/gammes')
+			.then((reponse) => reponse.data)
+			.then((data) => {
+				this.allGammes = data;
+			});
 	},
 	methods: {
 		truncatedString(str) {
@@ -104,7 +119,7 @@ export default {
 		createJSONItem(datas) {
 			return {
 				label: datas.label,
-				range: VueCookies.get('gamme') ? VueCookies.get('gamme').id : 0,
+				range: datas.range || null,
 				ctrl: VueCookies.get('ctrl') ? VueCookies.get('ctrl').id : 0,
 				replay: datas.replay ? datas.replay : 0,
 				date: datas.when ? datas.when : '1900-01-01',
@@ -116,7 +131,7 @@ export default {
 			if (id !== -1) this.creationId = null;
 			if (selectedId === -1) {
 				axios
-					.get(`http://localhost:3001/stamp3uut/findNextSpecID`)
+					.get(`http://localhost:3000/stamp3uut/findNextSpecID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.creationId = data[0].AUTO_INCREMENT;
@@ -125,7 +140,7 @@ export default {
 			}
 			if (id !== -1) {
 				await axios
-					.get(`http://localhost:3001/stamp3uut/stepForSpec/${id}`)
+					.get(`http://localhost:3000/stamp3uut/stepForSpec/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allSelectedSteps = data;
@@ -139,7 +154,7 @@ export default {
 			}
 			if (id !== -1) {
 				await axios
-					.get(`http://localhost:3001/stamp3uut/stepForGamme/${id}`)
+					.get(`http://localhost:3000/stamp3uut/stepForGamme/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allSteps = data;
@@ -160,7 +175,7 @@ export default {
 					No: this.newStepNumber,
 				};
 				await axios
-					.post('http://localhost:3001/stamp3uut/stepForSpec', datas)
+					.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
 					.then((response) => {
 						if (response.status === 200) {
 							this.allSelectedSteps.push({
@@ -180,7 +195,7 @@ export default {
 		},
 		removeStep(idLink, idSpec) {
 			axios
-				.delete('http://localhost:3001/stamp3uut/stepForSpec/' + idLink)
+				.delete('http://localhost:3000/stamp3uut/stepForSpec/' + idLink)
 				.then((response) => {
 					if (response.status === 200) {
 						this.getAllStepOfSpec(this.creationId ? this.creationId : -1, idSpec);
@@ -210,7 +225,7 @@ export default {
 						No: step.No,
 					};
 					axios
-						.post('http://localhost:3001/stamp3uut/stepForSpec', datas)
+						.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
 						.then((response) => {
 							if (response.status === 200) {
 								this.getAllStepOfSpec(this.creationId, -1);

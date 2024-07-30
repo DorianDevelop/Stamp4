@@ -42,7 +42,7 @@ export default {
 	methods: {
 		async getValueForSelect() {
 			await axios
-				.get('http://localhost:3001' + this.route)
+				.get('http://localhost:3000' + this.route)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;
