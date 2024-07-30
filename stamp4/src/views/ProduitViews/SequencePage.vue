@@ -329,14 +329,14 @@ export default {
 	async mounted() {
 		this.cancelAction();
 		await axios
-			.get('http://localhost:3000/stamp3uut/gammes')
+			.get('http://10.192.136.74:3000/stamp3uut/gammes')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allGammes = data;
 			});
 
 		await axios
-			.get('http://localhost:3000/stamp3/targets')
+			.get('http://10.192.136.74:3000/stamp3/targets')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allTargets = data;
@@ -382,7 +382,7 @@ export default {
 				if (this.creationId !== null) {
 					action.idStep = this.creationId;
 					axios
-						.post('http://localhost:3000/stamp3uut/action/', action)
+						.post('http://10.192.136.74:3000/stamp3uut/action/', action)
 						.then((response) => {
 							if (response.status !== 200) {
 								console.error('Error getting Name:', response.status, response.data);
@@ -393,7 +393,7 @@ export default {
 						});
 				} else {
 					axios
-						.put('http://localhost:3000/stamp3uut/action/' + action.id, action)
+						.put('http://10.192.136.74:3000/stamp3uut/action/' + action.id, action)
 						.then((response) => {
 							if (response.status !== 200) {
 								console.error('Error getting Name:', response.status, response.data);
@@ -410,7 +410,7 @@ export default {
 			if (id !== -1) this.creationId = null;
 			if (selectedId === -1) {
 				axios
-					.get(`http://localhost:3000/stamp3uut/findNextStepID`)
+					.get(`http://10.192.136.74:3000/stamp3uut/findNextStepID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.creationId = data[0].AUTO_INCREMENT;
@@ -420,7 +420,7 @@ export default {
 			this.currentID = id;
 			this.allActionsState = [];
 			await axios
-				.get('http://localhost:3000/stamp3uut/actionForStep/' + id)
+				.get('http://10.192.136.74:3000/stamp3uut/actionForStep/' + id)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allActions = data;
@@ -443,7 +443,7 @@ export default {
 
 				if (action.ident !== null && action.ident !== "") {
 					axios
-						.get(`http://localhost:3000/stamp3uut/allIdents/${action.idTarget}/${action.idFunc}/${action.idOrgan}/${action.idAction}`)
+						.get(`http://10.192.136.74:3000/stamp3uut/allIdents/${action.idTarget}/${action.idFunc}/${action.idOrgan}/${action.idAction}`)
 						.then((reponse) => reponse.data)
 						.then((data) => {
 							action['idents'] = data;
@@ -452,7 +452,7 @@ export default {
 
 				if (action.order > order) order = action.order;
 				axios
-					.get(`http://localhost:3000/stamp3/action/${action.idAction}`)
+					.get(`http://10.192.136.74:3000/stamp3/action/${action.idAction}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						action['infos'] = data[0];
@@ -475,7 +475,7 @@ export default {
 			};
 
 			await axios
-				.post('http://localhost:3000/stamp3/actionFullName', datas)
+				.post('http://10.192.136.74:3000/stamp3/actionFullName', datas)
 				.then((response) => {
 					if (response.status === 200) {
 						this.allActionsName[action.id] = response.data[0].label;
@@ -497,7 +497,7 @@ export default {
 		async getAllFunctionsRelatedToTarget(id) {
 			if (id !== -1) {
 				try {
-					const response = await axios.get(`http://localhost:3000/stamp3/functsWithTarget/${id}`);
+					const response = await axios.get(`http://10.192.136.74:3000/stamp3/functsWithTarget/${id}`);
 					this.allFunctions = response.data;
 				} catch (error) {
 					console.error('Error fetching functions:', error);
@@ -509,7 +509,7 @@ export default {
 		async getAllOrgansRelatedToFunction(id) {
 			if (id !== -1) {
 				try {
-					const response = await axios.get(`http://localhost:3000/stamp3/organsWithFunct/${id}`);
+					const response = await axios.get(`http://10.192.136.74:3000/stamp3/organsWithFunct/${id}`);
 					this.allOrgans = response.data;
 				} catch (error) {
 					console.error('Error fetching organs:', error);
@@ -521,7 +521,7 @@ export default {
 		async getAllActionsRelatedToOrgan(id) {
 			if (id !== -1) {
 				try {
-					const response = await axios.get(`http://localhost:3000/stamp3/actionsWithOrgan/${id}`);
+					const response = await axios.get(`http://10.192.136.74:3000/stamp3/actionsWithOrgan/${id}`);
 					this.allActs = response.data;
 				} catch (error) {
 					console.error('Error fetching actions:', error);
@@ -533,10 +533,10 @@ export default {
 		async getAllParamsNecessary(id) { //addingIdents
 			if (id !== -1) {
 				try {
-					const response = await axios.get(`http://localhost:3000/stamp3/action/${id}`);
+					const response = await axios.get(`http://10.192.136.74:3000/stamp3/action/${id}`);
 					this.addingAction = response.data[0];
 					if (this.addingAction.ident === 1) {
-						const response2 = await axios.get(`http://localhost:3000/stamp3uut/allIdents/${this.addingAction.idTarget}/${this.addingAction.idFunc}/${this.addingAction.idOrgan}/${this.addingAction.id}`);
+						const response2 = await axios.get(`http://10.192.136.74:3000/stamp3uut/allIdents/${this.addingAction.idTarget}/${this.addingAction.idFunc}/${this.addingAction.idOrgan}/${this.addingAction.id}`);
 						this.addingAction['idents'] = response2.data;
 					}
 				} catch (error) {
@@ -551,7 +551,7 @@ export default {
 			if (this.NewAction.idAction != null && this.NewAction.idOrgan != null && this.NewAction.idFunc != null) {
 				if (id == null || id === undefined) {
 					await axios
-						.get(`http://localhost:3000/stamp3uut/findNextID/`)
+						.get(`http://10.192.136.74:3000/stamp3uut/findNextID/`)
 						.then((reponse) => reponse.data)
 						.then((data) => {
 							this.currentID = data[0].AUTO_INCREMENT;
@@ -583,7 +583,7 @@ export default {
 				};
 
 				await axios
-					.post('http://localhost:3000/stamp3uut/action', datas)
+					.post('http://10.192.136.74:3000/stamp3uut/action', datas)
 					.then((response) => {
 						if (response.status === 200) {
 							this.getAllActions(this.currentID ? this.currentID : -1, this.currentID);
@@ -598,7 +598,7 @@ export default {
 		},
 		async deleteAction(id) {
 			await axios
-				.delete('http://localhost:3000/stamp3uut/action/' + id)
+				.delete('http://10.192.136.74:3000/stamp3uut/action/' + id)
 				.then((response) => {
 					if (response.status === 200) {
 						this.getAllActions(this.currentID ? this.currentID : -1, this.currentID);
@@ -638,7 +638,7 @@ export default {
 		if (!this.hasBeenSaved) {
 			if (confirm('Es-tu sur de vouloir quitter la page sans sauvegarder ?')) {
 				if (this.notYetCreatedSequence) {
-					await axios.delete('http://localhost:3000/stamp3uut/actionByStep/' + this.currentID).catch((error) => {
+					await axios.delete('http://10.192.136.74:3000/stamp3uut/actionByStep/' + this.currentID).catch((error) => {
 						console.error('Unexpected error:', error);
 					});
 				}

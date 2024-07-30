@@ -248,20 +248,20 @@ export default {
 			this.allComplements = [];
 
 			await axios
-				.get(`http://localhost:3000/stamp3uut/uut/${this.selectedId}`)
+				.get(`http://10.192.136.74:3000/stamp3uut/uut/${this.selectedId}`)
 				.then((reponse) => reponse.data[0])
 				.then((data) => {
 					this.datas = data;
 
 					axios
-						.get(`http://localhost:3000/stamp3uut/gamme/${data.range}`)
+						.get(`http://10.192.136.74:3000/stamp3uut/gamme/${data.range}`)
 						.then((reponse) => reponse.data[0])
 						.then((gamme) => {
 							this.gamme = gamme;
 						});
 				});
 			axios
-				.get(`http://localhost:3000/stamp3uut/whereUutQualified/${this.selectedId}`)
+				.get(`http://10.192.136.74:3000/stamp3uut/whereUutQualified/${this.selectedId}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					data.forEach((d) => {
@@ -286,7 +286,7 @@ export default {
 			let temp = [];
 			this.allActions = [];
 			await axios
-				.get(`http://localhost:3000/stamp3uut/actionForUUTAndCtrl/${this.selectedId}/${idCtrl}`)
+				.get(`http://10.192.136.74:3000/stamp3uut/actionForUUTAndCtrl/${this.selectedId}/${idCtrl}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					donnees = data;
@@ -345,7 +345,7 @@ export default {
 				idAction: datas.idAction,
 			};
 			await axios
-				.post(`http://localhost:3000/stamp3/actionFullName`, d)
+				.post(`http://10.192.136.74:3000/stamp3/actionFullName`, d)
 				.then((reponse) => reponse.data[0])
 				.then((data) => {
 					this.actionNames[datas.id] = data.label;

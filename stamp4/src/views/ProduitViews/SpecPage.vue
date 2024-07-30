@@ -102,7 +102,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://localhost:3000/stamp3uut/gammes')
+			.get('http://10.192.136.74:3000/stamp3uut/gammes')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allGammes = data;
@@ -131,7 +131,7 @@ export default {
 			if (id !== -1) this.creationId = null;
 			if (selectedId === -1) {
 				axios
-					.get(`http://localhost:3000/stamp3uut/findNextSpecID`)
+					.get(`http://10.192.136.74:3000/stamp3uut/findNextSpecID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.creationId = data[0].AUTO_INCREMENT;
@@ -140,7 +140,7 @@ export default {
 			}
 			if (id !== -1) {
 				await axios
-					.get(`http://localhost:3000/stamp3uut/stepForSpec/${id}`)
+					.get(`http://10.192.136.74:3000/stamp3uut/stepForSpec/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allSelectedSteps = data;
@@ -154,7 +154,7 @@ export default {
 			}
 			if (id !== -1) {
 				await axios
-					.get(`http://localhost:3000/stamp3uut/stepForGamme/${id}`)
+					.get(`http://10.192.136.74:3000/stamp3uut/stepForGamme/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allSteps = data;
@@ -175,7 +175,7 @@ export default {
 					No: this.newStepNumber,
 				};
 				await axios
-					.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
+					.post('http://10.192.136.74:3000/stamp3uut/stepForSpec', datas)
 					.then((response) => {
 						if (response.status === 200) {
 							this.allSelectedSteps.push({
@@ -195,7 +195,7 @@ export default {
 		},
 		removeStep(idLink, idSpec) {
 			axios
-				.delete('http://localhost:3000/stamp3uut/stepForSpec/' + idLink)
+				.delete('http://10.192.136.74:3000/stamp3uut/stepForSpec/' + idLink)
 				.then((response) => {
 					if (response.status === 200) {
 						this.getAllStepOfSpec(this.creationId ? this.creationId : -1, idSpec);
@@ -225,7 +225,7 @@ export default {
 						No: step.No,
 					};
 					axios
-						.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
+						.post('http://10.192.136.74:3000/stamp3uut/stepForSpec', datas)
 						.then((response) => {
 							if (response.status === 200) {
 								this.getAllStepOfSpec(this.creationId, -1);

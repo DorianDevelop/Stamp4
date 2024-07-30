@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
+    RewriteBase /stamp4/
 
     # If a file or directory exists, serve it
     RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -8,5 +8,5 @@
     RewriteRule ^ - [L]
 
     # Otherwise, serve index.html
-    RewriteRule ^ /index.html [L]
+    RewriteRule ^ /stamp4/index.html [L]
 </IfModule>
