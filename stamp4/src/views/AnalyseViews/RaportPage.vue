@@ -2,8 +2,7 @@
 	<section id="report">
 		<!-- TODO : Tout, refaire la page find-->
 		<div class="topOptions">
-			<SearchBar route="/stamp3uut/uuts" @update:selected="getValueForOne" :newItem="spaceTaker"
-				:refreshSearch="spaceTaker" :displayArrow="false" />
+			<SearchBar route="/stamp3uut/uuts" @update:selected="getValueForOne" :newItem="spaceTaker" :refreshSearch="spaceTaker" :displayArrow="false" />
 		</div>
 		<div v-if="datas" class="infos">
 			<div class="name">
@@ -15,19 +14,15 @@
 				<div class="ctrl" v-for="ctrl in allCtrlQualifier" :key="ctrl.id">
 					<h2 class="ctrl_title">{{ ctrl.label }}</h2>
 					<div class="ctrl_btns">
-						<w-button bg-color="blue" color="white" @click="createReport(ctrl.id)"> Prévisualiser
-						</w-button>
+						<w-button bg-color="blue" color="white" @click="createReport(ctrl.id)"> Prévisualiser </w-button>
 						<!--<w-button bg-color="green" color="white" @click="downloadPDF(ctrl.id)"> Télécharger </w-button>-->
 					</div>
 					<div class="ctrl_overlay_background" v-if="showRaport" @click="showRaport = false"></div>
-					<w-button class="close" bg-color="error" @click="showRaport = false" v-if="showRaport"> Close
-					</w-button>
-					<w-button class="download" bg-color="green" color="white" @click="downloadPDF(ctrl.id)"
-						v-if="showRaport"> Télécharger </w-button>
+					<w-button class="close" bg-color="error" @click="showRaport = false" v-if="showRaport"> Close </w-button>
+					<w-button class="download" bg-color="green" color="white" @click="downloadPDF(ctrl.id)" v-if="showRaport"> Télécharger </w-button>
 					<div id="pdf" class="ctrl_overlay ctrl_pdf" v-if="showRaport">
 						<p class="title">{{ datas.refsku }}</p>
-						<p class="subtitle">{{ allCtrlQualifier.find((item) => item.id === '' + this.selectedCtrl).label
-							}}</p>
+						<p class="subtitle">{{ allCtrlQualifier.find((item) => item.id === '' + this.selectedCtrl).label }}</p>
 						<div class="details">
 							<div>
 								<p>Test séquence : {{ datas.refsku }}</p>
@@ -143,12 +138,14 @@
 									<p class="smallKey">{{ small.smallKey }}</p>
 									<div class="stepAction" v-for="item in small.actions" :key="item.id">
 										<div class="params">
-											<p class="nom" v-if="item.param0">{{ `[${item.order}]
-												${actionNames[item.id]}` }}</p>
+											<p class="nom" v-if="item.param0">
+												{{
+													`[${item.order}]
+												${actionNames[item.id]}`
+												}}
+											</p>
 											<div class="paramsContainer">
-												<p class="no-separation"
-													v-if="item.param0 && item.param0.trim() !== ''">{{ item.param0 }}
-												</p>
+												<p class="no-separation" v-if="item.param0 && item.param0.trim() !== ''">{{ item.param0 }}</p>
 												<p v-if="item.param1 && item.param1.trim() !== ''">{{ item.param1 }}</p>
 												<p v-if="item.param2 && item.param2.trim() !== ''">{{ item.param2 }}</p>
 												<p v-if="item.param3 && item.param3.trim() !== ''">{{ item.param3 }}</p>
@@ -248,20 +245,20 @@ export default {
 			this.allComplements = [];
 
 			await axios
-				.get(`http://localhost:3000/stamp3uut/uut/${this.selectedId}`)
+				.get(`http://10.192.136.74:3000/stamp3uut/uut/${this.selectedId}`)
 				.then((reponse) => reponse.data[0])
 				.then((data) => {
 					this.datas = data;
 
 					axios
-						.get(`http://localhost:3000/stamp3uut/gamme/${data.range}`)
+						.get(`http://10.192.136.74:3000/stamp3uut/gamme/${data.range}`)
 						.then((reponse) => reponse.data[0])
 						.then((gamme) => {
 							this.gamme = gamme;
 						});
 				});
 			axios
-				.get(`http://localhost:3000/stamp3uut/whereUutQualified/${this.selectedId}`)
+				.get(`http://10.192.136.74:3000/stamp3uut/whereUutQualified/${this.selectedId}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					data.forEach((d) => {
@@ -286,7 +283,7 @@ export default {
 			let temp = [];
 			this.allActions = [];
 			await axios
-				.get(`http://localhost:3000/stamp3uut/actionForUUTAndCtrl/${this.selectedId}/${idCtrl}`)
+				.get(`http://10.192.136.74:3000/stamp3uut/actionForUUTAndCtrl/${this.selectedId}/${idCtrl}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					donnees = data;
@@ -345,7 +342,7 @@ export default {
 				idAction: datas.idAction,
 			};
 			await axios
-				.post(`http://localhost:3000/stamp3/actionFullName`, d)
+				.post(`http://10.192.136.74:3000/stamp3/actionFullName`, d)
 				.then((reponse) => reponse.data[0])
 				.then((data) => {
 					this.actionNames[datas.id] = data.label;

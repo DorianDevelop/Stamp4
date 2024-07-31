@@ -1,20 +1,23 @@
 <template>
-	<Layout class="layout" routeAPI="/stamp3/action" :searchType="0" :formating="createJSONItem"
-		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
+	<Layout
+		class="layout"
+		routeAPI="/stamp3/action"
+		:searchType="0"
+		:formating="createJSONItem"
+		:validation="validationBeforeSave"
+		@update:validators="validateAll"
+		:showBtns="showBtn"
+	>
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-end">
-					<w-input ref="labelInput" label-color="red" class="mb1 xs6 pa1" label="Label"
-						:validators="[validators.required]" v-model="props.datas.label"> </w-input>
-					<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.label_en">
-					</w-input>
+					<w-input ref="labelInput" label-color="red" class="mb1 xs6 pa1" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
+					<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.label_en"> </w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-end">
-					<w-input label-color="red" class="mb1 xs3 pa1" label="Créateur" v-model="props.datas.who">
-					</w-input>
-					<w-input label-color="red" class="mb1 xs3 pa1" label="Date" type="date" v-model="props.datas.when">
-					</w-input>
+					<w-input label-color="red" class="mb1 xs3 pa1" label="Créateur" v-model="props.datas.who"> </w-input>
+					<w-input label-color="red" class="mb1 xs3 pa1" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
 
 				<div class="groupOfSelect">
@@ -51,118 +54,77 @@
 				<div class="parameters" :class="{ parameters_small: !openParameters }">
 					<p>Parametre 0</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type0">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param0_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param0_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose0"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type0"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param0_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param0_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose0"> </w-input>
 					</div>
 					<p>Parametre 1</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type1">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param1_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param1_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose1"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type1"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param1_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param1_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose1"> </w-input>
 					</div>
 					<p>Parametre 2</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type2">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param2_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param2_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose2"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type2"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param2_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param2_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose2"> </w-input>
 					</div>
 					<p>Parametre 3</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type3">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param3_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param3_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose3"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type3"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param3_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param3_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose3"> </w-input>
 					</div>
 					<p>Parametre 4</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type4">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param4_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param4_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose4"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type4"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param4_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param4_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose4"> </w-input>
 					</div>
 					<p>Parametre 5</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type5">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param5_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param5_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose5"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type5"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param5_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param5_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose5"> </w-input>
 					</div>
 					<p>Parametre 6</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type6">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param6_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param6_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose6"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type6"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param6_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param6_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose6"> </w-input>
 					</div>
 					<p>Parametre 7</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type7">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param7_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param7_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose7"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type7"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param7_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param7_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose7"> </w-input>
 					</div>
 					<p>Parametre 8</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type8">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param8_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param8_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose8"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type8"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param8_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param8_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose8"> </w-input>
 					</div>
 					<p>Parametre 9</p>
 					<div class="param w-flex my2">
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type9">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param9_fr">
-						</w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais"
-							v-model="props.datas.param9_en"> </w-input>
-						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault"
-							v-model="props.datas.purpose9"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Type" v-model="props.datas.type9"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label" v-model="props.datas.param9_fr"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.param9_en"> </w-input>
+						<w-input label-color="red" class="mb1 xs6 pa1" label="Par défault" v-model="props.datas.purpose9"> </w-input>
 					</div>
 				</div>
 
-				<w-textarea rows="4" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Comment"
-					v-model="props.datas.comment"> </w-textarea>
+				<w-textarea rows="4" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
@@ -197,7 +159,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://localhost:3000/stamp3/targets')
+			.get('http://10.192.136.74:3000/stamp3/targets')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allTargets = data;
@@ -296,7 +258,7 @@ export default {
 		async getAllFunctionsRelatedToTarget(id) {
 			if (id !== -1) {
 				await axios
-					.get(`http://localhost:3000/stamp3/functsWithTarget/${id}`)
+					.get(`http://10.192.136.74:3000/stamp3/functsWithTarget/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allFunctions = data;
@@ -309,7 +271,7 @@ export default {
 		async getAllOrgansRelatedToFunction(id) {
 			if (id !== -1) {
 				await axios
-					.get(`http://localhost:3000/stamp3/organsWithFunct/${id}`)
+					.get(`http://10.192.136.74:3000/stamp3/organsWithFunct/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allOrgans = data;

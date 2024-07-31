@@ -1,19 +1,42 @@
 <template>
 	<div class="container">
 		<div class="topOptions">
-			<SearchBar v-if="searchBar === 0" :newItem="newItemCreated" :refreshSearch="refreshSearch"
-				:route="routeAPI + 's'" @update:selected="getValueForOne" :displayArrow="showArrow" />
-			<SearchBarRange :displayArrow="showArrow" v-else-if="searchBar === 1" :newItem="newItemCreated"
-				:refreshSearch="refreshSearch" :route="routeAPI + 's'" @update:selected="getValueForOne" />
-			<SearchBarRangeCtrl :displayArrow="showArrow" v-else-if="searchBar === 2" :newItem="newItemCreated"
-				:refreshSearch="refreshSearch" :route="routeAPI + 's'" @update:selected="getValueForOne" />
-			<ButtonBar v-if="showBtns" :status="selectedId !== null" :displayEditBtn="showEditBtn"
-				@btn:save="saveSelection" @btn:delete="deleteSelection" @btn:add="addItem" @btn:dup="dupItem" />
+			<SearchBar
+				v-if="searchBar === 0"
+				:newItem="newItemCreated"
+				:refreshSearch="refreshSearch"
+				:route="routeAPI + 's'"
+				@update:selected="getValueForOne"
+				:displayArrow="showArrow"
+			/>
+			<SearchBarRange
+				:displayArrow="showArrow"
+				v-else-if="searchBar === 1"
+				:newItem="newItemCreated"
+				:refreshSearch="refreshSearch"
+				:route="routeAPI + 's'"
+				@update:selected="getValueForOne"
+			/>
+			<SearchBarRangeCtrl
+				:displayArrow="showArrow"
+				v-else-if="searchBar === 2"
+				:newItem="newItemCreated"
+				:refreshSearch="refreshSearch"
+				:route="routeAPI + 's'"
+				@update:selected="getValueForOne"
+			/>
+			<ButtonBar
+				v-if="showBtns"
+				:status="selectedId !== null"
+				:displayEditBtn="showEditBtn"
+				@btn:save="saveSelection"
+				@btn:delete="deleteSelection"
+				@btn:add="addItem"
+				@btn:dup="dupItem"
+			/>
 		</div>
-		<w-alert v-model="duplicationAlerte.show" class="actionWarning" info> Pensez bien à sauvegarder pour terminer la
-			duplication. </w-alert>
-		<w-alert v-model="creationAlerte.show" class="actionWarning" warning> Sauvegarder les informations principales,
-			afin de pouvoir ajouter des paramètres. </w-alert>
+		<w-alert v-model="duplicationAlerte.show" class="actionWarning" info> Pensez bien à sauvegarder pour terminer la duplication. </w-alert>
+		<w-alert v-model="creationAlerte.show" class="actionWarning" warning> Sauvegarder les informations principales, afin de pouvoir ajouter des paramètres. </w-alert>
 		<div class="infos" v-if="selectedId !== null">
 			<slot :datas="datas" :selectedId="selectedId"></slot>
 		</div>
@@ -77,7 +100,7 @@ export default {
 			this.selectedId = val.id;
 
 			await axios
-				.get(`http://localhost:3000${this.routeAPI}/${this.selectedId}`)
+				.get(`http://10.192.136.74:3000${this.routeAPI}/${this.selectedId}`)
 				.then((reponse) => reponse.data[0])
 				.then((data) => {
 					this.datas = data;
@@ -129,13 +152,13 @@ export default {
 			}
 
 			if (!this.isValidDateFormat(this.datas.date) && this.datas.date !== undefined) {
-				this.datas.date = "2024-01-01"
+				this.datas.date = '2024-01-01';
 			}
 			if (!this.isValidDateFormat(this.datas.when) && this.datas.when !== undefined) {
-				this.datas.when = "2024-01-01"
+				this.datas.when = '2024-01-01';
 			}
 
-			axios.put(`http://localhost:3000${this.routeAPI}/${this.selectedId}`, this.datas).then((response) => {
+			axios.put(`http://10.192.136.74:3000${this.routeAPI}/${this.selectedId}`, this.datas).then((response) => {
 				if (response.status === 200) {
 					this.$waveui.notify({
 						message: 'Sauvegarde reussit',
@@ -153,7 +176,7 @@ export default {
 		},
 		async deleteSelection() {
 			if (this.selectedId == null || this.selectedId === -1) return;
-			await axios.delete(`http://localhost:3000${this.routeAPI}/${this.selectedId}`).then((response) => {
+			await axios.delete(`http://10.192.136.74:3000${this.routeAPI}/${this.selectedId}`).then((response) => {
 				if (response.status === 200) {
 					this.$waveui.notify({
 						message: 'Suppréssion reussit',
@@ -186,9 +209,8 @@ export default {
 			this.duplicationAlerte.show = true;
 			this.creationAlerte.show = false;
 			this.showEditBtn = false;
-			this.datas.label + " - copie"
+			this.datas.label + ' - copie';
 			this.selectedId = -1;
-
 
 			this.$waveui.notify({
 				message: 'Duplication réussit',
@@ -204,12 +226,12 @@ export default {
 		},
 		async createItem() {
 			if (!this.isValidDateFormat(this.datas.date)) {
-				this.datas.date = "2024-01-01"
+				this.datas.date = '2024-01-01';
 			}
 			if (!this.isValidDateFormat(this.datas.when)) {
-				this.datas.when = "2024-01-01"
+				this.datas.when = '2024-01-01';
 			}
-			await axios.post(`http://localhost:3000${this.routeAPI}`, this.formating(this.datas)).then((response) => {
+			await axios.post(`http://10.192.136.74:3000${this.routeAPI}`, this.formating(this.datas)).then((response) => {
 				if (response.status === 200) {
 					this.$waveui.notify({
 						message: 'Création reussit',
@@ -231,7 +253,7 @@ export default {
 		isValidDateFormat(dateString) {
 			const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 			return dateRegex.test(dateString);
-		}
+		},
 	},
 };
 </script>

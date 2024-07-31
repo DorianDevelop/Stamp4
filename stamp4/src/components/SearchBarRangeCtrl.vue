@@ -4,8 +4,7 @@
 		<v-select :options="gammeFilter" v-model="gammeChoice" @update:modelValue="filterChanged"></v-select>
 		<ArrowFilter mot="une Gamme" v-if="!(gammeChoice || !showArrow) && displayArrow" class="fleche_filtre fl" />
 		<v-select :options="ctrls" v-model="ctrlChoice" @update:modelValue="filterChanged"></v-select>
-		<ArrowFilter mot="un Control" v-if="!(ctrlChoice || !showArrow) && displayArrow"
-			class="fleche_filtre fl fleche_ctrl" />
+		<ArrowFilter mot="un Control" v-if="!(ctrlChoice || !showArrow) && displayArrow" class="fleche_filtre fl fleche_ctrl" />
 		<v-select :options="options" v-model="choice"></v-select>
 		<ArrowIndication :mot="namePage" v-if="!(choice || !showArrow) && displayArrow" class="fleche fl" />
 	</div>
@@ -93,14 +92,14 @@ export default {
 	methods: {
 		async getGammeForFilter() {
 			await axios
-				.get('http://localhost:3000/stamp3uut/gammes')
+				.get('http://10.192.136.74:3000/stamp3uut/gammes')
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.gammeFilter = data;
 				});
 
 			await axios
-				.get(`http://localhost:3000${this.route}`)
+				.get(`http://10.192.136.74:3000${this.route}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;
@@ -124,15 +123,15 @@ export default {
 
 			if (this.gammeChoice !== null && this.gammeChoice !== undefined && (this.ctrlChoice === null || this.ctrlChoice === undefined)) {
 				const id = this.gammeChoice.id;
-				query = `http://localhost:3000${this.route}Filtered/${id}`;
+				query = `http://10.192.136.74:3000${this.route}Filtered/${id}`;
 			} else if (this.gammeChoice !== null && this.gammeChoice !== undefined && this.ctrlChoice !== null && this.ctrlChoice !== undefined) {
 				const id = this.gammeChoice.id;
 				const ctrl = parseInt(this.ctrlChoice.id);
-				query = `http://localhost:3000${this.route}Filtered/${id}/${ctrl}`;
+				query = `http://10.192.136.74:3000${this.route}Filtered/${id}/${ctrl}`;
 				showQuali = true;
 			} else if ((this.gammeChoice === null || this.gammeChoice === undefined) && this.ctrlChoice !== null && this.ctrlChoice !== undefined) {
 				const ctrl = parseInt(this.ctrlChoice.id);
-				query = `http://localhost:3000${this.route}Filteredctrl/${ctrl}`;
+				query = `http://10.192.136.74:3000${this.route}Filteredctrl/${ctrl}`;
 				showQuali = true;
 			} else {
 				return;

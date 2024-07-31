@@ -43,7 +43,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get(`http://localhost:3000/stamp3ate/isAdmin/${VueCookies.get('user').label}`)
+			.get(`http://10.192.136.74:3000/stamp3ate/isAdmin/${VueCookies.get('user').label}`)
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				if (data.length === 1) {
@@ -53,7 +53,7 @@ export default {
 				}
 			});
 		await axios
-			.get(`http://localhost:3000/stamp3/connect`)
+			.get(`http://10.192.136.74:3000/stamp3/connect`)
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				if (data.length === 1) {
@@ -101,7 +101,7 @@ export default {
 			};
 
 			axios
-				.put(`http://localhost:3000/stamp3/te/${this.TE.id}`, te_datas)
+				.put(`http://10.192.136.74:3000/stamp3/te/${this.TE.id}`, te_datas)
 				.then((reponse) => {
 					if (reponse.status === 200) console.log('TE modifié !');
 				})
@@ -110,7 +110,7 @@ export default {
 					return;
 				});
 			axios
-				.put(`http://localhost:3000/stamp3ate/user/${this.OP.id}`, op_datas)
+				.put(`http://10.192.136.74:3000/stamp3ate/user/${this.OP.id}`, op_datas)
 				.then((reponse) => {
 					if (reponse.status === 200) console.log('OP modifié !');
 				})

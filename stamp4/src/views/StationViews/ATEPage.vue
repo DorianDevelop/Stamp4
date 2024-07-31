@@ -1,16 +1,20 @@
 <template>
-	<Layout class="layout" routeAPI="/stamp3ate/ate" :searchType="0" :formating="createJSONItem"
-		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
+	<Layout
+		class="layout"
+		routeAPI="/stamp3ate/ate"
+		:searchType="0"
+		:formating="createJSONItem"
+		:validation="validationBeforeSave"
+		@update:validators="validateAll"
+		:showBtns="showBtn"
+	>
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input ref="labelInput" label-color="green-dark1" class="xs3" label="Label"
-						:validators="[validators.required]" v-model="props.datas.label"> </w-input>
+					<w-input ref="labelInput" label-color="green-dark1" class="xs3" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
 					<w-input label-color="green-dark1" class="xs3" label="Nom" v-model="props.datas.name"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Host (identifiant)"
-						v-model="props.datas.host"> </w-input>
-					<w-input label-color="green-dark1" class="xs1" label="Indice" v-model="props.datas.indice">
-					</w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Host (identifiant)" v-model="props.datas.host"> </w-input>
+					<w-input label-color="green-dark1" class="xs1" label="Indice" v-model="props.datas.indice"> </w-input>
 				</w-flex>
 
 				<div class="groupOfSelect">
@@ -61,8 +65,7 @@
 							<option v-for="item in qualified" :key="item.id" :value="item.id">{{ item.label }}</option>
 						</select>
 					</div>
-					<w-input label-color="green-dark1" class="xs3" label="Chemin fichier log"
-						v-model="props.datas.tPath"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Chemin fichier log" v-model="props.datas.tPath"> </w-input>
 				</w-flex>
 				<w-flex class="py2 align-end mb4 px1 mt2" gap="3">
 					<div class="selects smaller2">
@@ -71,21 +74,16 @@
 							<option v-for="item in qualified" :key="item.id" :value="item.id">{{ item.label }}</option>
 						</select>
 					</div>
-					<w-input label-color="green-dark1" class="xs3" label="Chemin local Quasar"
-						v-model="props.datas.lQuasar"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Chemin réseau Quasar"
-						v-model="props.datas.nQuasar"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Chemin local Quasar" v-model="props.datas.lQuasar"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Chemin réseau Quasar" v-model="props.datas.nQuasar"> </w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who">
-					</w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when">
-					</w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when"> </w-input>
 				</w-flex>
 
-				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm"
-					label="Comment" v-model="props.datas.comment"> </w-textarea>
+				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 		</template>
 	</Layout>
@@ -182,7 +180,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://localhost:3000/stamp3ate/plugs')
+			.get('http://10.192.136.74:3000/stamp3ate/plugs')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.plugs = data;
