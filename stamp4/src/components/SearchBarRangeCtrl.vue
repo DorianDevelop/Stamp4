@@ -93,14 +93,14 @@ export default {
 	methods: {
 		async getGammeForFilter() {
 			await axios
-				.get('http://10.192.136.74:3000/stamp3uut/gammes')
+				.get('http://localhost:3000/stamp3uut/gammes')
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.gammeFilter = data;
 				});
 
 			await axios
-				.get(`http://10.192.136.74:3000${this.route}`)
+				.get(`http://localhost:3000${this.route}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.options = data;
@@ -124,15 +124,15 @@ export default {
 
 			if (this.gammeChoice !== null && this.gammeChoice !== undefined && (this.ctrlChoice === null || this.ctrlChoice === undefined)) {
 				const id = this.gammeChoice.id;
-				query = `http://10.192.136.74:3000${this.route}Filtered/${id}`;
+				query = `http://localhost:3000${this.route}Filtered/${id}`;
 			} else if (this.gammeChoice !== null && this.gammeChoice !== undefined && this.ctrlChoice !== null && this.ctrlChoice !== undefined) {
 				const id = this.gammeChoice.id;
 				const ctrl = parseInt(this.ctrlChoice.id);
-				query = `http://10.192.136.74:3000${this.route}Filtered/${id}/${ctrl}`;
+				query = `http://localhost:3000${this.route}Filtered/${id}/${ctrl}`;
 				showQuali = true;
 			} else if ((this.gammeChoice === null || this.gammeChoice === undefined) && this.ctrlChoice !== null && this.ctrlChoice !== undefined) {
 				const ctrl = parseInt(this.ctrlChoice.id);
-				query = `http://10.192.136.74:3000${this.route}Filteredctrl/${ctrl}`;
+				query = `http://localhost:3000${this.route}Filteredctrl/${ctrl}`;
 				showQuali = true;
 			} else {
 				return;

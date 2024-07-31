@@ -18,7 +18,7 @@
 					<w-input label-color="green-dark1" class="xs3" label="Date fin" type="date"
 						v-model="props.datas.dateEnd"></w-input>
 
-					<div class="selects my1 ml5">
+					<div class="selects my1 ml5" v-if="creationId === -1">
 						<p>Gammes</p>
 						<select v-model="props.datas.range">
 							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
@@ -401,7 +401,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://10.192.136.74:3000/stamp3uut/gammes')
+			.get('http://localhost:3000/stamp3uut/gammes')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allGammes = data;
@@ -496,7 +496,7 @@ export default {
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.post(`http://10.192.136.74:3000/stamp3uut/uutQualification/${id}/${ctrl.id}`)
+					.post(`http://localhost:3000/stamp3uut/uutQualification/${id}/${ctrl.id}`)
 					.then((response) => {
 						if (response.status === 200) {
 							this.$waveui.notify({
@@ -525,7 +525,7 @@ export default {
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.delete(`http://10.192.136.74:3000/stamp3uut/uutUnqualification/${id}/${ctrl.id}`)
+					.delete(`http://localhost:3000/stamp3uut/uutUnqualification/${id}/${ctrl.id}`)
 					.then((response) => {
 						if (response.status === 200) {
 							this.$waveui.notify({
@@ -556,7 +556,7 @@ export default {
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.get(`http://10.192.136.74:3000/stamp3uut/uutQualified/${id}/${ctrl.id}`)
+					.get(`http://localhost:3000/stamp3uut/uutQualified/${id}/${ctrl.id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						let result = data[0].Result;
@@ -577,7 +577,7 @@ export default {
 		getSpecFromRangeAndCtrl() {
 			let ctrl = parseInt(this.selectedCtrl)
 			axios
-				.get(`http://10.192.136.74:3000/stamp3uut/specFromRangeAndCtrl/${this.selectedRange}/${ctrl}`)
+				.get(`http://localhost:3000/stamp3uut/specFromRangeAndCtrl/${this.selectedRange}/${ctrl}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.chooseSpec = data
@@ -592,7 +592,7 @@ export default {
 				No: this.nextNo
 			}
 			axios
-				.post(`http://10.192.136.74:3000/stamp3uut/linkSpecToUUT`, datas)
+				.post(`http://localhost:3000/stamp3uut/linkSpecToUUT`, datas)
 				.then((response) => {
 					if (response.status === 200) {
 						this.$waveui.notify({
@@ -619,7 +619,7 @@ export default {
 		removeSpec(specId) {
 			if (this.selectedId === null || this.selectedId === -1 || specId === null || specId === -1) return;
 			axios
-				.delete(`http://10.192.136.74:3000/stamp3uut/unlinkSpecToUUT/${specId}`)
+				.delete(`http://localhost:3000/stamp3uut/unlinkSpecToUUT/${specId}`)
 				.then((response) => {
 					if (response.status === 200) {
 						this.$waveui.notify({
@@ -646,7 +646,7 @@ export default {
 		getLinkedSpec() {
 			if (this.selectedId === null || this.selectedId === -1) return;
 			axios
-				.get(`http://10.192.136.74:3000/stamp3uut/allLinkedSpec/${this.selectedId}`)
+				.get(`http://localhost:3000/stamp3uut/allLinkedSpec/${this.selectedId}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.linkedSpec = data

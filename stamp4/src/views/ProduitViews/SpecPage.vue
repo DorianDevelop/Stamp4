@@ -11,7 +11,7 @@
 						v-model="props.datas.who"> </w-input>
 					<w-input @input="hasBeenSaved = false" label-color="green-dark1" class="xs3" label="Date"
 						type="date" v-model="props.datas.when"> </w-input>
-					<div class="selects my1 ml5">
+					<div class="selects my1 ml5" v-if="creationId === -1">
 						<p>Gammes</p>
 						<select v-model="props.datas.range">
 							<option v-for="item in allGammes" :key="item.id" :value="item.id">{{ item.label }}</option>
@@ -22,7 +22,7 @@
 				<div class="stepContainer">
 					<div class="adding">
 						<p class="addingLabel">Ajout de step</p>
-						<w-input type="number" label-color="green-dark1" class="xs3" step="5" max="999" min="0"
+						<w-input type="number" label-color="green-dark1" class="xs3" step="5" max="999" min="10"
 							v-model="newStepNumber"></w-input>
 
 						<v-select :options="allSteps" v-model="newStep"></v-select>
@@ -40,7 +40,8 @@
 										d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
 									</path>
 								</svg>
-								<span>{{ item.No.toString().padStart(3, '0') }}</span>
+								<span v-if="item.No !== null">{{ item.No.toString().padStart(3, '0') }}</span>
+								<span v-else>{{ item.No }}</span>
 								<i class="inter">-</i>
 
 								<w-tooltip top color="white" bg-color="grey-dark5">
@@ -86,6 +87,7 @@ export default {
 	data() {
 		return {
 			creationId: null,
+			selectedId: null,
 
 			showBtn: true,
 			validators: {
@@ -94,7 +96,7 @@ export default {
 			allSelectedSteps: [],
 			allSteps: [],
 			newStep: null,
-			newStepNumber: 0,
+			newStepNumber: 10,
 			allGammes: [],
 
 			hasBeenSaved: true,
@@ -102,7 +104,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://10.192.136.74:3000/stamp3uut/gammes')
+			.get('http://localhost:3000/stamp3uut/gammes')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allGammes = data;
@@ -129,9 +131,10 @@ export default {
 		},
 		async getAllStepOfSpec(selectedId, id) {
 			if (id !== -1) this.creationId = null;
+			this.selectedId = selectedId
 			if (selectedId === -1) {
 				axios
-					.get(`http://10.192.136.74:3000/stamp3uut/findNextSpecID`)
+					.get(`http://localhost:3000/stamp3uut/findNextSpecID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.creationId = data[0].AUTO_INCREMENT;
@@ -140,7 +143,7 @@ export default {
 			}
 			if (id !== -1) {
 				await axios
-					.get(`http://10.192.136.74:3000/stamp3uut/stepForSpec/${id}`)
+					.get(`http://localhost:3000/stamp3uut/stepForSpec/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allSelectedSteps = data;
@@ -154,7 +157,7 @@ export default {
 			}
 			if (id !== -1) {
 				await axios
-					.get(`http://10.192.136.74:3000/stamp3uut/stepForGamme/${id}`)
+					.get(`http://localhost:3000/stamp3uut/stepForGamme/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allSteps = data;
@@ -172,17 +175,13 @@ export default {
 				let datas = {
 					idMain: idSpec,
 					idLink: this.newStep.id,
-					No: this.newStepNumber,
+					No: this.newStepNumber !== 0 ? this.newStepNumber : 1,
 				};
 				await axios
-					.post('http://10.192.136.74:3000/stamp3uut/stepForSpec', datas)
+					.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
 					.then((response) => {
 						if (response.status === 200) {
-							this.allSelectedSteps.push({
-								id: this.newStep.id,
-								No: this.newStepNumber,
-								label: this.newStep.label,
-							});
+							this.getAllStepOfSpec(this.creationId ? this.creationId : -1, idSpec);
 							console.log('Success', response.status, response.data);
 						} else {
 							console.error('Error adding step:', response.status, response.data);
@@ -195,7 +194,7 @@ export default {
 		},
 		removeStep(idLink, idSpec) {
 			axios
-				.delete('http://10.192.136.74:3000/stamp3uut/stepForSpec/' + idLink)
+				.delete('http://localhost:3000/stamp3uut/stepForSpec/' + idLink)
 				.then((response) => {
 					if (response.status === 200) {
 						this.getAllStepOfSpec(this.creationId ? this.creationId : -1, idSpec);
@@ -225,7 +224,7 @@ export default {
 						No: step.No,
 					};
 					axios
-						.post('http://10.192.136.74:3000/stamp3uut/stepForSpec', datas)
+						.post('http://localhost:3000/stamp3uut/stepForSpec', datas)
 						.then((response) => {
 							if (response.status === 200) {
 								this.getAllStepOfSpec(this.creationId, -1);

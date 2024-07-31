@@ -77,7 +77,7 @@ export default {
 			this.selectedId = val.id;
 
 			await axios
-				.get(`http://10.192.136.74:3000${this.routeAPI}/${this.selectedId}`)
+				.get(`http://localhost:3000${this.routeAPI}/${this.selectedId}`)
 				.then((reponse) => reponse.data[0])
 				.then((data) => {
 					this.datas = data;
@@ -127,7 +127,15 @@ export default {
 				this.createItem();
 				return;
 			}
-			axios.put(`http://10.192.136.74:3000${this.routeAPI}/${this.selectedId}`, this.datas).then((response) => {
+
+			if (!this.isValidDateFormat(this.datas.date) && this.datas.date !== undefined) {
+				this.datas.date = "2024-01-01"
+			}
+			if (!this.isValidDateFormat(this.datas.when) && this.datas.when !== undefined) {
+				this.datas.when = "2024-01-01"
+			}
+
+			axios.put(`http://localhost:3000${this.routeAPI}/${this.selectedId}`, this.datas).then((response) => {
 				if (response.status === 200) {
 					this.$waveui.notify({
 						message: 'Sauvegarde reussit',
@@ -145,7 +153,7 @@ export default {
 		},
 		async deleteSelection() {
 			if (this.selectedId == null || this.selectedId === -1) return;
-			await axios.delete(`http://10.192.136.74:3000${this.routeAPI}/${this.selectedId}`).then((response) => {
+			await axios.delete(`http://localhost:3000${this.routeAPI}/${this.selectedId}`).then((response) => {
 				if (response.status === 200) {
 					this.$waveui.notify({
 						message: 'Suppréssion reussit',
@@ -178,7 +186,9 @@ export default {
 			this.duplicationAlerte.show = true;
 			this.creationAlerte.show = false;
 			this.showEditBtn = false;
+			this.datas.label + " - copie"
 			this.selectedId = -1;
+
 
 			this.$waveui.notify({
 				message: 'Duplication réussit',
@@ -193,7 +203,13 @@ export default {
 			});
 		},
 		async createItem() {
-			await axios.post(`http://10.192.136.74:3000${this.routeAPI}`, this.formating(this.datas)).then((response) => {
+			if (!this.isValidDateFormat(this.datas.date)) {
+				this.datas.date = "2024-01-01"
+			}
+			if (!this.isValidDateFormat(this.datas.when)) {
+				this.datas.when = "2024-01-01"
+			}
+			await axios.post(`http://localhost:3000${this.routeAPI}`, this.formating(this.datas)).then((response) => {
 				if (response.status === 200) {
 					this.$waveui.notify({
 						message: 'Création reussit',
@@ -211,6 +227,11 @@ export default {
 
 			this.refreshSearch = !this.refreshSearch;
 		},
+
+		isValidDateFormat(dateString) {
+			const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+			return dateRegex.test(dateString);
+		}
 	},
 };
 </script>

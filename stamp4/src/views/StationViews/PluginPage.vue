@@ -157,34 +157,30 @@
 					<div class="separator"></div>
 					<div class="controllerHeaders">
 						<div class="Category targets">
-							<div class="Heads" v-for="head in allHeaders" :key="head.id" @click="resetNext(0, head)"
-								:class="{ selected: selected.target.id === head.id }">
+							<div class="Heads" v-for="head in allTargets" :key="head.id" @click="selectHeader(0, head)"
+								:class="{ selected: selected.target === head }">
 								<p>{{ head.label }}</p>
 							</div>
 						</div>
 						<div class="Category functs" v-if="selected.target !== null">
-							<div class="Heads FunctsHead" v-for="head in allHeaders[selected.target.id].functs"
-								:key="head.id" @click="resetNext(1, head)"
-								:class="{ selected: selected.funct.id === head.id }">
+							<div class="Heads FunctsHead" v-for="head in allFunctions" :key="head.id"
+								@click="selectHeader(1, head)" :class="{ selected: selected.funct === head }">
 								<p>{{ head.label }}</p>
 							</div>
 						</div>
 						<div class="Category organs" v-if="selected.funct !== null">
-							<div class="Heads OrgansHead"
-								v-for="head in allHeaders[selected.target.id].functs[selected.funct.id].organs"
-								:key="head.id" @click="resetNext(2, head)"
-								:class="{ selected: selected.organ.id === head.id }">
+							<div class="Heads OrgansHead" v-for="head in allOrgans" :key="head.id"
+								@click="selectHeader(2, head)" :class="{ selected: selected.organ === head }">
 								<p>{{ head.label }}</p>
 							</div>
 						</div>
 						<div class="Category actions" v-if="selected.organ !== null">
-							<div class="Heads ActionsHead"
-								v-for="head in allHeaders[selected.target.id].functs[selected.funct.id].organs[selected.organ.id].actions"
-								:key="head.id" @click="resetNext(3, head)"
-								:class="{ selected: selected.action.id === head.id }">
+							<div class="Heads ActionsHead" v-for="head in allActs" :key="head.id"
+								@click="selectHeader(3, head)" :class="{ selected: selected.action === head }">
 								<p>{{ head.label }}</p>
 							</div>
 						</div>
+
 					</div>
 					<div class="controllerContent" v-if="IdsToLoad.length > 0">
 						<div v-for="act in filteredActions" :key="act.id" class="driver_action">
@@ -257,11 +253,17 @@ export default {
 			allActions: [],
 			IdsToLoad: [],
 
+
+			allTargets: [],
+			allFunctions: [],
+			allOrgans: [],
+			allActs: [],
+
 			selected: {
-				target: { id: 0, label: 'ATE', code: 'ATE' },
-				funct: { id: 0, label: 'HARDware', code: 'HARD' },
-				organ: { id: 0, label: 'MISCellaneous', code: 'MISC' },
-				action: { id: 0, label: 'D-IN', code: 'DIN' },
+				target: null,
+				funct: null,
+				organ: null,
+				action: null,
 			},
 
 			newAction: {
@@ -290,360 +292,30 @@ export default {
 
 			allDrvChanged: [],
 			allActChanged: [],
-
-			allHeaders: [
-				{
-					id: 0,
-					label: 'ATE',
-					code: 'ATE',
-					functs: [
-						{
-							id: 0,
-							label: 'HARDware',
-							code: 'HARD',
-							organs: [
-								{
-									id: 0,
-									label: 'MISCellaneous',
-									code: 'MISC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-										{ id: 4, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-								{
-									id: 1,
-									label: 'SAFEty',
-									code: 'SAFE',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MODE', code: 'MODE' },
-										{ id: 3, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-								{
-									id: 2,
-									label: 'USER',
-									code: 'USER',
-									actions: [
-										{ id: 0, label: 'D-OUT', code: 'DOUT' },
-										{ id: 1, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-							],
-						},
-					],
-				},
-				{
-					id: 1,
-					label: 'NORMative',
-					code: 'NORM',
-
-					functs: [
-						{
-							id: 0,
-							label: 'CONTinuité',
-							code: 'CONT',
-							organs: [
-								{
-									id: 0,
-									label: 'AC',
-									code: 'AC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-										{ id: 4, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-								{
-									id: 1,
-									label: 'DC',
-									code: 'DC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-										{ id: 4, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-							],
-						},
-						{
-							id: 1,
-							label: 'GRouND',
-							code: 'GRND',
-							organs: [
-								{
-									id: 0,
-									label: 'AC',
-									code: 'AC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-										{ id: 4, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-								{
-									id: 1,
-									label: 'DC',
-									code: 'DC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-										{ id: 4, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-							],
-						},
-						{
-							id: 2,
-							label: 'HIPOT',
-							code: 'HIPOT',
-							organs: [
-								{
-									id: 0,
-									label: 'AC',
-									code: 'AC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-										{ id: 4, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-								{
-									id: 1,
-									label: 'DC',
-									code: 'DC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-										{ id: 4, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-							],
-						},
-					],
-				},
-				{
-					id: 2,
-					label: 'PCBA',
-					code: 'PCBA',
-					functs: [
-						{
-							id: 0,
-							label: 'ACQuire',
-							code: 'ACQ',
-							organs: [
-								{
-									id: 0,
-									label: 'DIGItal',
-									code: 'DIGI',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'Wait IN', code: 'WIN' },
-									],
-								},
-								{
-									id: 1,
-									label: 'SIGNal',
-									code: 'SIGN',
-									actions: [
-										{ id: 0, label: 'MEASure', code: 'MEAS' },
-										{ id: 1, label: 'SETing', code: 'SET' },
-									],
-								},
-							],
-						},
-						{
-							id: 1,
-							label: 'GENErateur',
-							code: 'GENE',
-							organs: [
-								{
-									id: 0,
-									label: 'ANAlogic',
-									code: 'ANA',
-									actions: [
-										{ id: 0, label: 'D-OUT', code: 'DOUT' },
-										{ id: 1, label: 'MEASure', code: 'MEAS' },
-										{ id: 2, label: 'SETing', code: 'SET' },
-									],
-								},
-								{
-									id: 1,
-									label: 'LOGIC',
-									code: 'LOGIC',
-									actions: [
-										{ id: 0, label: 'D-OUT', code: 'DOUT' },
-										{ id: 1, label: 'MEASure', code: 'MEAS' },
-										{ id: 2, label: 'SETing', code: 'SET' },
-									],
-								},
-							],
-						},
-						{
-							id: 2,
-							label: 'LOAD',
-							code: 'LOAD',
-							organs: [
-								{
-									id: 0,
-									label: 'AC',
-									code: 'AC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-									],
-								},
-								{
-									id: 1,
-									label: 'DC',
-									code: 'DC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-									],
-								},
-							],
-						},
-						{
-							id: 3,
-							label: 'SouRCE',
-							code: 'SRCE',
-							organs: [
-								{
-									id: 0,
-									label: 'AC',
-									code: 'AC',
-									actions: [
-										{ id: 0, label: 'D-OUT', code: 'DOUT' },
-										{ id: 1, label: 'MEASure', code: 'MEAS' },
-										{ id: 2, label: 'SETing', code: 'SET' },
-									],
-								},
-								{
-									id: 1,
-									label: 'DC',
-									code: 'DC',
-									actions: [
-										{ id: 0, label: 'D-OUT', code: 'DOUT' },
-										{ id: 1, label: 'MEASure', code: 'MEAS' },
-										{ id: 2, label: 'SETing', code: 'SET' },
-									],
-								},
-							],
-						},
-					],
-				},
-				{
-					id: 3,
-					label: 'UPS',
-					code: 'UPS',
-					functs: [
-						{
-							id: 0,
-							label: 'OUTput',
-							code: 'OUT',
-							organs: [
-								{
-									id: 0,
-									label: 'AUXiliary',
-									code: 'AUX',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-									],
-								},
-								{
-									id: 1,
-									label: 'CHRGer',
-									code: 'CHRG',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-									],
-								},
-								{
-									id: 2,
-									label: 'DC',
-									code: 'DC',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure', code: 'MEAS' },
-										{ id: 3, label: 'SETing', code: 'SET' },
-									],
-								},
-								{
-									id: 3,
-									label: 'UTILization',
-									code: 'UTIL',
-									actions: [
-										{ id: 0, label: 'D-IN', code: 'DIN' },
-										{ id: 1, label: 'D-OUT', code: 'DOUT' },
-										{ id: 2, label: 'MEASure MONO', code: 'MEAS_MONO' },
-										{ id: 3, label: 'MEASure THREE', code: 'MEAS_THREE' },
-										{ id: 4, label: 'SETing', code: 'SET' },
-									],
-								},
-							],
-						},
-						{
-							id: 1,
-							label: 'SouRCE',
-							code: 'SRCE',
-							organs: [
-								{
-									id: 0,
-									label: 'ANAlogic',
-									code: 'ANA',
-									actions: [
-										{ id: 0, label: 'D-OUT', code: 'DOUT' },
-										{ id: 1, label: 'MEASure', code: 'MEAS' },
-										{ id: 2, label: 'SETing', code: 'SET' },
-									],
-								},
-								{
-									id: 1,
-									label: 'LOGIC',
-									code: 'LOGIC',
-									actions: [
-										{ id: 0, label: 'D-OUT', code: 'DOUT' },
-										{ id: 1, label: 'MEASure', code: 'MEAS' },
-										{ id: 2, label: 'SETing', code: 'SET' },
-									],
-								},
-							],
-						},
-					],
-				},
-			],
 			saveAll: true,
 		};
+	},
+	async mounted() {
+
+		await axios
+			.get('http://localhost:3000/stamp3/targets')
+			.then((reponse) => reponse.data)
+			.then((data) => {
+				this.allTargets = data;
+				this.selected.target = data[0]
+			});
+		this.getAllFunctionsRelatedToTarget(this.selected.target.id);
+	},
+	watch: {
+		'selected.target': function (newTarget) {
+			this.getAllFunctionsRelatedToTarget(newTarget.id);
+		},
+		'selected.funct': function (newFunc) {
+			this.getAllOrgansRelatedToFunction(newFunc.id);
+		},
+		'selected.organ': function (newOrgan) {
+			this.getAllActionsRelatedToOrgan(newOrgan.id);
+		},
 	},
 	computed: {
 		filteredActions() {
@@ -685,7 +357,7 @@ export default {
 
 			if (selectedId === -1 && id === -1) {
 				axios
-					.get(`http://10.192.136.74:3000/stamp3ate/findNextPlugID`)
+					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.creationId = data[0].AUTO_INCREMENT;
@@ -696,10 +368,11 @@ export default {
 			if (id === null || id === -1) return false;
 
 			await axios
-				.get(`http://10.192.136.74:3000/stamp3ate/driversForPlug/${id}`)
+				.get(`http://localhost:3000/stamp3ate/driversForPlug/${id}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allDrivers = data;
+					this.newAction.idDriver = this.allDrivers[0].id
 					let lastOrder = 0;
 					data.forEach((e) => {
 						if (e.order > lastOrder) lastOrder = e.order;
@@ -707,16 +380,16 @@ export default {
 					this.newDriver.order = lastOrder + 1;
 				});
 			await axios
-				.get(`http://10.192.136.74:3000/stamp3ate/actionsForPlug/${id}`)
+				.get(`http://localhost:3000/stamp3ate/actionsForPlug/${id}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.allActions = data;
-					this.findIdActionToLoad();
+					//this.findIdActionToLoad();
 				});
 
 			if (selectedId === -1 && id !== -1 && id !== null) {
 				axios
-					.get(`http://10.192.136.74:3000/stamp3ate/findNextPlugID`)
+					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.duppId = data[0].AUTO_INCREMENT;
@@ -726,25 +399,19 @@ export default {
 				return true;
 			}
 		},
-		resetNext(index, head) {
+		selectHeader(index, header) {
 			switch (index) {
 				case 0:
-					this.selected.target = { id: head.id, label: head.label, code: head.code };
-					this.selected.funct = { id: head.functs[0].id, label: head.functs[0].label, code: head.functs[0].code };
-					this.selected.organ = { id: head.functs[0].organs[0].id, label: head.functs[0].organs[0].label, code: head.functs[0].organs[0].code };
-					this.selected.action = { id: head.functs[0].organs[0].actions[0].id, label: head.functs[0].organs[0].actions[0].label, code: head.functs[0].organs[0].actions[0].code };
+					this.selected.target = header;
 					break;
 				case 1:
-					this.selected.funct = { id: head.id, label: head.label, code: head.code };
-					this.selected.organ = { id: head.organs[0].id, label: head.organs[0].label, code: head.organs[0].code };
-					this.selected.action = { id: head.organs[0].actions[0].id, label: head.organs[0].actions[0].label, code: head.organs[0].actions[0].code };
+					this.selected.funct = header;
 					break;
 				case 2:
-					this.selected.organ = { id: head.id, label: head.label, code: head.code };
-					this.selected.action = { id: head.actions[0].id, label: head.actions[0].label, code: head.actions[0].code };
+					this.selected.organ = header;
 					break;
 				case 3:
-					this.selected.action = { id: head.id, label: head.label, code: head.code };
+					this.selected.action = header;
 					break;
 
 				default:
@@ -753,8 +420,9 @@ export default {
 			this.findIdActionToLoad();
 		},
 		findIdActionToLoad() {
+			//if (this.selected.target === null || this.selected.organ === null || this.selected.funct === null || this.selected.action === null) return;
 			let allActToLoad = this.allActions.filter(
-				(x) => x.target === this.selected.target.code && x.organ === this.selected.organ.code && x.funct === this.selected.funct.code && x.action === this.selected.action.code
+				(x) => x.target === this.selected.target.label && x.organ === this.selected.organ.label && x.funct === this.selected.funct.label && x.action === this.selected.action.label
 			);
 			this.IdsToLoad = [];
 			let lastOrder = 0;
@@ -799,8 +467,8 @@ export default {
 					if (this.duppId !== null) {
 						datas.idPlug = this.duppId;
 					}
-					if (create) queryString = `http://10.192.136.74:3000/stamp3ate/actionsForPlug/`;
-					else queryString = `http://10.192.136.74:3000/stamp3ate/actionsForPlug/${i}`;
+					if (create) queryString = `http://localhost:3000/stamp3ate/actionsForPlug/`;
+					else queryString = `http://localhost:3000/stamp3ate/actionsForPlug/${i}`;
 					break;
 				case 1:
 					datas = {
@@ -819,8 +487,8 @@ export default {
 						datas.idATE = this.duppId;
 					}
 
-					if (create) queryString = `http://10.192.136.74:3000/stamp3ate/driversForPlug/`;
-					else queryString = `http://10.192.136.74:3000/stamp3ate/driversForPlug/${i}`;
+					if (create) queryString = `http://localhost:3000/stamp3ate/driversForPlug/`;
+					else queryString = `http://localhost:3000/stamp3ate/driversForPlug/${i}`;
 					break;
 				default:
 					break;
@@ -856,15 +524,12 @@ export default {
 			}
 		},
 		createDefaultDriver() {
-			console.log('TESTS CREATE DEFAULT');
 			if (this.creationId === null) return;
-			console.log('TESTS CREATE DEFAULT2');
 			axios
-				.post(`http://10.192.136.74:3000/stamp3ate/defaultDriver/${this.creationId}`)
+				.post(`http://localhost:3000/stamp3ate/defaultDriver/${this.creationId}`)
 				.then((response) => {
 					if (response.status === 200) {
 						console.log('Creation succeed');
-						console.log('OUI');
 					} else {
 						console.error('Error saving:', response.status, response.data);
 					}
@@ -924,14 +589,13 @@ export default {
 
 		deleteActionOrDriver(id, type) {
 			if (id == undefined || id == null) return;
-			console.log(id, type, 'delete');
 			let queryString = '';
 			switch (type) {
 				case 0:
-					queryString = `http://10.192.136.74:3000/stamp3ate/actionsForPlug/${id}`;
+					queryString = `http://localhost:3000/stamp3ate/actionsForPlug/${id}`;
 					break;
 				case 1:
-					queryString = `http://10.192.136.74:3000/stamp3ate/driversForPlug/${id}`;
+					queryString = `http://localhost:3000/stamp3ate/driversForPlug/${id}`;
 					break;
 				default:
 					break;
@@ -962,16 +626,57 @@ export default {
 					console.error('Unexpected error:', error);
 				});
 		},
+
+
+		async getAllFunctionsRelatedToTarget(id) {
+			console.log(id);
+			if (id !== -1) {
+				try {
+					const response = await axios.get(`http://localhost:3000/stamp3/functsWithTarget/${id}`);
+					this.allFunctions = response.data;
+					this.selected.funct = this.allFunctions[0]
+				} catch (error) {
+					console.error('Error fetching functions:', error);
+				}
+			} else {
+				this.allFunctions = [];
+			}
+		},
+		async getAllOrgansRelatedToFunction(id) {
+			if (id !== -1) {
+				try {
+					const response = await axios.get(`http://localhost:3000/stamp3/organsWithFunct/${id}`);
+					this.allOrgans = response.data;
+					this.selected.organ = this.allOrgans[0]
+				} catch (error) {
+					console.error('Error fetching organs:', error);
+				}
+			} else {
+				this.allOrgans = [];
+			}
+		},
+		async getAllActionsRelatedToOrgan(id) {
+			if (id !== -1) {
+				try {
+					const response = await axios.get(`http://localhost:3000/stamp3/actionsWithOrgan/${id}`);
+					this.allActs = response.data;
+					this.selected.action = this.allActs[0]
+				} catch (error) {
+					console.error('Error fetching actions:', error);
+				}
+			} else {
+				this.allActs = [];
+			}
+		},
 	},
 };
 </script>
 
 <style scoped>
 .controllerHeaders {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	grid-template-rows: repeat(2, 1fr);
-	gap: 0.3rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 
 	width: 75%;
 	margin: auto;
@@ -985,18 +690,16 @@ export default {
 	cursor: pointer;
 
 	transition: all 0.2s ease;
+
+	min-width: 80px;
+	text-align: center;
 }
 
 .Category {
 	display: flex;
-	justify-content: flex-start;
+	justify-content: center;
 	align-items: center;
-	gap: 1rem;
-}
-
-.functs,
-.actions {
-	justify-content: flex-end;
+	gap: 0.5rem;
 }
 
 .Heads.selected {
@@ -1073,8 +776,8 @@ export default {
 .separator {
 	width: 75%;
 	height: 0px;
-	border-bottom: 1px solid #1baf59;
-	margin: 2.5rem auto;
+	border-bottom: 1px solid #035726;
+	margin: 1rem auto;
 }
 
 .saveAll {

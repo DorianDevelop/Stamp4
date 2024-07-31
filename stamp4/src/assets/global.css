@@ -286,7 +286,7 @@ a {
   width: 55%;
 }
 .steps {
-  max-width: 40%;
+  width: 450px;
 }
 
 .steps .step p {
