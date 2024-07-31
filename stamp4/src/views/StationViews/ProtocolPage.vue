@@ -55,7 +55,7 @@
 									<w-icon class="mr1">wi-plus</w-icon>
 									Ajout d'une ligne
 								</w-button>
-								<w-table :headers="i == 2 || i == 3 ? table.header_two : table.header_one" :items="valeurs" fixed-headers :sort="table.sorts[i]">
+								<w-table :headers="i == 2 || i == 3 ? table.header_two : table.header_one" :items="valeurs" fixed-headers :pagination="table.paginations[i]" :sort="table.sorts[i]">
 									<template #item="{ item }">
 										<tr>
 											<td v-for="(header, x) in i == 2 || i == 3 ? table.header_two : table.header_one" :key="x" class="inputTable" :class="`text-${header.key}`">
