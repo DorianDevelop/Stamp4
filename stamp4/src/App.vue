@@ -36,7 +36,7 @@ export default {
 	async created() {
 		if (!VueCookies.get('user')) {
 			await axios
-				.get('http://10.192.136.74:3000/stamp3/connect')
+				.get('http://localhost:3000/stamp3/connect')
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					if (data.length !== 1) {
@@ -44,7 +44,7 @@ export default {
 						this.showPage = false;
 
 						axios
-							.get('http://10.192.136.74:3000/stamp3/hostname')
+							.get('http://localhost:3000/stamp3/hostname')
 							.then((reponse) => reponse.data)
 							.then((data) => {
 								this.hostname = data.hostname;

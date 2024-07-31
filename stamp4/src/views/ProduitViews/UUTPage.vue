@@ -1,24 +1,22 @@
 <template>
-	<Layout
-		class="layout"
-		routeAPI="/stamp3uut/uut"
-		:searchType="2"
-		:formating="createJSONItem"
-		:validation="validationBeforeSave"
-		@update:validators="validateAll"
-		:showBtns="showBtn"
-	>
+	<Layout class="layout" routeAPI="/stamp3uut/uut" :searchType="2" :formating="createJSONItem"
+		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input ref="labelInput" label-color="green-dark1" class="xs5" label="Référence SKU" :validators="[validators.required]" v-model="props.datas.refsku"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.date"> </w-input>
+					<w-input ref="labelInput" label-color="green-dark1" class="xs5" label="Référence SKU"
+						:validators="[validators.required]" v-model="props.datas.refsku"> </w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who">
+					</w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.date">
+					</w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-end mb1 px1" gap="3">
-					<w-input label-color="green-dark1" class="xs3" label="Date début" type="date" v-model="props.datas.dateStart"></w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Date fin" type="date" v-model="props.datas.dateEnd"></w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Date début" type="date"
+						v-model="props.datas.dateStart"></w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Date fin" type="date"
+						v-model="props.datas.dateEnd"></w-input>
 
 					<div class="selects my1 ml5" v-if="creationId === -1">
 						<p>Gammes</p>
@@ -27,7 +25,8 @@
 						</select>
 					</div>
 				</w-flex>
-				<w-button :bg-color="qualified ? 'green' : 'red'" color="white" @click="openQualification(props.datas.range)"> Qualifier </w-button>
+				<w-button :bg-color="qualified ? 'green' : 'red'" color="white"
+					@click="openQualification(props.datas.range)"> Qualifier </w-button>
 				<div v-if="openQualif" class="qualification">
 					<div class="bg" @click="closeQualification()"></div>
 					<div class="contains">
@@ -39,10 +38,12 @@
 								<option v-for="item in ctrls" :key="item.id" :value="item.id">{{ item.label }}</option>
 							</select>
 						</div>
-						<w-input label-color="green-dark1" class="xs3" label="Prochain numéro" v-model="nextNo"> </w-input>
+						<w-input label-color="green-dark1" class="xs3" label="Prochain numéro" v-model="nextNo">
+						</w-input>
 						<div class="spec_area">
 							<div class="choose" v-if="chooseSpec.length > 0">
-								<p v-for="choix in chooseSpec" :key="choix.id" @click="addSpec(choix.id)">{{ choix.label }}</p>
+								<p v-for="choix in chooseSpec" :key="choix.id" @click="addSpec(choix.id)">{{ choix.label
+									}}</p>
 							</div>
 							<div class="choose notfound" v-else>
 								<p>Aucune spec trouvé.</p>
@@ -57,7 +58,8 @@
 								<p>Aucune spec selectionné.</p>
 							</div>
 						</div>
-						<w-switch class="mr4 qualifiedSwitch" v-model="qualified" color="green" label="Qualifié" label-color="green-dark1" @change="changeQualify"></w-switch>
+						<w-switch class="mr4 qualifiedSwitch" v-model="qualified" color="green" label="Qualifié"
+							label-color="green-dark1" @change="changeQualify"></w-switch>
 					</div>
 				</div>
 
@@ -66,34 +68,47 @@
 						<div class="windowTitle" @click="openProduit = !openProduit">
 							<p>Produit</p>
 							<button class="icon" :class="{ opened: openProduit }">
-								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); msfilter: ">
-									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+									style="fill: rgba(0, 0, 0, 1); msfilter: ">
+									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z">
+									</path>
 								</svg>
 							</button>
 						</div>
 						<div class="windowContent" v-if="openProduit">
-							<w-input label-color="green-dark1" class="mb1 pa1" label="Format N° Série" v-model="props.datas.serial"></w-input>
+							<w-input label-color="green-dark1" class="mb1 pa1" label="Format N° Série"
+								v-model="props.datas.serial"></w-input>
 							<w-flex class="py2 align-end mb1 px1">
-								<w-input label-color="green-dark1" class="xs3" label="UUT_DESIGN - Désignation" v-model="props.datas.design"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_DESIGN - Désignation"
+									v-model="props.datas.design"> </w-input>
 
 								<div class="selects my1 ml5">
 									<p>UUT_TOPO - Topologie</p>
 									<select v-model="props.datas.topo">
-										<option v-for="top in topologie" :key="top.id" :value="top.id">{{ top.label }}</option>
+										<option v-for="top in topologie" :key="top.id" :value="top.id">{{ top.label }}
+										</option>
 									</select>
 								</div>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="UUT_POWER - Puiss. (VA)" v-model="props.datas.power"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="UUT_BACKUP - Autonomie" v-model="props.datas.backup"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="UUT_VOLT - Tension" v-model="props.datas.volt"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="UUT_FREQ - Fréquence" v-model="props.datas.freq"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_POWER - Puiss. (VA)"
+									v-model="props.datas.power"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_BACKUP - Autonomie"
+									v-model="props.datas.backup"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_VOLT - Tension"
+									v-model="props.datas.volt"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_FREQ - Fréquence"
+									v-model="props.datas.freq"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="UUT_MODEL - Réf. produit" v-model="props.datas.model"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="UUT_PNP - Plug & Play" v-model="props.datas.pnp"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="UUT_FIRM - Firmware" v-model="props.datas.firm"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="UUT_SKU - SKU info" v-model="props.datas.sku"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_MODEL - Réf. produit"
+									v-model="props.datas.model"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_PNP - Plug & Play"
+									v-model="props.datas.pnp"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_FIRM - Firmware"
+									v-model="props.datas.firm"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="UUT_SKU - SKU info"
+									v-model="props.datas.sku"> </w-input>
 							</w-flex>
 						</div>
 					</div>
@@ -101,44 +116,64 @@
 						<div class="windowTitle" @click="openNormatif = !openNormatif">
 							<p>Normatif</p>
 							<button class="icon" :class="{ opened: openNormatif }">
-								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); msfilter: ">
-									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+									style="fill: rgba(0, 0, 0, 1); msfilter: ">
+									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z">
+									</path>
 								</svg>
 							</button>
 						</div>
 						<div class="windowContent" v-if="openNormatif">
 							<w-divider class="mt3 mb1 mx1" color="grey-light2">Puissance</w-divider>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="HI_VOLT - Tension (V)" v-model="props.datas.hiVolt"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HI_AMPS - Limitation (mA)" v-model="props.datas.hiAmps"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HI_TIME - Maintien (S)" v-model="props.datas.hiTime"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HI_RAMP - Rampe (S)" v-model="props.datas.hiRamp"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HI_VOLT - Tension (V)"
+									v-model="props.datas.hiVolt"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HI_AMPS - Limitation (mA)"
+									v-model="props.datas.hiAmps"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HI_TIME - Maintien (S)"
+									v-model="props.datas.hiTime"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HI_RAMP - Rampe (S)"
+									v-model="props.datas.hiRamp"> </w-input>
 							</w-flex>
 							<w-divider class="mt3 mb1 mx1" color="grey-light2">TBTS</w-divider>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="HIS_VOLT - Tension (V)" v-model="props.datas.hisVolt"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HIS_AMPS - Limitation (mA)" v-model="props.datas.hisAmps"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HIS_TIME - Maintien (S)" v-model="props.datas.hisTime"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HIS_RAMP - Rampe (S)" v-model="props.datas.hisRamp"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HIS_VOLT - Tension (V)"
+									v-model="props.datas.hisVolt"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HIS_AMPS - Limitation (mA)"
+									v-model="props.datas.hisAmps"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HIS_TIME - Maintien (S)"
+									v-model="props.datas.hisTime"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HIS_RAMP - Rampe (S)"
+									v-model="props.datas.hisRamp"> </w-input>
 							</w-flex>
 							<w-divider class="mt3 mb1 mx1" color="grey-light2">Fonctionel</w-divider>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="HIF_VOLT - Tension (V)" v-model="props.datas.hifVolt"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HIF_AMPS - Limitation (mA)" v-model="props.datas.hifAmps"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HIF_TIME - Maintien (S)" v-model="props.datas.hifTime"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="HIF_RAMP - Rampe (S)" v-model="props.datas.hifRamp"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HIF_VOLT - Tension (V)"
+									v-model="props.datas.hifVolt"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HIF_AMPS - Limitation (mA)"
+									v-model="props.datas.hifAmps"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HIF_TIME - Maintien (S)"
+									v-model="props.datas.hifTime"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="HIF_RAMP - Rampe (S)"
+									v-model="props.datas.hifRamp"> </w-input>
 							</w-flex>
 							<w-divider class="mt3 mb1 mx1" color="grey-light2">Terres</w-divider>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="GND_AMPS - Courant (A)" v-model="props.datas.gndAmps"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="GND_OMHS - Impédance (mΩ)" v-model="props.datas.gndOhms"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="GND_TIME - Maintien (S)" v-model="props.datas.gndTime"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="GND_AMPS - Courant (A)"
+									v-model="props.datas.gndAmps"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="GND_OMHS - Impédance (mΩ)"
+									v-model="props.datas.gndOhms"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="GND_TIME - Maintien (S)"
+									v-model="props.datas.gndTime"> </w-input>
 							</w-flex>
 							<w-divider class="mt3 mb1 mx1" color="grey-light2">Continuite</w-divider>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="CONT_AMPS - Courant (A)" v-model="props.datas.contAmps"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="CONT_OMHS - Impédance (mΩ)" v-model="props.datas.contOhms"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="CONT_TIME - Maintien (S)" v-model="props.datas.contTime"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="CONT_AMPS - Courant (A)"
+									v-model="props.datas.contAmps"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="CONT_OMHS - Impédance (mΩ)"
+									v-model="props.datas.contOhms"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="CONT_TIME - Maintien (S)"
+									v-model="props.datas.contTime"> </w-input>
 							</w-flex>
 						</div>
 					</div>
@@ -146,33 +181,47 @@
 						<div class="windowTitle" @click="openReseau = !openReseau">
 							<p>Réseau</p>
 							<button class="icon" :class="{ opened: openReseau }">
-								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); msfilter: ">
-									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+									style="fill: rgba(0, 0, 0, 1); msfilter: ">
+									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z">
+									</path>
 								</svg>
 							</button>
 						</div>
 						<div class="windowContent" v-if="openReseau">
 							<w-divider class="mt3 mb1 mx1" color="grey-light2">Réseau 1</w-divider>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="MAIN1_U - Tension (V)" v-model="props.datas.main1U"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="MAIN1_UMAX - U maxi (V)" v-model="props.datas.main1Umaxi"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="MAIN1_UMIN - U mini (V)" v-model="props.datas.main1Umini"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN1_U - Tension (V)"
+									v-model="props.datas.main1U"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN1_UMAX - U maxi (V)"
+									v-model="props.datas.main1Umaxi"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN1_UMIN - U mini (V)"
+									v-model="props.datas.main1Umini"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="MAIN1_IMAX - I maxi (A)" v-model="props.datas.main1Imaxi"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="MAIN1_IYIELD - Rendement (η)" v-model="props.datas.main1Yield"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="MAIN1_THDI - THDI (%)" v-model="props.datas.main1Thdi"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN1_IMAX - I maxi (A)"
+									v-model="props.datas.main1Imaxi"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN1_IYIELD - Rendement (η)"
+									v-model="props.datas.main1Yield"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN1_THDI - THDI (%)"
+									v-model="props.datas.main1Thdi"> </w-input>
 							</w-flex>
 							<w-divider class="mt3 mb1 mx1" color="grey-light2">Réseau 2</w-divider>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="MAIN2_U - Tension (V)" v-model="props.datas.main2U"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="MAIN2_UMAX - U maxi (V)" v-model="props.datas.main2Umaxi"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="MAIN2_UMIN - U mini (V)" v-model="props.datas.main2Umini"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN2_U - Tension (V)"
+									v-model="props.datas.main2U"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN2_UMAX - U maxi (V)"
+									v-model="props.datas.main2Umaxi"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN2_UMIN - U mini (V)"
+									v-model="props.datas.main2Umini"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="MAIN2_IMAX - I maxi (A)" v-model="props.datas.main2Imaxi"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="MAIN2_IYIELD - Rendement (η)" v-model="props.datas.main2Yield"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="MAIN2_THDI - THDI (%)" v-model="props.datas.main2Thdi"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN2_IMAX - I maxi (A)"
+									v-model="props.datas.main2Imaxi"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN2_IYIELD - Rendement (η)"
+									v-model="props.datas.main2Yield"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="MAIN2_THDI - THDI (%)"
+									v-model="props.datas.main2Thdi"> </w-input>
 							</w-flex>
 						</div>
 					</div>
@@ -180,26 +229,37 @@
 						<div class="windowTitle" @click="openUtilisation = !openUtilisation">
 							<p>Utilisation</p>
 							<button class="icon" :class="{ opened: openUtilisation }">
-								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); msfilter: ">
-									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+									style="fill: rgba(0, 0, 0, 1); msfilter: ">
+									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z">
+									</path>
 								</svg>
 							</button>
 						</div>
 						<div class="windowContent" v-if="openUtilisation">
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="OUT_U - Tension (V)" v-model="props.datas.outU"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="OUT_UTOL - Tolérance (%)" v-model="props.datas.outUtol"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="OUT_THDU - THDU (%)" v-model="props.datas.outThdu"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="OUT_UDC - Composante DC (V)" v-model="props.datas.outUdc"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_U - Tension (V)"
+									v-model="props.datas.outU"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_UTOL - Tolérance (%)"
+									v-model="props.datas.outUtol"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_THDU - THDU (%)"
+									v-model="props.datas.outThdu"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_UDC - Composante DC (V)"
+									v-model="props.datas.outUdc"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="OUT_F - Fréquence (HZ)" v-model="props.datas.outF"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="OUT_FTOL - Tolérance (%)" v-model="props.datas.outFtol"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_F - Fréquence (HZ)"
+									v-model="props.datas.outF"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_FTOL - Tolérance (%)"
+									v-model="props.datas.outFtol"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="OUT_VA - Puissance (VA)" v-model="props.datas.outVA"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="OUT_W - Puissance (W)" v-model="props.datas.outW"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="OUT_COSPHI - Facteur (Φ)" v-model="props.datas.outPhi"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_VA - Puissance (VA)"
+									v-model="props.datas.outVA"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_W - Puissance (W)"
+									v-model="props.datas.outW"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="OUT_COSPHI - Facteur (Φ)"
+									v-model="props.datas.outPhi"> </w-input>
 							</w-flex>
 						</div>
 					</div>
@@ -207,39 +267,57 @@
 						<div class="windowTitle" @click="openBatt = !openBatt">
 							<p>Batt. / Charg.</p>
 							<button class="icon" :class="{ opened: openBatt }">
-								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); msfilter: ">
-									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+									style="fill: rgba(0, 0, 0, 1); msfilter: ">
+									<path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z">
+									</path>
 								</svg>
 							</button>
 						</div>
 						<div class="windowContent" v-if="openBatt">
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="BAT_U - U Batt. (V)" v-model="props.datas.batU"></w-input>
-								<w-input label-color="green-dark1" class="xs3" label="BAT_U_MAX - U Maxi (V)" v-model="props.datas.batUmaxi"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="BAT_U_MIN - U Mini (V)" v-model="props.datas.batUmini"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_U - U Batt. (V)"
+									v-model="props.datas.batU"></w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_U_MAX - U Maxi (V)"
+									v-model="props.datas.batUmaxi"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_U_MIN - U Mini (V)"
+									v-model="props.datas.batUmini"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="BAT_AH - Capacité (AH)" v-model="props.datas.batAH"></w-input>
-								<w-input label-color="green-dark1" class="xs3" label="BAT_LIFE - Durée vie (Année)" v-model="props.datas.batLife"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="BAT_BRANCH - Branche (Nbr)" v-model="props.datas.batBranch"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_AH - Capacité (AH)"
+									v-model="props.datas.batAH"></w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_LIFE - Durée vie (Année)"
+									v-model="props.datas.batLife"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_BRANCH - Branche (Nbr)"
+									v-model="props.datas.batBranch"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="BAT_C1 - Batt C1" v-model="props.datas.batConst1"></w-input>
-								<w-input label-color="green-dark1" class="xs3" label="BAT_C2 - Batt C2" v-model="props.datas.batConst2"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="BAT_C3 - Batt C3" v-model="props.datas.batConst3"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="BAT_C4 - Batt C4" v-model="props.datas.batConst4"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_C1 - Batt C1"
+									v-model="props.datas.batConst1"></w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_C2 - Batt C2"
+									v-model="props.datas.batConst2"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_C3 - Batt C3"
+									v-model="props.datas.batConst3"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="BAT_C4 - Batt C4"
+									v-model="props.datas.batConst4"> </w-input>
 							</w-flex>
 							<w-flex class="py2 align-end mb1 px1" gap="3">
-								<w-input label-color="green-dark1" class="xs3" label="CHRG_U - U Floating (V)" v-model="props.datas.chrgU"></w-input>
-								<w-input label-color="green-dark1" class="xs3" label="CHRG_I - I Chargeur (A)" v-model="props.datas.chrgI"> </w-input>
-								<w-input label-color="green-dark1" class="xs3" label="CHRG_T - Degrée C°" v-model="props.datas.chrgTemp"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="CHRG_U - U Floating (V)"
+									v-model="props.datas.chrgU"></w-input>
+								<w-input label-color="green-dark1" class="xs3" label="CHRG_I - I Chargeur (A)"
+									v-model="props.datas.chrgI"> </w-input>
+								<w-input label-color="green-dark1" class="xs3" label="CHRG_T - Degrée C°"
+									v-model="props.datas.chrgTemp"> </w-input>
 							</w-flex>
 						</div>
 					</div>
 				</div>
-				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
+				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm"
+					label="Comment" v-model="props.datas.comment"> </w-textarea>
 			</w-form>
-			<div v-if="getIfUUTIsQualified(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)"></div>
+			<div
+				v-if="getIfUUTIsQualified(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)">
+			</div>
 		</template>
 	</Layout>
 </template>
@@ -316,7 +394,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://10.192.136.74:3000/stamp3uut/gammes')
+			.get('http://localhost:3000/stamp3uut/gammes')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allGammes = data;
@@ -411,7 +489,7 @@ export default {
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.post(`http://10.192.136.74:3000/stamp3uut/uutQualification/${id}/${ctrl.id}`)
+					.post(`http://localhost:3000/stamp3uut/uutQualification/${id}/${ctrl.id}`)
 					.then((response) => {
 						if (response.status === 200) {
 							this.$waveui.notify({
@@ -440,7 +518,7 @@ export default {
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.delete(`http://10.192.136.74:3000/stamp3uut/uutUnqualification/${id}/${ctrl.id}`)
+					.delete(`http://localhost:3000/stamp3uut/uutUnqualification/${id}/${ctrl.id}`)
 					.then((response) => {
 						if (response.status === 200) {
 							this.$waveui.notify({
@@ -471,7 +549,7 @@ export default {
 			let ctrl = VueCookies.get('ctrl');
 			if (id !== -1 && ctrl) {
 				axios
-					.get(`http://10.192.136.74:3000/stamp3uut/uutQualified/${id}/${ctrl.id}`)
+					.get(`http://localhost:3000/stamp3uut/uutQualified/${id}/${ctrl.id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						let result = data[0].Result;
@@ -492,7 +570,7 @@ export default {
 		getSpecFromRangeAndCtrl() {
 			let ctrl = parseInt(this.selectedCtrl);
 			axios
-				.get(`http://10.192.136.74:3000/stamp3uut/specFromRangeAndCtrl/${this.selectedRange}/${ctrl}`)
+				.get(`http://localhost:3000/stamp3uut/specFromRangeAndCtrl/${this.selectedRange}/${ctrl}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.chooseSpec = data;
@@ -507,7 +585,7 @@ export default {
 				No: this.nextNo,
 			};
 			axios
-				.post(`http://10.192.136.74:3000/stamp3uut/linkSpecToUUT`, datas)
+				.post(`http://localhost:3000/stamp3uut/linkSpecToUUT`, datas)
 				.then((response) => {
 					if (response.status === 200) {
 						this.$waveui.notify({
@@ -534,7 +612,7 @@ export default {
 		removeSpec(specId) {
 			if (this.selectedId === null || this.selectedId === -1 || specId === null || specId === -1) return;
 			axios
-				.delete(`http://10.192.136.74:3000/stamp3uut/unlinkSpecToUUT/${specId}`)
+				.delete(`http://localhost:3000/stamp3uut/unlinkSpecToUUT/${specId}`)
 				.then((response) => {
 					if (response.status === 200) {
 						this.$waveui.notify({
@@ -561,7 +639,7 @@ export default {
 		getLinkedSpec() {
 			if (this.selectedId === null || this.selectedId === -1) return;
 			axios
-				.get(`http://10.192.136.74:3000/stamp3uut/allLinkedSpec/${this.selectedId}`)
+				.get(`http://localhost:3000/stamp3uut/allLinkedSpec/${this.selectedId}`)
 				.then((reponse) => reponse.data)
 				.then((data) => {
 					this.linkedSpec = data;

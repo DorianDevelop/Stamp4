@@ -27,7 +27,7 @@
 			<router-link to="/analyse" class="router-link">
 				Analyse
 				<div class="hoverLink">
-					<router-link to="/analyse/raports" class="sub-router-link">Raports</router-link>
+					<router-link to="/analyse/rapports" class="sub-router-link">Rapports</router-link>
 				</div>
 			</router-link>
 
@@ -147,6 +147,7 @@ nav img {
 	background: var(--emerald);
 	color: var(--white);
 }
+
 .router-link-active.router-link:hover {
 	background: var(--darker-emerald) !important;
 }
@@ -154,10 +155,12 @@ nav img {
 .adminLink {
 	color: var(--red);
 }
+
 .router-link-active.adminLink {
 	background: var(--red);
 	color: var(--white);
 }
+
 .router-link-active.adminLink:hover {
 	background: var(--darker-red) !important;
 }

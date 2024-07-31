@@ -1,3 +1,3 @@
-import RaportPage from './RaportPage.vue';
+import RapportPage from "./RapportPage.vue";
 
-export { RaportPage };
+export { RapportPage };

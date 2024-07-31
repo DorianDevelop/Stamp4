@@ -1,23 +1,20 @@
 <template>
-	<Layout
-		class="layout"
-		routeAPI="/stamp3/organ"
-		:searchType="0"
-		:formating="createJSONItem"
-		:validation="validationBeforeSave"
-		@update:validators="validateAll"
-		:showBtns="showBtn"
-	>
+	<Layout class="layout" routeAPI="/stamp3/organ" :searchType="0" :formating="createJSONItem"
+		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
 		<template #default="props">
 			<w-form class="editForm">
 				<w-flex class="py2 align-end">
-					<w-input ref="labelInput" label-color="red" class="mb1 xs6 pa1" label="Label" :validators="[validators.required]" v-model="props.datas.label"> </w-input>
-					<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.label_en"> </w-input>
+					<w-input ref="labelInput" label-color="red" class="mb1 xs6 pa1" label="Label"
+						:validators="[validators.required]" v-model="props.datas.label"> </w-input>
+					<w-input label-color="red" class="mb1 xs6 pa1" label="Label Anglais" v-model="props.datas.label_en">
+					</w-input>
 				</w-flex>
 
 				<w-flex class="py2 align-end">
-					<w-input label-color="red" class="mb1 xs3 pa1" label="Créateur" v-model="props.datas.who"> </w-input>
-					<w-input label-color="red" class="mb1 xs3 pa1" label="Date" type="date" v-model="props.datas.when"> </w-input>
+					<w-input label-color="red" class="mb1 xs3 pa1" label="Créateur" v-model="props.datas.who">
+					</w-input>
+					<w-input label-color="red" class="mb1 xs3 pa1" label="Date" type="date" v-model="props.datas.when">
+					</w-input>
 				</w-flex>
 
 				<div class="groupOfSelect">
@@ -39,7 +36,8 @@
 					</div>
 				</div>
 
-				<w-textarea rows="4" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Comment" v-model="props.datas.comment"> </w-textarea>
+				<w-textarea rows="4" :no-autogrow="true" label-color="red" class="pa1 textAreaForm" label="Comment"
+					v-model="props.datas.comment"> </w-textarea>
 			</w-form>
 
 			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
@@ -70,7 +68,7 @@ export default {
 	},
 	async mounted() {
 		await axios
-			.get('http://10.192.136.74:3000/stamp3/targets')
+			.get('http://localhost:3000/stamp3/targets')
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				this.allTargets = data;
@@ -103,7 +101,7 @@ export default {
 		async getAllFunctionsRelatedToTarget(id) {
 			if (id !== -1) {
 				await axios
-					.get(`http://10.192.136.74:3000/stamp3/functsWithTarget/${id}`)
+					.get(`http://localhost:3000/stamp3/functsWithTarget/${id}`)
 					.then((reponse) => reponse.data)
 					.then((data) => {
 						this.allFunctions = data;
