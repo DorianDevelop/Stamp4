@@ -1,6 +1,6 @@
 const handler = require("../services/handler.js");
 const createConnection = require("../configs/database.config.js"); //Import la fonction créer un lien vers un base de données
-const cp = require("child_process");
+/*const cp = require("child_process");
 const os = require("os");
 
 exports.getUserHostname = (req, res) => {
@@ -26,7 +26,7 @@ exports.connectUser = (req, res) => {
     handler.handleReponse(res, error, results);
   });
   db.end();
-};
+};*/
 
 //#region TE (Test Engineers)
 
@@ -44,6 +44,17 @@ exports.getTeByID = (req, res) => {
   const db = createConnection("stamp3");
   const requestId = req.params.id;
   const query = "SELECT * FROM `te` as T WHERE T.id = ?";
+
+  db.query(query, [requestId], (error, results) => {
+    handler.handleReponse(res, error, results);
+  });
+  db.end();
+};
+
+exports.getTeByLabel = (req, res) => {
+  const db = createConnection("stamp3");
+  const requestId = req.params.label;
+  const query = "SELECT * FROM `te` as T WHERE T.label = ?";
 
   db.query(query, [requestId], (error, results) => {
     handler.handleReponse(res, error, results);

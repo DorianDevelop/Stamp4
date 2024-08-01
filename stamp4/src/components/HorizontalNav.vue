@@ -1,7 +1,7 @@
 <template>
 	<nav>
 		<div class="home">
-			<a class="homeLink" href="/">
+			<a class="homeLink" href="/stamp4">
 				<img src="@/assets/icons/home.svg" alt="home icon" />
 			</a>
 		</div>

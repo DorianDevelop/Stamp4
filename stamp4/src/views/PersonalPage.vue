@@ -3,13 +3,15 @@
 		<div class="donnees">
 			<p class="title">Voici vos informations personnel :</p>
 			<w-input label-color="blue" class="my4" label="Votre nom" v-model="datas.label"> </w-input>
-			<w-input label-color="blue" class="my4" label="Nom de votre PC" v-model="datas.host"> </w-input>
-			<w-input label-color="blue" class="my4" label="Votre Email" v-model="datas.email"> </w-input>
+			<w-input label-color="blue" class="my4" label="Votre mot de passe (faible sécurité)" v-model="datas.pass">
+			</w-input>
+			<w-input label-color="blue" class="my4" label="Votre Email" v-model="datas.email" v-if="!onlyOP"> </w-input>
 			<w-input label-color="blue" class="my4" label="Votre Service" v-model="datas.service"> </w-input>
 			<p>
 				Vous êtes : <span>{{ datas.level }}</span>
 			</p>
 			<w-button @click="sauvegarder" bg-color="success"> Sauvegarder </w-button>
+			<w-button class="deco" @click="disconnect" bg-color="error"> Déconnexion </w-button>
 		</div>
 	</div>
 </template>
@@ -23,6 +25,8 @@ export default {
 		return {
 			TE: null,
 			OP: null,
+
+			onlyOP: false,
 
 			datas: {},
 			levels: [
@@ -42,25 +46,18 @@ export default {
 		};
 	},
 	async mounted() {
+		this.OP = VueCookies.get('user');
 		await axios
-			.get(`http://localhost:3000/stamp3ate/isAdmin/${VueCookies.get('user').label}`)
-			.then((reponse) => reponse.data)
-			.then((data) => {
-				if (data.length === 1) {
-					this.OP = data[0];
-				} else {
-					console.error("Nombre d'utilisateur dans Opérateur incorrect");
-				}
-			});
-		await axios
-			.get(`http://localhost:3000/stamp3/connect`)
+			.get(`http://localhost:3000/stamp3/teLabel/${VueCookies.get('user').label}`)
 			.then((reponse) => reponse.data)
 			.then((data) => {
 				if (data.length === 1) {
 					this.TE = data[0];
 					this.combine();
 				} else {
-					console.error("Nombre d'utilisateur dans TE incorrect");
+					this.datas = this.OP
+					this.onlyOP = true;
+					this.datas.level = this.levels.find((item) => item.id === this.OP.level).label
 				}
 			});
 	},
@@ -69,7 +66,7 @@ export default {
 			if (this.TE.label.toLowerCase() === this.OP.label.toLowerCase()) {
 				this.datas = {
 					label: this.TE.label,
-					host: this.TE.host,
+					pass: this.OP.pass,
 					level: this.levels.find((item) => item.id === this.OP.level).label,
 					service: this.TE.service || this.OP.service,
 					email: this.TE.email,
@@ -82,8 +79,8 @@ export default {
 
 			const op_datas = {
 				label: this.datas.label || '',
-				code: this.OP.code || '',
-				pass: this.OP.pass || '',
+				code: this.OP.code,
+				pass: this.datas.pass || '',
 				level: this.OP.level || 0,
 				service: this.datas.service || '',
 				date: date || '1900-01-01',
@@ -92,7 +89,7 @@ export default {
 			};
 			const te_datas = {
 				label: this.datas.label,
-				host: this.datas.host,
+				host: this.TE.host || '',
 				email: this.datas.email || '',
 				service: this.datas.service || '',
 				date: date || '1900-01-01',
@@ -133,9 +130,15 @@ export default {
 
 			VueCookies.remove('user');
 			setTimeout(() => {
-				window.location.href = '/';
+				window.location.href = '/stamp4';
 			}, 100);
 		},
+		disconnect() {
+			VueCookies.remove('user');
+			setTimeout(() => {
+				window.location.href = '/stamp4';
+			}, 100);
+		}
 	},
 };
 </script>
@@ -165,11 +168,17 @@ p.title {
 }
 
 .donnees .w-button {
-	padding: 0.5rem 1.5rem;
-	font-size: 1.5rem;
+	padding: 0.5rem 1.2rem;
+	font-size: 1.2rem;
 	height: auto;
 
-	margin: 1.5rem auto 0 auto;
+	margin: 1.2rem auto 0 auto;
 	display: block;
+}
+
+.deco {
+	position: absolute;
+	right: 2rem;
+	bottom: 2rem;
 }
 </style>

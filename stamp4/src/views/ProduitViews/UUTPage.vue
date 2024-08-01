@@ -42,7 +42,8 @@
 						</w-input>
 						<div class="spec_area">
 							<div class="choose" v-if="chooseSpec.length > 0">
-								<p v-for="choix in chooseSpec" :key="choix.id" @click="addSpec(choix.id)">{{ choix.label
+								<p v-for="choix in chooseSpec" :key="choix.id" @click="addSpec(choix)"
+									:class="{ 'desactivated': isDesactivated(choix) }">{{ choix.label
 									}}</p>
 							</div>
 							<div class="choose notfound" v-else>
@@ -400,6 +401,11 @@ export default {
 				this.allGammes = data;
 			});
 	},
+	computed: {
+		labelsLinked() {
+			return this.linkedSpec.map(item => item.label);
+		}
+	},
 	methods: {
 		createJSONItem(datas) {
 			return {
@@ -576,7 +582,9 @@ export default {
 					this.chooseSpec = data;
 				});
 		},
-		addSpec(specId) {
+		addSpec(spec) {
+			if (this.isDesactivated(spec)) return;
+			let specId = spec.id
 			if (this.selectedId === null || this.selectedId === -1 || specId === null || specId === -1) return;
 			let datas = {
 				idMain: this.selectedId,
@@ -653,6 +661,9 @@ export default {
 				this.unqualify();
 			}
 		},
+		isDesactivated(item) {
+			return this.labelsLinked.includes(item.label);
+		}
 	},
 };
 </script>
@@ -746,5 +757,10 @@ export default {
 	position: fixed;
 	left: 10px;
 	top: 10px;
+}
+
+.desactivated {
+	color: rgb(193, 0, 0);
+	cursor: not-allowed !important;
 }
 </style>
