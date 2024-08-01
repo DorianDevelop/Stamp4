@@ -11,7 +11,6 @@
 					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.when">
 					</w-input>
 				</w-flex>
-
 				<div class="controllerHeads" v-if="loadedId !== -1">
 					<div class="Heads" :class="{ selected: controllerChoice === 1 }" @click="controllerChoice = 1">
 						<p>Drivers</p>
@@ -402,7 +401,6 @@ export default {
 			}
 		},
 		selectHeader(index, header) {
-			this.findIdActionToLoad();
 			switch (index) {
 				case 0:
 					this.selected.target = header;
@@ -420,17 +418,21 @@ export default {
 				default:
 					break;
 			}
+			this.findIdActionToLoad();
 		},
-		findIdActionToLoad() {
-			let allActToLoad = this.allActions.filter(
-				(x) => x.target === this.selected.target.label && x.organ === this.selected.organ.label && x.funct === this.selected.funct.label && x.action === this.selected.action.label
-			);
+		async findIdActionToLoad() {
+			if (this.allActions === undefined || this.allActions === null || this.allActions.length === 0) return;
+
 			this.IdsToLoad = [];
 			let lastOrder = 0;
-			allActToLoad.forEach((e) => {
-				if (e.order > lastOrder) lastOrder = e.order;
-				this.IdsToLoad.push(e.id);
-			});
+			await this.allActions.forEach((act) => {
+				if (act.target === this.selected.target.label && act.funct === this.selected.funct.label && act.organ === this.selected.organ.label && act.action === this.selected.action.label) {
+					console.log(act);
+					if (act.order > lastOrder) lastOrder = act.order;
+					this.IdsToLoad.push(act.id);
+				}
+			})
+
 			this.newAction.order = parseInt(lastOrder) + 1;
 		},
 		addInChangedList(id) {
