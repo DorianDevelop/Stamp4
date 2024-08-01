@@ -508,7 +508,7 @@ exports.findNextIdSpec = (req, res) => {
   const queryID =
     'SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = "spec" AND table_schema = "stamp3uut";';
 
-  const queryHelp = "SET information_schema_stats_expiry = 0;";
+  /*const queryHelp = "SET information_schema_stats_expiry = 0;";
   db.query(queryHelp, (error, results) => {
     if (error) {
       console.error(error);
@@ -523,7 +523,16 @@ exports.findNextIdSpec = (req, res) => {
       });
     }
     db.end();
+  });*/
+
+  db.query(queryID, (error, results) => {
+    if (error) {
+      res.status(500).json({ error: "An error occurred \n" + error });
+    } else {
+      res.status(200).json(results);
+    }
   });
+  db.end();
 };
 
 //#endregion
@@ -622,7 +631,7 @@ exports.findNextIdStep = (req, res) => {
   const queryID =
     'SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = "step" AND table_schema = "stamp3uut";';
 
-  const queryHelp = "SET information_schema_stats_expiry = 0;";
+  /*const queryHelp = "SET information_schema_stats_expiry = 0;";
   db.query(queryHelp, (error, results) => {
     if (error) {
       console.error(error);
@@ -637,7 +646,16 @@ exports.findNextIdStep = (req, res) => {
       });
     }
     db.end();
+  });*/
+
+  db.query(queryID, (error, results) => {
+    if (error) {
+      res.status(500).json({ error: "An error occurred \n" + error });
+    } else {
+      res.status(200).json(results);
+    }
   });
+  db.end();
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
@@ -833,7 +851,7 @@ exports.findNextIdStep = (req, res) => {
     "SELECT AUTO_INCREMENT FROM information_schema.tables " +
     'WHERE table_name = "step" AND table_schema = "stamp3uut";';
 
-  const queryHelp = "SET information_schema_stats_expiry = 0;";
+  /*const queryHelp = "SET information_schema_stats_expiry = 0;";
   db.query(queryHelp, (error, results) => {
     if (error) {
       console.error(error);
@@ -848,5 +866,14 @@ exports.findNextIdStep = (req, res) => {
       });
     }
     db.end();
+  });*/
+
+  db.query(queryID, (error, results) => {
+    if (error) {
+      res.status(500).json({ error: "An error occurred \n" + error });
+    } else {
+      res.status(200).json(results);
+    }
   });
+  db.end();
 };

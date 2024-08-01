@@ -446,6 +446,7 @@ export default {
 			let index = 0;
 			this.allDatas.forEach((all) => {
 				all.forEach((e) => {
+					console.log(e);
 					e.idProtocol = this.loadedId;
 					if (this.duppId !== null) {
 						e.idProtocol = this.duppId;

@@ -1,5 +1,7 @@
 <template>
 	<div class="container">
+
+		<LoadingIndicator ref="loadingComponent" :duration="loadingDuration" />
 		<div class="topOptions">
 			<SearchBar v-if="searchBar === 0" :newItem="newItemCreated" :refreshSearch="refreshSearch"
 				:route="routeAPI + 's'" @update:selected="getValueForOne" :displayArrow="showArrow" />
@@ -27,6 +29,7 @@ import SearchBarRange from '@/components/SearchBarRange.vue';
 import ButtonBar from '@/components/ButtonBar.vue';
 import SearchBarRangeCtrl from '@/components/SearchBarRangeCtrl.vue';
 
+import LoadingIndicator from '@/components/LoadingIndicator.vue';
 export default {
 	props: {
 		routeAPI: String,
@@ -41,9 +44,12 @@ export default {
 		SearchBarRange,
 		SearchBar,
 		ButtonBar,
+		LoadingIndicator,
 	},
 	data() {
 		return {
+			loadingDuration: 1000,
+
 			showArrow: true,
 			refreshSearch: false,
 			showEditBtn: true,
@@ -102,6 +108,10 @@ export default {
 			}
 		},
 		saveSelection() {
+
+			this.loadingDuration = 2000
+			this.$refs.loadingComponent.startLoading();
+
 			let valid = this.validation(this.datas);
 			if (valid === false || valid === 'Pas les droits') {
 				if (valid === 'Pas les droits') return;
@@ -152,6 +162,10 @@ export default {
 			});
 		},
 		async deleteSelection() {
+
+			this.loadingDuration = 500
+			this.$refs.loadingComponent.startLoading();
+
 			if (this.selectedId == null || this.selectedId === -1) return;
 			await axios.delete(`http://localhost:3000${this.routeAPI}/${this.selectedId}`).then((response) => {
 				if (response.status === 200) {
@@ -174,6 +188,10 @@ export default {
 			this.refreshSearch = !this.refreshSearch;
 		},
 		addItem() {
+			this.loadingDuration = 500
+			this.$refs.loadingComponent.startLoading();
+
+
 			this.newItemCreated = true;
 
 			this.creationAlerte.show = true;
@@ -183,6 +201,9 @@ export default {
 			this.datas = [];
 		},
 		dupItem() {
+			this.loadingDuration = 500
+			this.$refs.loadingComponent.startLoading();
+
 			this.duplicationAlerte.show = true;
 			this.creationAlerte.show = false;
 			this.showEditBtn = false;
@@ -202,6 +223,11 @@ export default {
 			});
 		},
 		async createItem() {
+			this.loadingDuration = 3000
+			if (this.routeAPI === "/stamp3drv/protocol")
+				this.loadingDuration = 5000
+			this.$refs.loadingComponent.startLoading();
+
 			if (!this.isValidDateFormat(this.datas.date)) {
 				this.datas.date = '2024-01-01';
 			}

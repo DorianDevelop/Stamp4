@@ -286,7 +286,7 @@ exports.findNextIdPlug = (req, res) => {
   const queryID =
     'SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = "plug" AND table_schema = "stamp3ate";';
 
-  const queryHelp = "SET information_schema_stats_expiry = 0;";
+  /*const queryHelp = "SET information_schema_stats_expiry = 0;";
   db.query(queryHelp, (error, results) => {
     if (error) {
       console.error(error);
@@ -301,7 +301,15 @@ exports.findNextIdPlug = (req, res) => {
       });
     }
     db.end();
+  });*/
+  db.query(queryID, (error, results) => {
+    if (error) {
+      res.status(500).json({ error: "An error occurred \n" + error });
+    } else {
+      res.status(200).json(results);
+    }
   });
+  db.end();
 };
 
 //Drivers

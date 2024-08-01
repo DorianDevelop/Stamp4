@@ -23,7 +23,7 @@ router.post("/protocolData", validator.validateProtocolDatas, controller.createD
 router.put("/protocolData/:id", validator.validateProtocolDatas, controller.modifyData);
 router.delete("/protocolData/:id", controller.deleteData);
 
-router.get("/protocolString/:id", controller.getAllStrings);
+router.get("/protocolStrings/:id", controller.getAllStrings);
 router.post("/protocolString", validator.validateProtocolDatas, controller.createString);
 router.put("/protocolString/:id", validator.validateProtocolDatas, controller.modifyString);
 router.delete("/protocolString/:id", controller.deleteString); //findNextIdProtocol

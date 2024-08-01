@@ -327,6 +327,7 @@ import axios from 'axios';
 import Layout from '@/views/ItemLayout.vue';
 import VueCookies from 'vue-cookies';
 
+
 export default {
 	components: {
 		Layout,
