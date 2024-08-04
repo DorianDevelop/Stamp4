@@ -2,16 +2,16 @@
 	<Layout class="layout" routeAPI="/stamp3drv/protocol" :searchType="0" :formating="createJSONItem"
 		:validation="validationBeforeSave" @update:validators="validateAll" :showBtns="showBtn">
 		<template #default="props">
+			{{ duppId }} et {{ props.selectedId }}
 			<w-form class="editForm">
 				<w-flex class="py2 align-end mb1 px1" gap="3">
 					<w-input ref="labelInput" label-color="green-dark1" class="xs5" label="Label"
-						:validators="[validators.required]" v-model="props.datas.label"> </w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Nom court" v-model="props.datas.shortName">
-					</w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who">
-					</w-input>
-					<w-input label-color="green-dark1" class="xs3" label="Date" type="date" v-model="props.datas.date">
-					</w-input>
+						:validators="[validators.required]" v-model="props.datas.label"></w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Nom court"
+						v-model="props.datas.shortName"></w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Créateur" v-model="props.datas.who"></w-input>
+					<w-input label-color="green-dark1" class="xs3" label="Date" type="date"
+						v-model="props.datas.date"></w-input>
 				</w-flex>
 				<div class="switchDetails">
 					<w-flex class="column py1 align-center mb1 px1" gap="3">
@@ -41,9 +41,9 @@
 					</w-flex>
 				</div>
 
-				<div class="windowsContainer" v-if="props.selectedId !== -1">
+				<div class="windowsContainer" v-if="duppId === null">
 					<div class="window" v-for="(valeurs, i) in allDatas" :key="i">
-						<div class="windowTitle" @click="opens[i] = !opens[i]">
+						<div class="windowTitle" @click="toggleOpen(i)">
 							<p>{{ names[i] }}</p>
 							<button class="icon" :class="{ opened: opens[i] }">
 								<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
@@ -60,25 +60,23 @@
 									<w-icon class="mr1">wi-plus</w-icon>
 									Ajout d'une ligne
 								</w-button>
-								<w-table :headers="i == 2 || i == 3 ? table.header_two : table.header_one"
-									:items="valeurs" fixed-headers :sort="table.sorts[i]">
+								<w-table :headers="getTableHeaders(i)" :items="valeurs" fixed-headers
+									:sort="table.sorts[i]">
 									<template #item="{ item }">
 										<tr>
-											<td v-for="(header, x) in i == 2 || i == 3 ? table.header_two : table.header_one"
-												:key="x" class="inputTable" :class="`text-${header.key}`">
-												<w-input
-													v-if="header.key !== 'access' && header.key !== 'answerExpected' && header.key !== 'type'"
-													v-model="item[header.key]"
-													:disabled="shouldBeDisabled(header.key, props.datas, item.answerExpected)">
-												</w-input>
+											<td v-for="(header, x) in getTableHeaders(i)" :key="x" class="inputTable"
+												:class="`text-${header.key}`">
+												<w-input v-if="!isSelectOrSwitch(header)" v-model="item[header.key]"
+													:disabled="shouldBeDisabled(header.key, props.datas, item.answerExpected)"></w-input>
 												<select v-else-if="header.key === 'access'" v-model="item[header.key]">
 													<option value="WR">Write</option>
 													<option value="RD">Read</option>
 												</select>
 												<select v-else-if="header.key === 'type'" v-model="item[header.key]"
 													:class="`text-${header.key}`">
-													<option v-for="t in types" :key="t.value" :value="t.value">{{
-														t.label }}</option>
+													<option v-for="t in types" :key="t.value" :value="t.value">
+														{{ t.label }}
+													</option>
 												</select>
 												<w-switch v-else v-model="item[header.key]" color="green"
 													class="text-sync"></w-switch>
@@ -99,13 +97,8 @@
 					</div>
 				</div>
 				<w-textarea rows="4" :no-autogrow="true" label-color="green-dark1" class="pa1 textAreaForm"
-					label="Comment" v-model="props.datas.comment"> </w-textarea>
+					label="Comment" v-model="props.datas.comment"></w-textarea>
 			</w-form>
-			<!-- UGLY CODE? Maybe, but it's responsive display ^^' -->
-			<div
-				v-if="getAllDatasOfProtocol(props.selectedId ? props.selectedId : -1, props.datas.id ? props.datas.id : -1)">
-			</div>
-
 			<div class="saveAll" v-if="loadedId !== null && loadedId !== -1">
 				<p>Activer la sauvegarde générale</p>
 				<w-switch class="saveAllSwitch" v-model="saveAll" color="red"></w-switch>
@@ -113,6 +106,7 @@
 		</template>
 	</Layout>
 </template>
+
 <script>
 import axios from 'axios';
 import Layout from '@/views/ItemLayout.vue';
@@ -121,22 +115,35 @@ export default {
 	components: {
 		Layout,
 	},
+	props: {
+		selectedId: {
+			type: Number,
+			default: -1,
+		},
+		datas: {
+			type: Object,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			loadedId: null,
 			duppId: null,
-
 			opens: [false, false, false, false, false, false],
-			names: ['Ordre - Write', 'État - Read', 'Paramètre - Write', 'Valeur - Read', 'Texte - Write', 'Texte - Read'],
-
+			names: [
+				'Ordre - Write',
+				'État - Read',
+				'Paramètre - Write',
+				'Valeur - Read',
+				'Texte - Write',
+				'Texte - Read',
+			],
 			allDatas: [],
 			saveAll: true,
-
 			showBtn: true,
 			validators: {
 				required: (value) => !!value || 'This field is required',
 			},
-
 			table: {
 				header_one: [
 					{ label: 'Label', key: 'label' },
@@ -166,7 +173,6 @@ export default {
 				sorts: ['', '', '', '', '', ''],
 			},
 			refreshTable: true,
-
 			types: [
 				{ value: 'ASCII', label: 'Ascii' },
 				{ value: '1B', label: '1bit' },
@@ -179,8 +185,26 @@ export default {
 				{ value: '32BF', label: '32bitFloat' },
 			],
 		};
-	},
+	},/*
+	watch: {
+		selectedId: {
+			immediate: true,
+			handler(newValue) {
+				this.loadInitialData(newValue, this.datas.id || -1);
+			},
+		},
+		'datas.id': {
+			immediate: true,
+			handler(newValue) {
+				this.loadInitialData(this.selectedId, newValue);
+			},
+		},
+	},*/
 	methods: {
+		async loadInitialData(selectedId, id) {
+			console.log(selectedId, id);
+			//await this.getAllDatasOfProtocol(selectedId, id);
+		},
 		createJSONItem(datas) {
 			return {
 				label: datas.label || '',
@@ -196,38 +220,30 @@ export default {
 			};
 		},
 		validationBeforeSave(datas) {
-			if (!datas.label || datas.label === '' || datas.label === null) return false;
+			if (!datas.label) return false;
 			if (this.saveAll) this.saveAllDatas();
-
 			return true;
 		},
 		validateAll() {
 			this.$refs.labelInput.validate();
-			return;
 		},
 		async getAllDatasOfProtocol(selectedId, id) {
-			console.log(selectedId, id);
 			this.duppId = null;
 			this.loadedId = id;
 			if (this.loadedId === null || this.loadedId === -1) return false;
-			this.allDatas = [];
-			await axios
-				.get(`http://localhost:3000/stamp3drv/protocolDatas/${this.loadedId}`)
-				.then((reponse) => reponse.data)
-				.then((data) => {
-					this.allDatas = data;
-				});
-
-			if (selectedId === -1 && id !== -1 && id !== null) {
-				axios
-					.get(`http://localhost:3000/stamp3ate/findNextPlugID`)
-					.then((reponse) => reponse.data)
-					.then((data) => {
-						this.duppId = data[0].AUTO_INCREMENT;
-						return true;
-					});
-			} else {
-				return true;
+			try {
+				const response = await axios.get(
+					`http://localhost:3000/stamp3drv/protocolDatas/${this.loadedId}`
+				);
+				this.allDatas = response.data;
+				if (selectedId === -1 && id !== -1 && id !== null) {
+					const nextIdResponse = await axios.get(
+						`http://localhost:3000/stamp3ate/findNextPlugID`
+					);
+					this.duppId = nextIdResponse.data[0].AUTO_INCREMENT;
+				}
+			} catch (error) {
+				console.error('Error fetching data:', error);
 			}
 		},
 		shouldBeDisabled(header, datas, answerEx) {
@@ -235,26 +251,19 @@ export default {
 			if (header === 'addPrim' && !datas.fieldAddPrim) return true;
 			if (header === 'addSecond' && !datas.fieldAddSecond) return true;
 			if (header === 'cmdString' && !datas.fieldCmdString) return true;
-
 			if (header === 'time' && !answerEx) return true;
 			if (header === 'loop' && !answerEx) return true;
 			if (header === 'answerValue' && !answerEx) return true;
-
 			return false;
 		},
 		addEmptyRow(table, id) {
 			table.push({});
-			if (id % 2 == 1) table[table.length - 1].access = 'RD';
-			if (id % 2 == 0) table[table.length - 1].access = 'WR';
+			table[table.length - 1].access = id % 2 === 0 ? 'WR' : 'RD';
 			this.table.sorts[id] = '+id';
 		},
-		saveRow(row, i, reload) {
-			let create = false;
-			if ((row.id !== undefined && row.id !== null) || this.duppId !== null) {
-				create = true;
-			}
-
-			let datas = {
+		async saveRow(row, i, reload) {
+			const isCreate = row.id === undefined || row.id === null || this.duppId !== null;
+			const datas = {
 				idProtocol: row.idProtocol || this.loadedId,
 				label: row.label || '',
 				slave: row.slave || '',
@@ -267,198 +276,139 @@ export default {
 				time: row.time || '',
 				loop: row.loop || 0,
 			};
-
-			let queryString = '';
-			if (create) {
+			let url = '';
+			if (isCreate) {
 				switch (i) {
 					case 0:
 					case 1:
 						datas['complement'] = row.complement;
-						queryString = `http://localhost:3000/stamp3drv/protocolBoolean/${row.id}`;
+						url = `http://localhost:3000/stamp3drv/protocolBoolean/${row.id}`;
 						break;
 					case 2:
 					case 3:
 						datas['type'] = row.type;
-						queryString = `http://localhost:3000/stamp3drv/protocolData/${row.id}`;
+						url = `http://localhost:3000/stamp3drv/protocolData/${row.id}`;
 						break;
 					case 4:
 					case 5:
-						queryString = `http://localhost:3000/stamp3drv/protocolString/${row.id}`;
+						url = `http://localhost:3000/stamp3drv/protocolString/${row.id}`;
 						break;
 				}
-				axios
-					.put(queryString, datas)
-					.then((response) => {
-						if (response.status === 200) {
-							if (reload) {
-								this.$waveui.notify({
-									message: 'Modification reussit',
-									timeout: 2000,
-									bgColor: 'success',
-									color: 'warning',
-									dismiss: false,
-									shadow: true,
-									round: true,
-									sm: true,
-									icon: 'wi-check',
-								});
-								this.updateDatas(i);
-							}
-						} else {
-							console.error('Error adding step:', response.status, response.data);
-						}
-					})
-					.catch((error) => {
-						console.error('Unexpected error:', error);
-					});
+				await axios.put(url, datas);
 			} else {
 				switch (i) {
 					case 0:
 					case 1:
 						datas['complement'] = row.complement;
-						queryString = `http://localhost:3000/stamp3drv/protocolBoolean`;
+						url = `http://localhost:3000/stamp3drv/protocolBoolean`;
 						break;
 					case 2:
 					case 3:
 						datas['type'] = row.type;
-						queryString = `http://localhost:3000/stamp3drv/protocolData`;
+						url = `http://localhost:3000/stamp3drv/protocolData`;
 						break;
 					case 4:
 					case 5:
-						queryString = `http://localhost:3000/stamp3drv/protocolString`;
+						url = `http://localhost:3000/stamp3drv/protocolString`;
 						break;
 				}
-				axios
-					.post(queryString, datas)
-					.then((response) => {
-						if (response.status === 200) {
-							this.$waveui.notify({
-								message: 'Création reussit',
-								timeout: 2000,
-								bgColor: 'success',
-								color: 'warning',
-								dismiss: false,
-								shadow: true,
-								round: true,
-								sm: true,
-								icon: 'wi-check',
-							});
-
-							this.updateDatas(i);
-						} else {
-							console.error('Error adding step:', response.status, response.data);
-						}
-					})
-					.catch((error) => {
-						console.error('Unexpected error:', error);
-					});
+				await axios.post(url, datas);
+			}
+			if (reload) {
+				this.$waveui.notify({
+					message: isCreate ? 'Création réussie' : 'Modification réussie',
+					timeout: 2000,
+					bgColor: 'success',
+					color: 'warning',
+					dismiss: false,
+					shadow: true,
+					round: true,
+					sm: true,
+					icon: 'wi-check',
+				});
+				this.updateDatas(i);
 			}
 		},
-		deleteRow(i, id) {
-			if (id < 0 || id === undefined || id === null) {
+		async deleteRow(i, id) {
+			if (id === undefined || id === null) {
 				this.allDatas[i].pop();
 				return;
 			}
-
-			let queryString = '';
+			let url = '';
 			switch (i) {
 				case 0:
 				case 1:
-					queryString = `http://localhost:3000/stamp3drv/protocolBoolean/${id}`;
+					url = `http://localhost:3000/stamp3drv/protocolBoolean/${id}`;
 					break;
 				case 2:
 				case 3:
-					queryString = `http://localhost:3000/stamp3drv/protocolData/${id}`;
+					url = `http://localhost:3000/stamp3drv/protocolData/${id}`;
 					break;
 				case 4:
 				case 5:
-					queryString = `http://localhost:3000/stamp3drv/protocolString/${id}`;
+					url = `http://localhost:3000/stamp3drv/protocolString/${id}`;
 					break;
 			}
-
-			axios
-				.delete(queryString)
-				.then((response) => {
-					if (response.status === 200) {
-						this.$waveui.notify({
-							message: 'Suppréssion reussit',
-							timeout: 2000,
-							bgColor: 'error',
-							color: 'warning',
-							dismiss: false,
-							shadow: true,
-							round: true,
-							sm: true,
-							icon: 'wi-cross',
-						});
-
-						this.updateDatas(i);
-					} else {
-						console.error('Error adding step:', response.status, response.data);
-					}
-				})
-				.catch((error) => {
-					console.error('Unexpected error:', error);
-				});
+			await axios.delete(url);
+			this.$waveui.notify({
+				message: 'Suppression réussie',
+				timeout: 2000,
+				bgColor: 'error',
+				color: 'warning',
+				dismiss: false,
+				shadow: true,
+				round: true,
+				sm: true,
+				icon: 'wi-cross',
+			});
+			this.updateDatas(i);
 		},
 		async updateDatas(i) {
-			let id = this.loadedId;
-			let queryString = '';
+			let url = '';
 			switch (i) {
 				case 0:
 				case 1:
-					queryString = `http://localhost:3000/stamp3drv/protocolBooleans/${id}`;
+					url = `http://localhost:3000/stamp3drv/protocolBooleans/${this.loadedId}`;
 					break;
 				case 2:
 				case 3:
-					queryString = `http://localhost:3000/stamp3drv/protocolDatas/${id}`;
+					url = `http://localhost:3000/stamp3drv/protocolDatas/${this.loadedId}`;
 					break;
 				case 4:
 				case 5:
-					queryString = `http://localhost:3000/stamp3drv/protocolStrings/${id}`;
+					url = `http://localhost:3000/stamp3drv/protocolStrings/${this.loadedId}`;
 					break;
 			}
-			axios
-				.get(queryString)
-				.then((reponse) => reponse.data)
-				.then((data) => {
-					switch (i) {
-						case 0:
-						case 1:
-							this.allDatas[0] = data[0];
-							this.allDatas[1] = data[1];
-							break;
-						case 2:
-						case 3:
-							this.allDatas[2] = data[0];
-							this.allDatas[3] = data[1];
-							break;
-						case 4:
-						case 5:
-							this.allDatas[4] = data[0];
-							this.allDatas[5] = data[1];
-							break;
-					}
-					//this.refreshTable = true;
-				});
+			const response = await axios.get(url);
+			this.allDatas[i] = response.data;
 		},
 		async saveAllDatas() {
 			let index = 0;
 			this.allDatas.forEach((all) => {
 				all.forEach((e) => {
-					console.log(e);
-					e.idProtocol = this.loadedId;
-					if (this.duppId !== null) {
-						e.idProtocol = this.duppId;
-					}
+					e.idProtocol = this.loadedId || this.duppId;
 					this.saveRow(e, index, true);
 				});
 				index++;
 			});
 		},
+		toggleOpen(index) {
+			this.opens[index] = !this.opens[index];
+		},
+		getTableHeaders(index) {
+			return index === 2 || index === 3 ? this.table.header_two : this.table.header_one;
+		},
+		isSelectOrSwitch(header) {
+			return ['access', 'answerExpected', 'type'].includes(header.key);
+		},
 	},
 };
 </script>
+
+<style scoped>
+/* Add any necessary styles here */
+</style>
+
 <style scoped>
 .selects {
 	color: #439b47;
